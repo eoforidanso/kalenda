@@ -118,7 +118,7 @@ export default function Photos() {
     .filter((p) => tagFilter === 'all' || (p.tags && p.tags.includes(tagFilter)));
 
   return (
-    <div className="flex-1 overflow-y-auto scrollbar-thin">
+    <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0">
       {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
 
       {/* Topbar */}

@@ -64,7 +64,7 @@ export default function Family() {
   const [showInvite, setShowInvite] = useState(false);
 
   return (
-    <div className="flex-1 overflow-y-auto scrollbar-thin" style={{ background: 'transparent' }}>
+    <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>
       {showInvite && <InviteModal onClose={() => setShowInvite(false)} />}
 
       {/* Topbar */}

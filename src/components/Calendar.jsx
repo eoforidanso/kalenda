@@ -443,7 +443,7 @@ export default function Calendar({ setView }) {
     .slice(0, 5);
 
   return (
-    <div className="flex-1 overflow-y-auto scrollbar-thin" style={{ background: 'transparent' }}>
+    <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>
       {/* Header */}
       <div className="sticky top-0 z-10 px-6 py-3.5 flex items-center gap-3 flex-wrap" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div className="flex-1 min-w-0">

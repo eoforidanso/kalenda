@@ -158,7 +158,7 @@ export default function Lists() {
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto scrollbar-thin px-6 py-5">
+        <div className="flex-1 overflow-y-auto scrollbar-thin px-6 py-5 pb-28 md:pb-5">
           <div className="max-w-2xl">
 
             {/* Add item */}
