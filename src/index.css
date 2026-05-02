@@ -4,6 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Kalenda brand tokens ── */
+:root {
+  --k-teal:   #2d9b9b;
+  --k-teal-light: #5bbfbf;
+  --k-amber:  #f59e0b;
+  --k-amber-dark: #d97706;
+  --k-cream:  #fffbf5;
+  --k-forest: #0b4040;
+}
+
 @layer base {
   html, body, #root { height: 100%; }
   body {

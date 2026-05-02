@@ -352,7 +352,7 @@ export default function Landing({ onEnter }) {
   function handleHeroMouseLeave() { setTilt({ x: 0, y: 0 }); }
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: '#ffffff', color: '#0f172a' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: '#fffbf5', color: '#0f172a' }}>
 
       {/* ══════════ NAVBAR ══════════ */}
       <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
@@ -363,7 +363,7 @@ export default function Landing({ onEnter }) {
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm" style={{ background: 'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow: '0 4px 12px rgba(91,191,191,0.4)' }}>K</div>
             <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
-            <span className="hidden sm:inline text-[10px] px-2 py-0.5 rounded-full font-bold tracking-wide" style={{ background: 'rgba(91,191,191,0.12)', color: '#3a9e9e', border: '1px solid rgba(91,191,191,0.25)' }}>v2</span>
+            <span className="hidden sm:inline text-[10px] px-2 py-0.5 rounded-full font-bold tracking-wide" style={{ background: 'rgba(245,158,11,0.12)', color: '#d97706', border: '1px solid rgba(245,158,11,0.28)' }}>new</span>
           </div>
           <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600">
             <a href="#features" className="hover:text-gray-900 transition-colors">Features</a>
@@ -393,12 +393,26 @@ export default function Landing({ onEnter }) {
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8">
+          {/* Frame corner motif decoratives */}
+          <div className="absolute top-6 left-6 pointer-events-none" style={{ opacity: 0.22 }}>
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M2 18V4a2 2 0 012-2h14" stroke="white" strokeWidth="2.5" strokeLinecap="round"/></svg>
+          </div>
+          <div className="absolute top-6 right-6 pointer-events-none" style={{ opacity: 0.22 }}>
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M34 18V4a2 2 0 00-2-2H18" stroke="white" strokeWidth="2.5" strokeLinecap="round"/></svg>
+          </div>
+          <div className="absolute bottom-28 left-6 pointer-events-none" style={{ opacity: 0.14 }}>
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M2 18v14a2 2 0 002 2h14" stroke="white" strokeWidth="2.5" strokeLinecap="round"/></svg>
+          </div>
+          <div className="absolute bottom-28 right-6 pointer-events-none" style={{ opacity: 0.14 }}>
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M34 18v14a2 2 0 01-2 2H18" stroke="white" strokeWidth="2.5" strokeLinecap="round"/></svg>
+          </div>
+
           {/* Eyebrow */}
           <div className="flex justify-center mb-7">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
               style={{ background: 'rgba(255,255,255,0.14)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.26)', color:'rgba(255,255,255,0.92)' }}>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Trusted by 4,200+ families in 38 countries
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#fbbf24' }} />
+              4,200 families already home
             </div>
           </div>
 
@@ -406,29 +420,29 @@ export default function Landing({ onEnter }) {
           <div className="text-center mb-8">
             <h1 className="font-black leading-[1.06] tracking-tight mb-5"
               style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)', color: 'white', letterSpacing: '-0.03em', textShadow: '0 4px 32px rgba(0,0,0,0.2)' }}>
-              The Wi‑Fi photo frame that runs
+              The frame that holds
               <br />
-              <span style={{ background: 'linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 40%, #34d399 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
-                your whole family.
+              <span style={{ background: 'linear-gradient(135deg, #fde68a 0%, #fbbf24 45%, #f59e0b 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+                your family together.
               </span>
             </h1>
-            <p className="mx-auto text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)', maxWidth: '540px', letterSpacing: '-0.01em' }}>
-              One beautiful screen. Shared calendar, chores, shopping lists, AI-restored memories — synced live to every device and every frame in your home.
+            <p className="mx-auto text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', maxWidth: '520px', letterSpacing: '-0.01em' }}>
+              Every photo, every plan, every memory — alive on one beautiful screen. Synced in real time from every phone in your home.
             </p>
           </div>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
             <button onClick={openSignup}
-              className="flex items-center gap-2.5 px-7 py-4 rounded-2xl text-base font-black text-white transition-all duration-200 active:scale-95"
-              style={{ background: 'linear-gradient(135deg, #1a6b6b 0%, #2d9b9b 40%, #5bbfbf 100%)', boxShadow: '0 6px 28px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.15)', border: '1px solid rgba(255,255,255,0.18)', letterSpacing: '-0.01em' }}>
-              Start free — 14 day trial
+              className="flex items-center gap-2.5 px-7 py-4 rounded-2xl text-base font-black transition-all duration-200 active:scale-95"
+              style={{ background: 'linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%)', color: '#1c1917', boxShadow: '0 6px 28px rgba(245,158,11,0.45), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.08)', border: '1px solid rgba(255,255,255,0.2)', letterSpacing: '-0.01em' }}>
+              Start your family's story
               <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
             <button onClick={() => onEnter('Guest')}
               className="flex items-center gap-2 px-7 py-4 rounded-2xl text-base font-semibold transition-all duration-200 active:scale-95"
               style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)' }}>
-              View live demo
+              See it in 60 seconds
             </button>
           </div>
 
@@ -452,18 +466,18 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ SOCIAL PROOF BAR ══════════ */}
-      <section className="py-12 border-b" style={{ borderColor: 'rgba(226,236,240,0.6)' }}>
+      <section className="py-12 border-b" style={{ borderColor: 'rgba(245,158,11,0.12)', background: '#fffbf5' }}>
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-8">Families from all over the world trust Kalenda</p>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.18em] mb-8" style={{ color: '#d97706', letterSpacing: '0.2em' }}>Home to families in 38 countries</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
             {[
-              { n: '4,200+', l: 'Families worldwide' },
+              { n: '4,200+', l: 'Families at home' },
               { n: '38',     l: 'Countries' },
-              { n: '1.2M+',  l: 'Photos synced' },
-              { n: '4.9 ★',  l: 'App Store rating' },
+              { n: '1.2M+',  l: 'Memories synced' },
+              { n: '4.9 ★',  l: 'Average family rating' },
             ].map(s => (
               <div key={s.l} className="text-center">
-                <p className="font-black text-3xl text-gray-900 tracking-tight mb-1" style={{ letterSpacing: '-0.04em' }}>{s.n}</p>
+                <p className="font-black text-3xl tracking-tight mb-1" style={{ letterSpacing: '-0.04em', color: '#d97706' }}>{s.n}</p>
                 <p className="text-sm text-gray-500">{s.l}</p>
               </div>
             ))}
@@ -477,11 +491,11 @@ export default function Landing({ onEnter }) {
 
           {/* Section label */}
           <div className="text-center mb-16 sm:mb-20 reveal" ref={el => el && new IntersectionObserver(([e]) => e.isIntersecting && e.target.classList.add('visible'), { threshold: 0.2 }).observe(el)}>
-            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>What Kalenda does</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>What makes Kalenda home</p>
             <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em', lineHeight: '1.1' }}>
-              Everything your family needs,<br className="hidden sm:block" /> in one place.
+              Four things your<br className="hidden sm:block" /> family will love.
             </h2>
-            <p className="text-gray-500 text-lg mx-auto" style={{ maxWidth: '480px' }}>No more juggling 5 apps. Kalenda brings photos, calendar, tasks, and AI into a single beautifully designed hub.</p>
+            <p className="text-gray-500 text-lg mx-auto" style={{ maxWidth: '480px' }}>No more juggling 5 apps. One beautiful hub — photos, calendar, chores, and AI — that actually feels like home.</p>
           </div>
 
           {/* ── Hero feature: Wi-Fi Frame ── */}
@@ -499,8 +513,8 @@ export default function Landing({ onEnter }) {
               {/* Left: copy */}
               <div className="flex-1 max-w-md">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6"
-                  style={{ background: 'rgba(255,255,255,0.13)', border: '1px solid rgba(255,255,255,0.22)', color: 'rgba(255,255,255,0.88)' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Star feature
+                  style={{ background: 'rgba(251,191,36,0.22)', border: '1px solid rgba(251,191,36,0.4)', color: '#fde68a' }}>
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#fbbf24' }} /> Signature feature
                 </div>
                 <h3 className="font-black text-white mb-4 leading-tight" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', letterSpacing: '-0.03em' }}>
                   Your memories, always on display.
@@ -566,9 +580,9 @@ export default function Landing({ onEnter }) {
               <div key={f.title}
                 className={`reveal reveal-delay-${fi + 1} group relative rounded-3xl p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1`}
                 ref={el => el && new IntersectionObserver(([e]) => e.isIntersecting && e.target.classList.add('visible'), { threshold: 0.15 }).observe(el)}
-                style={{ background: '#f8fbfb', border: '1px solid rgba(226,236,240,0.8)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}
+                style={{ background: '#fffbf5', border: '1px solid rgba(245,158,11,0.1)', boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}
                 onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 20px 60px rgba(0,0,0,0.08), 0 4px 16px ${f.color}20`; e.currentTarget.style.borderColor = f.color + '50'; }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = 'rgba(226,236,240,0.8)'; }}>
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.03)'; e.currentTarget.style.borderColor = 'rgba(245,158,11,0.1)'; }}>
 
                 {/* Corner glow on hover */}
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -604,8 +618,8 @@ export default function Landing({ onEnter }) {
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#6ee7b7' }}>Setup in minutes</p>
-            <h2 className="font-black mb-4" style={{ color: 'white', fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>Up and running in 4 steps.</h2>
-            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.1rem' }}>No technical knowledge needed. If you can set up Netflix, you can set up Kalenda.</p>
+            <h2 className="font-black mb-4" style={{ color: 'white', fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>You're four steps away from home.</h2>
+            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.1rem' }}>No tech skills needed. If you can set up Netflix, you can set up Kalenda.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -629,9 +643,9 @@ export default function Landing({ onEnter }) {
       <section className="py-24 sm:py-32 overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
-            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>Real families, real stories</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>From families who found their home</p>
             <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>
-              Families love Kalenda.
+              Some things you can only feel.
             </h2>
             <div className="flex items-center justify-center gap-1">
               {Array(5).fill(0).map((_,i) => <span key={i} className="text-amber-400 text-lg">★</span>)}
@@ -640,7 +654,7 @@ export default function Landing({ onEnter }) {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="rounded-3xl p-6 flex flex-col" style={{ background: i % 3 === 1 ? 'linear-gradient(135deg, #0b4040, #1e7a7a)' : '#f8fbfb', border: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(226,236,240,0.7)'}`, boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+              <div key={i} className="rounded-3xl p-6 flex flex-col" style={{ background: i % 3 === 1 ? 'linear-gradient(135deg, #0b4040, #1e7a7a)' : '#fffbf5', border: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(245,158,11,0.12)'}`, boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}>
                 <div className="flex gap-0.5 mb-4">
                   {Array(t.stars).fill(0).map((_,j) => <span key={j} style={{ color: i%3===1 ? '#fbbf24' : '#f59e0b', fontSize:'13px' }}>★</span>)}
                 </div>
@@ -662,11 +676,11 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ PRICING ══════════ */}
-      <section id="pricing" className="py-24 sm:py-32" style={{ background: '#f8fbfb' }}>
+      <section id="pricing" className="py-24 sm:py-32" style={{ background: '#fffbf5' }}>
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
-            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>Simple pricing</p>
-            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>One price. No surprises.</h2>
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>Find your family's plan</p>
+            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>One price. Your whole family.</h2>
             <p className="text-gray-500 text-lg">Free to start. Upgrade when your family is ready.</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
@@ -675,7 +689,7 @@ export default function Landing({ onEnter }) {
                 style={p.highlight
                   ? { background: 'linear-gradient(145deg, #0b4040, #1e7a7a)', border: '1px solid rgba(91,191,191,0.4)', boxShadow: '0 24px 64px rgba(11,64,64,0.25), 0 4px 16px rgba(91,191,191,0.20)' }
                   : { background: '#ffffff', border: '1px solid rgba(226,236,240,0.9)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
-                {p.badge && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-black text-white" style={{ background: 'linear-gradient(135deg,#5bbfbf,#3a9e9e)', boxShadow:'0 4px 14px rgba(91,191,191,0.5)' }}>{p.badge}</div>}
+                {p.badge && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-black" style={{ background: 'linear-gradient(135deg,#d97706,#f59e0b)', color: '#1c1917', boxShadow:'0 4px 14px rgba(245,158,11,0.45)' }}>{p.badge}</div>}
                 <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: p.highlight ? 'rgba(255,255,255,0.5)' : p.color }}>{p.name}</p>
                 <div className="flex items-baseline gap-1.5 mb-2">
                   <span className="font-black text-4xl" style={{ color: p.highlight ? 'white' : '#0f172a', letterSpacing:'-0.05em' }}>{p.price}</span>
@@ -697,7 +711,7 @@ export default function Landing({ onEnter }) {
                   className="w-full py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 active:scale-[0.98]"
                   style={p.highlight
                     ? { background: 'linear-gradient(135deg,#5bbfbf,#3ab5b5)', color: 'white', boxShadow: '0 4px 20px rgba(91,191,191,0.45), inset 0 1px 0 rgba(255,255,255,0.25)' }
-                    : { background: 'rgba(0,0,0,0.04)', color: '#374151', border: '1px solid rgba(226,236,240,0.9)' }}>
+                    : { background: 'rgba(245,158,11,0.07)', color: '#92400e', border: '1px solid rgba(245,158,11,0.2)' }}>
                   {p.cta}
                 </button>
               </div>
@@ -711,19 +725,19 @@ export default function Landing({ onEnter }) {
       <section id="faq" className="py-24 sm:py-32">
         <div className="max-w-2xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>Got questions?</p>
-            <h2 className="font-black text-gray-900" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>Frequently asked.</h2>
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>Got questions?</p>
+            <h2 className="font-black text-gray-900" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>Everything you're wondering.</h2>
           </div>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
               <div key={i} className="rounded-2xl overflow-hidden transition-all duration-200"
-                style={{ border: `1px solid ${openFaq===i ? 'rgba(91,191,191,0.4)' : 'rgba(226,236,240,0.8)'}`, background: openFaq===i ? '#f0fafa' : '#ffffff', boxShadow: openFaq===i ? '0 4px 20px rgba(91,191,191,0.08)' : 'none' }}>
+                style={{ border: `1px solid ${openFaq===i ? 'rgba(245,158,11,0.3)' : 'rgba(226,236,240,0.8)'}`, background: openFaq===i ? '#fffbeb' : '#ffffff', boxShadow: openFaq===i ? '0 4px 20px rgba(245,158,11,0.06)' : 'none' }}>
                 <button className="w-full flex items-center justify-between px-6 py-4.5 text-left" style={{ paddingTop:'18px', paddingBottom:'18px' }}
                   onClick={() => setOpenFaq(openFaq===i ? null : i)}>
                   <span className="font-semibold text-gray-900 pr-4 text-sm sm:text-base">{faq.q}</span>
                   <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-200"
-                    style={{ background: openFaq===i ? 'rgba(91,191,191,0.2)' : 'rgba(0,0,0,0.06)', transform: openFaq===i ? 'rotate(45deg)' : 'none' }}>
-                    <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3"><path d="M6 2v8M2 6h8" stroke={openFaq===i ? '#3a9e9e' : '#94a3b8'} strokeWidth="1.8" strokeLinecap="round"/></svg>
+                    style={{ background: openFaq===i ? 'rgba(245,158,11,0.18)' : 'rgba(0,0,0,0.06)', transform: openFaq===i ? 'rotate(45deg)' : 'none' }}>
+                    <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3"><path d="M6 2v8M2 6h8" stroke={openFaq===i ? '#d97706' : '#94a3b8'} strokeWidth="1.8" strokeLinecap="round"/></svg>
                   </div>
                 </button>
                 {openFaq===i && <div className="px-6 pb-5 text-sm leading-relaxed text-gray-600">{faq.a}</div>}
@@ -742,16 +756,16 @@ export default function Landing({ onEnter }) {
         <div className="relative z-10 max-w-3xl mx-auto px-5 sm:px-8 text-center">
           <p className="text-xs font-black uppercase tracking-[0.18em] mb-5" style={{ color: '#6ee7b7' }}>Start today</p>
           <h2 className="font-black text-white mb-5" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.03em', lineHeight: '1.1' }}>
-            Your family deserves a hub this good.
+            Your family deserves<br />a frame this good.
           </h2>
           <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.68)', maxWidth: '480px', margin: '0 auto 2.5rem' }}>
-            Join 4,200+ families already using Kalenda. Free to start, takes 4 minutes to set up.
+            4,200 families are already home. Join them — free to start, live in 4 minutes.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button onClick={openSignup}
-              className="flex items-center gap-2.5 px-8 py-4.5 rounded-2xl font-black text-white transition-all duration-200 active:scale-95 text-base"
-              style={{ paddingTop:'18px', paddingBottom:'18px', background:'linear-gradient(135deg,#1a6b6b,#2d9b9b 40%,#5bbfbf 100%)', boxShadow:'0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)', border:'1px solid rgba(255,255,255,0.18)', letterSpacing:'-0.01em' }}>
-              Get started free
+              className="flex items-center gap-2.5 px-8 rounded-2xl font-black transition-all duration-200 active:scale-95 text-base"
+              style={{ paddingTop:'18px', paddingBottom:'18px', background:'linear-gradient(135deg,#d97706,#f59e0b 50%,#fbbf24 100%)', color:'#1c1917', boxShadow:'0 8px 32px rgba(245,158,11,0.45), inset 0 1px 0 rgba(255,255,255,0.35)', border:'1px solid rgba(255,255,255,0.2)', letterSpacing:'-0.01em' }}>
+              Start your family's story
               <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
             <button onClick={openSignin} className="px-8 py-4 rounded-2xl font-semibold text-base transition-all hover:opacity-80" style={{ color:'rgba(255,255,255,0.78)' }}>
@@ -763,7 +777,7 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ FOOTER ══════════ */}
-      <footer className="py-14 border-t" style={{ borderColor: 'rgba(226,236,240,0.6)', background:'#ffffff' }}>
+      <footer className="py-14 border-t" style={{ borderColor: 'rgba(245,158,11,0.12)', background:'#fffbf5' }}>
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
 
           {/* Single unified grid — brand full-width on mobile, 4-col on sm+ */}
@@ -775,7 +789,7 @@ export default function Landing({ onEnter }) {
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm" style={{ background:'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow:'0 4px 12px rgba(91,191,191,0.35)' }}>K</div>
                 <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
               </div>
-              <p className="text-sm leading-relaxed mb-2 max-w-[240px]" style={{ color: '#5bbfbf', fontStyle: 'italic', fontWeight: 600 }}>
+              <p className="text-sm leading-relaxed mb-2 max-w-[240px]" style={{ color: '#d97706', fontStyle: 'italic', fontWeight: 600 }}>
                 "Kalenda exists to bring families closer — one shared moment at a time."
               </p>
               <p className="text-sm text-gray-400 leading-relaxed mb-5 max-w-[240px]">
