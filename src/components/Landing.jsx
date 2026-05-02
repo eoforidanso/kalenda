@@ -1,6 +1,48 @@
 import { useState, useEffect, useRef } from 'react';
 
 // ─────────────────────────────────────────────
+//  HERO FRAME PREVIEW (features section)
+// ─────────────────────────────────────────────
+const heroSlides = [
+  { bg: 'from-rose-500 via-pink-500 to-orange-400', emoji: '🌸', label: "Maya's Birthday", sub: 'Mom · 2 years ago' },
+  { bg: 'from-sky-500 via-blue-500 to-indigo-500',  emoji: '🌊', label: 'Cape Coast Beach',  sub: 'Dad · last summer' },
+  { bg: 'from-violet-500 via-purple-500 to-fuchsia-500', emoji: '🎉', label: '10th Anniversary', sub: 'Dad · 6 months ago' },
+];
+
+function HeroFramePreview() {
+  const [idx, setIdx] = useState(0);
+  const [fading, setFading] = useState(false);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setFading(true);
+      setTimeout(() => { setIdx(i => (i + 1) % heroSlides.length); setFading(false); }, 280);
+    }, 2800);
+    return () => clearInterval(t);
+  }, []);
+  const s = heroSlides[idx];
+  return (
+    <div className={`relative w-full h-full bg-gradient-to-br ${s.bg} flex items-center justify-center transition-opacity duration-280`}
+      style={{ opacity: fading ? 0 : 1 }}>
+      <span style={{ fontSize: '56px', filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.4))' }}>{s.emoji}</span>
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)' }} />
+      <div className="absolute top-2 left-2.5">
+        <p className="font-mono font-bold text-white text-[11px]" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.7)' }}>10:32</p>
+        <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.55)' }}>Thu · May 1</p>
+      </div>
+      <div className="absolute bottom-0 inset-x-0 px-2.5 py-2" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75), transparent)' }}>
+        <p className="text-white text-[11px] font-semibold leading-tight">{s.label}</p>
+        <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{s.sub}</p>
+      </div>
+      <div className="absolute top-2 right-2 flex gap-0.5">
+        {heroSlides.map((_, i) => (
+          <div key={i} className="rounded-full transition-all duration-300" style={{ width: i===idx ? '12px' : '3px', height: '3px', background: i===idx ? 'white' : 'rgba(255,255,255,0.4)' }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 //  FRAME MOCKUP (hero visual)
 // ─────────────────────────────────────────────
 const frameSlides = [
@@ -429,49 +471,131 @@ export default function Landing({ onEnter }) {
         </div>
       </section>
 
-      {/* ══════════ FEATURES ══════════ */}
-      <section id="features" className="py-24 sm:py-32">
+      {/* ══════════ FEATURES — Part 1: Hero Feature (Wi-Fi Frame) ══════════ */}
+      <section id="features" className="py-24 sm:py-32 overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="text-center mb-16 sm:mb-20">
+
+          {/* Section label */}
+          <div className="text-center mb-16 sm:mb-20 reveal" ref={el => el && new IntersectionObserver(([e]) => e.isIntersecting && e.target.classList.add('visible'), { threshold: 0.2 }).observe(el)}>
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>What Kalenda does</p>
             <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em', lineHeight: '1.1' }}>
-              Everything your family needs,<br />in one place.
+              Everything your family needs,<br className="hidden sm:block" /> in one place.
             </h2>
             <p className="text-gray-500 text-lg mx-auto" style={{ maxWidth: '480px' }}>No more juggling 5 apps. Kalenda brings photos, calendar, tasks, and AI into a single beautifully designed hub.</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6 lg:gap-8">
-            {FEATURES.map((f, fi) => (
-              <div key={f.title} className="group relative rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:-translate-y-1"
-                style={{ background: '#f8fbfb', border: '1px solid rgba(226,236,240,0.8)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 20px 60px rgba(0,0,0,0.08), 0 4px 16px ${f.color}20`; e.currentTarget.style.borderColor = f.color + '50'; }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = 'rgba(226,236,240,0.8)'; }}>
-                {/* BG glow */}
-                <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ background: `radial-gradient(circle, ${f.color}18 0%, transparent 70%)`, transform: 'translate(30%, -30%)' }} />
+          {/* ── Hero feature: Wi-Fi Frame ── */}
+          <div className="relative rounded-[36px] overflow-hidden mb-8 reveal" ref={el => el && new IntersectionObserver(([e]) => e.isIntersecting && e.target.classList.add('visible'), { threshold: 0.15 }).observe(el)}
+            style={{ background: 'linear-gradient(135deg, #0b4040 0%, #1a6b6b 40%, #2d9b9b 100%)', minHeight: '400px' }}>
 
-                <div className="flex items-start gap-5">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0"
-                    style={{ background: f.color + '18', border: `1.5px solid ${f.color}35`, boxShadow: `0 4px 16px ${f.color}25` }}>
-                    {f.icon}
+            {/* Background blobs */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute orb-1" style={{ top: '-30%', right: '-15%', width: '60%', height: '120%', background: 'radial-gradient(circle, rgba(91,191,191,0.45) 0%, transparent 65%)', filter: 'blur(70px)' }} />
+              <div className="absolute orb-2" style={{ bottom: '-20%', left: '-10%', width: '50%', height: '80%', background: 'radial-gradient(circle, rgba(52,211,153,0.3) 0%, transparent 65%)', filter: 'blur(60px)' }} />
+              <div className="absolute inset-0 opacity-[0.035]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
+            </div>
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10 p-8 sm:p-12 lg:p-14">
+              {/* Left: copy */}
+              <div className="flex-1 max-w-md">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6"
+                  style={{ background: 'rgba(255,255,255,0.13)', border: '1px solid rgba(255,255,255,0.22)', color: 'rgba(255,255,255,0.88)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Star feature
+                </div>
+                <h3 className="font-black text-white mb-4 leading-tight" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', letterSpacing: '-0.03em' }}>
+                  Your memories, always on display.
+                </h3>
+                <p className="mb-6 leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1.05rem' }}>
+                  A living Wi-Fi photo frame that cycles your family's best moments — auto-synced from every phone. No USB, no fuss, just beauty.
+                </p>
+                <ul className="space-y-3 mb-8">
+                  {['Auto-sync from iOS & Android', 'Weather, time & upcoming events', 'Beautiful cinematic transitions', 'Works on any screen or tablet'].map(b => (
+                    <li key={b} className="flex items-center gap-3 text-sm" style={{ color: 'rgba(255,255,255,0.82)' }}>
+                      <svg viewBox="0 0 12 12" fill="none" className="w-4 h-4 shrink-0"><circle cx="6" cy="6" r="6" fill="rgba(255,255,255,0.18)"/><path d="M3 6l2 2 4-4" stroke="#6ee7b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={openSignup}
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white transition-all duration-200 active:scale-95"
+                  style={{ background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)' }}>
+                  Try it free
+                  <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+              </div>
+
+              {/* Right: animated frame preview */}
+              <div className="flex-shrink-0 flex justify-center items-center" style={{ minWidth: '260px' }}>
+                <div className="relative">
+                  {/* Glow behind frame */}
+                  <div className="absolute inset-0 rounded-[20px] pointer-events-none" style={{ background: 'radial-gradient(ellipse, rgba(91,191,191,0.6) 0%, transparent 70%)', filter: 'blur(40px)', transform: 'scale(1.3)' }} />
+                  {/* Floating chips */}
+                  <div className="absolute z-20 -right-4 top-8" style={{ animation: 'floatMedium 3.5s ease-in-out infinite' }}>
+                    <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-1.5 rounded-2xl text-xs font-semibold whitespace-nowrap"
+                      style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', boxShadow: '0 6px 20px rgba(0,0,0,0.2)' }}>
+                      <span>📸</span> 3 new photos synced
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-black uppercase tracking-widest mb-2" style={{ color: f.color }}>{ f.title }</p>
-                    <h3 className="text-gray-900 font-bold text-xl mb-2 leading-tight" style={{ letterSpacing: '-0.02em' }}>{f.headline}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-5">{f.body}</p>
-                    <ul className="space-y-2">
-                      {f.bullets.map(b => (
-                        <li key={b} className="flex items-center gap-2.5 text-sm text-gray-700">
-                          <svg viewBox="0 0 12 12" fill="none" className="w-4 h-4 shrink-0"><circle cx="6" cy="6" r="6" fill={f.color + '25'}/><path d="M3 6l2 2 4-4" stroke={f.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="absolute z-20 -left-6 bottom-12" style={{ animation: 'floatSlow 5s ease-in-out infinite', animationDelay: '1.2s' }}>
+                    <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-1.5 rounded-2xl text-xs font-semibold whitespace-nowrap"
+                      style={{ background: 'rgba(52,211,153,0.25)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(52,211,153,0.4)', color: '#d1fae5', boxShadow: '0 6px 20px rgba(0,0,0,0.15)' }}>
+                      <span>✅</span> Frame updated
+                    </div>
+                  </div>
+                  {/* Compact frame device */}
+                  <div className="rounded-[18px] p-[7px]" style={{ background: 'linear-gradient(145deg, #3a3a3a 0%, #1e1e1e 50%, #2a2a2a 100%)', boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.12), 0 32px 64px rgba(0,0,0,0.6)' }}>
+                    <div className="rounded-[12px] overflow-hidden" style={{ width: '260px', aspectRatio: '16/10' }}>
+                      <HeroFramePreview />
+                    </div>
+                    <div className="flex items-center justify-between px-2 pt-1.5 pb-0.5">
+                      <span style={{ fontSize: '7px', fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.25)' }}>KALENDA FRAME</span>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#34d399', boxShadow: '0 0 6px #34d399' }} />
+                        <span style={{ fontSize: '7px', color: 'rgba(255,255,255,0.25)' }}>LIVE</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* ── Secondary features: 3 cards ── */}
+          <div className="grid sm:grid-cols-3 gap-5 lg:gap-6">
+            {FEATURES.slice(1).map((f, fi) => (
+              <div key={f.title}
+                className={`reveal reveal-delay-${fi + 1} group relative rounded-3xl p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1`}
+                ref={el => el && new IntersectionObserver(([e]) => e.isIntersecting && e.target.classList.add('visible'), { threshold: 0.15 }).observe(el)}
+                style={{ background: '#f8fbfb', border: '1px solid rgba(226,236,240,0.8)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 20px 60px rgba(0,0,0,0.08), 0 4px 16px ${f.color}20`; e.currentTarget.style.borderColor = f.color + '50'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = 'rgba(226,236,240,0.8)'; }}>
+
+                {/* Corner glow on hover */}
+                <div className="absolute top-0 right-0 w-32 h-32 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ background: `radial-gradient(circle, ${f.color}20 0%, transparent 70%)`, transform: 'translate(30%, -30%)' }} />
+
+                {/* Icon */}
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl mb-5 transition-transform duration-300 group-hover:scale-110"
+                  style={{ background: f.color + '18', border: `1.5px solid ${f.color}35`, boxShadow: `0 4px 14px ${f.color}22` }}>
+                  {f.icon}
+                </div>
+
+                <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: f.color }}>{f.title}</p>
+                <h3 className="text-gray-900 font-bold text-lg mb-2 leading-snug" style={{ letterSpacing: '-0.02em' }}>{f.headline}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed mb-5">{f.body}</p>
+
+                <ul className="space-y-2">
+                  {f.bullets.map(b => (
+                    <li key={b} className="flex items-center gap-2 text-sm text-gray-700">
+                      <svg viewBox="0 0 12 12" fill="none" className="w-3.5 h-3.5 shrink-0"><circle cx="6" cy="6" r="6" fill={f.color + '22'}/><path d="M3 6l2 2 4-4" stroke={f.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
+
         </div>
       </section>
 
