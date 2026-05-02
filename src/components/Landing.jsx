@@ -765,63 +765,47 @@ export default function Landing({ onEnter }) {
       {/* ══════════ FOOTER ══════════ */}
       <footer className="py-14 border-t" style={{ borderColor: 'rgba(226,236,240,0.6)', background:'#ffffff' }}>
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          {/* Brand block — full width centred on mobile */}
-          <div className="flex flex-col items-center text-center sm:items-start sm:text-left mb-10 pb-10 sm:pb-0 sm:mb-0 border-b sm:border-b-0" style={{ borderColor: 'rgba(226,236,240,0.6)' }}>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm" style={{ background:'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow:'0 4px 12px rgba(91,191,191,0.35)' }}>K</div>
-              <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
-            </div>
-            <p className="text-sm text-gray-500 leading-relaxed mb-4 max-w-xs">The smart Wi-Fi photo frame built for modern families.</p>
-            <div className="flex gap-3 justify-center sm:justify-start">
-              {['App Store', 'Google Play'].map(s => (
-                <div key={s} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500" style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)' }}>{s}</div>
-              ))}
-            </div>
-          </div>
 
-          {/* Link columns — 3-col on mobile, 4-col on sm+ */}
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-x-4 gap-y-8 mb-12 sm:hidden">
-            {[
-              { title: 'Product', links: ['Features', 'Pricing', 'Changelog', 'Roadmap'] },
-              { title: 'Company', links: ['About', 'Blog', 'Careers', 'Press'] },
-              { title: 'Support', links: ['Help Center', 'Privacy', 'Terms', 'Contact'] },
-            ].map(col => (
-              <div key={col.title}>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">{col.title}</p>
-                <ul className="space-y-2">
-                  {col.links.map(l => <li key={l}><a href="#" className="text-xs text-gray-500 hover:text-gray-900 transition-colors">{l}</a></li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
+          {/* Single unified grid — brand full-width on mobile, 4-col on sm+ */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-8 gap-y-10 mb-12">
 
-          {/* Desktop layout — single grid */}
-          <div className="hidden sm:grid sm:grid-cols-4 gap-x-6 gap-y-8 mb-12">
-            <div className="sm:col-span-1">
+            {/* Brand + mission */}
+            <div className="sm:col-span-1 flex flex-col items-center text-center sm:items-start sm:text-left">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm" style={{ background:'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow:'0 4px 12px rgba(91,191,191,0.35)' }}>K</div>
                 <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed mb-4">The smart Wi-Fi photo frame built for modern families.</p>
+              <p className="text-sm leading-relaxed mb-2 max-w-[240px]" style={{ color: '#5bbfbf', fontStyle: 'italic', fontWeight: 600 }}>
+                "Kalenda exists to bring families closer — one shared moment at a time."
+              </p>
+              <p className="text-sm text-gray-400 leading-relaxed mb-5 max-w-[240px]">
+                The smart Wi-Fi photo frame built for modern families.
+              </p>
               <div className="flex gap-3">
                 {['App Store', 'Google Play'].map(s => (
                   <div key={s} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500" style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)' }}>{s}</div>
                 ))}
               </div>
             </div>
+
+            {/* Link columns */}
             {[
-              { title: 'Product', links: ['Features', 'Pricing', 'Changelog', 'Roadmap'] },
-              { title: 'Company', links: ['About', 'Blog', 'Careers', 'Press'] },
-              { title: 'Support', links: ['Help Center', 'Privacy Policy', 'Terms of Service', 'Contact'] },
+              { title: 'Product',  links: ['Features', 'Pricing', 'Changelog'] },
+              { title: 'Company',  links: ['About', 'Blog', 'Careers'] },
+              { title: 'Support',  links: ['Help Center', 'Privacy Policy', 'Contact'] },
             ].map(col => (
-              <div key={col.title}>
+              <div key={col.title} className="text-center sm:text-left">
                 <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">{col.title}</p>
                 <ul className="space-y-2.5">
-                  {col.links.map(l => <li key={l}><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">{l}</a></li>)}
+                  {col.links.map(l => (
+                    <li key={l}><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">{l}</a></li>
+                  ))}
                 </ul>
               </div>
             ))}
           </div>
+
+          {/* Bottom bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-3" style={{ borderTop: '1px solid rgba(226,236,240,0.6)' }}>
             <p className="text-sm text-gray-400 text-center sm:text-left">© 2026 Kalenda · Built with ❤️ for families everywhere</p>
             <div className="flex items-center gap-2">
@@ -829,6 +813,7 @@ export default function Landing({ onEnter }) {
               <span className="text-xs text-gray-400">All systems operational</span>
             </div>
           </div>
+
         </div>
       </footer>
 
