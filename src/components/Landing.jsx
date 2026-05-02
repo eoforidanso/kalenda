@@ -392,13 +392,15 @@ export default function Landing({ onEnter }) {
 
           {/* Hero visual — 3D tilt frame */}
           <div ref={heroRef} onMouseMove={handleHeroMouseMove} onMouseLeave={handleHeroMouseLeave}
-            className="flex justify-center" style={{ perspective: '1400px' }}>
+            className="flex justify-center overflow-visible" style={{ perspective: '1400px' }}>
             <div style={{
               transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
               transition: `transform ${tilt.x===0&&tilt.y===0 ? '0.9s' : '0.08s'} cubic-bezier(.22,.68,0,1.2)`,
               transformStyle: 'preserve-3d',
             }}>
-              <FrameMockup scale={1.1} />
+              {/* Smaller scale on mobile to avoid overflow */}
+              <div className="block sm:hidden"><FrameMockup scale={0.72} /></div>
+              <div className="hidden sm:block"><FrameMockup scale={1.1} /></div>
             </div>
           </div>
         </div>
@@ -636,8 +638,8 @@ export default function Landing({ onEnter }) {
       {/* ══════════ FOOTER ══════════ */}
       <footer className="py-14 border-t" style={{ borderColor: 'rgba(226,236,240,0.6)', background:'#ffffff' }}>
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="grid sm:grid-cols-4 gap-8 mb-12">
-            <div className="sm:col-span-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-8 mb-12">
+            <div className="col-span-2 sm:col-span-1">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm" style={{ background:'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow:'0 4px 12px rgba(91,191,191,0.35)' }}>K</div>
                 <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
@@ -662,8 +664,8 @@ export default function Landing({ onEnter }) {
               </div>
             ))}
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-4" style={{ borderTop: '1px solid rgba(226,236,240,0.6)' }}>
-            <p className="text-sm text-gray-400">© 2026 Kalenda · Built with ❤️ for families everywhere</p>
+          <div className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-3" style={{ borderTop: '1px solid rgba(226,236,240,0.6)' }}>
+            <p className="text-sm text-gray-400 text-center sm:text-left">© 2026 Kalenda · Built with ❤️ for families everywhere</p>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs text-gray-400">All systems operational</span>
