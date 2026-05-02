@@ -113,7 +113,7 @@ export default function Sidebar({ view, setView }) {
       <div className="px-3 pt-3 pb-0">
         <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg" style={{ background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.12)' }}>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-          <span className="text-[10px] text-emerald-400/70 font-medium">Live sync · all devices</span>
+          <span className="text-[10px] text-emerald-400/70 font-medium">Frame synced · 2 screens live</span>
         </div>
       </div>
 

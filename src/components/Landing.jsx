@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
 const features = [
-  { icon: '🖼️', title: 'Smart Photo Frame OS', desc: 'Display memories on any screen — auto-curated, always fresh.' },
-  { icon: '📅', title: 'Shared Family Calendar', desc: 'One schedule, every member. Color-coded, conflict-free.' },
-  { icon: '✨', title: 'AI Memory Studio', desc: 'Enhance, restore, and relive your best family moments.' },
-  { icon: '🏡', title: 'Family Command Center', desc: 'Tasks, lists, meals, and chores — all in one place.' },
+  { icon: '🖼️', title: 'Wi-Fi Photo Frame', desc: 'Beautiful memories on every screen — auto-curated, always fresh.' },
+  { icon: '📅', title: 'Shared Family Calendar', desc: 'Color-coded schedules for every member. Never miss a moment.' },
+  { icon: '✅', title: 'Chores & Task Board', desc: 'Assign tasks, track chores, celebrate wins with star rewards.' },
+  { icon: '✨', title: 'AI Memory Studio', desc: 'Enhance, restore, and relive your most treasured moments.' },
 ];
 
 const testimonials = [
-  { name: 'Sarah K.', role: 'Mom of 3', quote: 'Kalenda replaced our whiteboard, our frame, and our family group chat.', avatar: '👩' },
-  { name: 'James T.', role: 'Dad', quote: 'The photo frame feature alone is worth every penny. Our grandparents love it.', avatar: '👨‍💼' },
-  { name: 'Priya M.', role: 'Parent', quote: 'Finally, a family app that actually feels premium.', avatar: '👩‍💻' },
+  { name: 'Sarah K.', role: 'Mom of 3', quote: 'Kalenda replaced our whiteboard, our photo frame, and our family group chat — all in one.', avatar: '👩' },
+  { name: 'James T.', role: 'Dad', quote: 'The Wi-Fi frame feature alone is worth every penny. Our grandparents love it.', avatar: '👨‍💼' },
+  { name: 'Priya M.', role: 'Parent', quote: 'Finally, a family app that actually feels premium and keeps everyone in sync.', avatar: '👩‍💻' },
 ];
 
 export default function Landing({ onEnter }) {
@@ -60,11 +60,14 @@ export default function Landing({ onEnter }) {
             <span className="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse inline-block" />
             Now available · 4,200+ families
           </div>
-          <h1 className="text-white font-bold leading-tight mb-5" style={{ fontSize: 'clamp(2.2rem, 3vw, 3rem)', textShadow: '0 2px 20px rgba(0,0,0,0.15)' }}>
-            Your family's<br />digital heart.
+          <h1 className="text-white font-bold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 3vw, 2.8rem)', textShadow: '0 2px 20px rgba(0,0,0,0.15)' }}>
+            The smart Wi‑Fi frame<br />for your whole family.
           </h1>
-          <p className="text-lg leading-relaxed mb-10" style={{ color: 'rgba(255,255,255,0.85)', maxWidth: '400px' }}>
-            One beautiful hub for your shared calendar, photo frames, memories, tasks, and everything in between.
+          <p className="text-base leading-relaxed mb-3" style={{ color: 'rgba(255,255,255,0.9)', maxWidth: '400px', fontWeight: 600 }}>
+            A smart Wi‑Fi photo frame that becomes your family's shared command center.
+          </p>
+          <p className="text-sm leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.72)', maxWidth: '380px' }}>
+            Shared calendar, chores, shopping lists, meal plans, AI photo enhancement — all synced live to every screen in your home.
           </p>
 
           {/* Features */}
@@ -103,10 +106,13 @@ export default function Landing({ onEnter }) {
       {/* ── RIGHT PANEL ── */}
       <div className="flex-1 flex flex-col items-center justify-center p-5 sm:p-8 lg:p-12 relative overflow-y-auto">
 
-        {/* Mobile logo */}
-        <div className="lg:hidden flex items-center gap-2.5 mb-8">
-          <div className="w-9 h-9 rounded-2xl flex items-center justify-center text-white font-bold" style={{ background: 'linear-gradient(135deg, #3ab5b5, #5bbfbf)' }}>K</div>
-          <span className="text-gray-800 font-semibold text-xl">Kalenda</span>
+        {/* Mobile logo + tagline */}
+        <div className="lg:hidden flex flex-col items-center gap-2 mb-8 text-center">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-2xl flex items-center justify-center text-white font-bold" style={{ background: 'linear-gradient(135deg, #3ab5b5, #5bbfbf)' }}>K</div>
+            <span className="text-gray-800 font-semibold text-xl">Kalenda</span>
+          </div>
+          <p className="text-gray-500 text-xs max-w-xs">A smart Wi‑Fi photo frame that becomes your family’s shared command center.</p>
         </div>
 
         {/* Card */}
@@ -135,14 +141,14 @@ export default function Landing({ onEnter }) {
           </div>
 
           {/* Heading */}
-          <div className="mb-8">
-            <h2 className="font-bold text-gray-900 mb-1.5" style={{ fontSize: '1.6rem' }}>
-              {mode === 'signin' ? 'Welcome back 👋' : 'Create your family hub'}
+          <div className="mb-7">
+            <h2 className="font-bold text-gray-900 mb-1.5" style={{ fontSize: '1.5rem' }}>
+              {mode === 'signin' ? 'Welcome back 👋' : 'Set up your family hub'}
             </h2>
             <p className="text-gray-500 text-sm">
               {mode === 'signin'
                 ? 'Sign in to your Kalenda account to continue.'
-                : 'Get started free — your first 14 days are on us.'}
+                : 'Free for 14 days — no credit card required.'}
             </p>
           </div>
 

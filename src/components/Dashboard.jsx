@@ -157,7 +157,7 @@ export default function Dashboard({ setView }) {
       <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">Today</h1>
-          <p className="text-gray-500 text-xs">Good morning, Harriet 👋 · May 1, 2026</p>
+          <p className="text-gray-500 text-xs">Good morning, Harriet 👋 · Your family’s command center</p>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:block"><WeatherWidget /></div>
