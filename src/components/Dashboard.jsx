@@ -154,7 +154,7 @@ export default function Dashboard({ setView }) {
     <div className="flex-1 overflow-y-auto scrollbar-thin" style={{ background: 'transparent' }}>
 
       {/* Header */}
-      <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">Today</h1>
           <p className="text-gray-500 text-xs">Good morning, Harriet 👋 · Your family’s command center</p>
@@ -165,11 +165,11 @@ export default function Dashboard({ setView }) {
         </div>
       </div>
 
-      <div className="px-4 md:px-6 py-5 space-y-5">
+      <div className="px-4 md:px-6 py-7 space-y-7">
 
         {/* Family member filter bar — like Cozi color coding */}
-        <div className="glass rounded-2xl p-4">
-          <div className="flex items-center justify-between mb-3">
+        <div className="glass rounded-3xl p-5">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Family Members</h2>
             <button onClick={() => setView('family')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">Manage →</button>
           </div>
@@ -198,28 +198,28 @@ export default function Dashboard({ setView }) {
         </div>
 
         {/* Main 3-column grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* TODAY'S SCHEDULE — color-coded by member (Cozi style) */}
-          <div className="lg:col-span-2 glass rounded-2xl p-5">
-            <div className="flex items-center justify-between mb-4">
+          <div className="lg:col-span-2 glass rounded-3xl p-6">
+            <div className="flex items-center justify-between mb-5">
               <h2 className="text-gray-800 font-semibold text-sm">Today's Schedule</h2>
               <button onClick={() => setView('calendar')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">Full Calendar →</button>
             </div>
             {filteredSchedule.length === 0 ? (
               <p className="text-gray-400 text-sm py-4 text-center">No events for {activeFilter} today.</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {filteredSchedule.map((ev, i) => {
                   const color = ev.who === 'All' ? '#a78bfa' : getMemberColor(ev.who);
                   return (
-                    <div key={i} className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-gray-50" style={{ borderLeft: `3px solid ${color}` }}>
-                      <div className="w-16 shrink-0">
-                        <p className="text-gray-400 text-[10px] font-mono">{ev.time}</p>
+                    <div key={i} className="flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-colors hover:bg-gray-50" style={{ borderLeft: `3px solid ${color}` }}>
+                      <div className="w-20 shrink-0">
+                        <p className="text-gray-400 text-xs font-mono">{ev.time}</p>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-gray-700 text-sm font-medium truncate">{ev.label}</p>
-                        <p className="text-gray-400 text-[10px]">{ev.duration}</p>
+                        <p className="text-gray-700 text-sm font-semibold truncate">{ev.label}</p>
+                        <p className="text-gray-400 text-xs mt-0.5">{ev.duration}</p>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
                         {ev.who === 'All' ? (
@@ -241,17 +241,17 @@ export default function Dashboard({ setView }) {
           </div>
 
           {/* Right column */}
-          <div className="space-y-4">
+          <div className="space-y-5">
 
             {/* MEAL PLAN (Skylight / Cozi style) */}
-            <div className="glass rounded-2xl p-4" style={{ border: '1px solid rgba(251,191,36,0.15)' }}>
+            <div className="glass rounded-3xl p-5" style={{ border: '1px solid rgba(251,191,36,0.15)' }}>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-amber-500 text-xs font-semibold uppercase tracking-wider">🍽️ Today's Meals</h3>
                 <button onClick={() => setView('aistudio')} className="text-amber-400 text-[10px] hover:text-amber-500 transition-colors">AI Plan →</button>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {[['Breakfast', meals.breakfast], ['Lunch', meals.lunch], ['Dinner', meals.dinner]].map(([label, m]) => (
-                  <div key={label} className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl" style={{ background: 'rgba(251,191,36,0.06)' }}>
+                  <div key={label} className="flex items-center gap-3 px-3.5 py-3 rounded-2xl" style={{ background: 'rgba(251,191,36,0.06)' }}>
                     <span className="text-xl">{m.icon}</span>
                     <div>
                       <p className="text-gray-400 text-[10px] uppercase tracking-wider">{label}</p>
@@ -263,9 +263,9 @@ export default function Dashboard({ setView }) {
             </div>
 
             {/* UPCOMING BIRTHDAYS */}
-            <div className="glass rounded-2xl p-4" style={{ border: '1px solid rgba(91,191,191,0.20)' }}>
-              <h3 className="text-teal-500 text-xs font-semibold uppercase tracking-wider mb-3">🎂 Coming Up</h3>
-              <div className="space-y-2">
+            <div className="glass rounded-3xl p-5" style={{ border: '1px solid rgba(91,191,191,0.20)' }}>
+              <h3 className="text-teal-500 text-xs font-semibold uppercase tracking-wider mb-4">🎂 Coming Up</h3>
+              <div className="space-y-3">
                 {upcomingEvents.map((e, i) => {
                   const color = e.who === 'All' ? '#a78bfa' : getMemberColor(e.who);
                   return (
@@ -288,13 +288,13 @@ export default function Dashboard({ setView }) {
         </div>
 
         {/* CHORES + SHOPPING — side by side (Skylight style) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {/* Chores */}
-          <div className="glass rounded-2xl p-5">
-            <div className="flex items-center justify-between mb-4">
+          <div className="glass rounded-3xl p-6">
+            <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-gray-800 font-semibold text-sm">Chores & Tasks</h2>
+                <h2 className="text-gray-800 font-semibold">Chores & Tasks</h2>
                 <p className="text-gray-400 text-xs mt-0.5">{choresDone}/{chores.length} done today</p>
               </div>
               <button onClick={() => setView('tasks')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">All tasks →</button>
@@ -303,12 +303,12 @@ export default function Dashboard({ setView }) {
             <div className="h-1.5 rounded-full overflow-hidden mb-4" style={{ background: 'rgba(0,0,0,0.06)' }}>
               <div className="h-full rounded-full transition-all duration-500" style={{ width: `${(choresDone / chores.length) * 100}%`, background: 'linear-gradient(90deg, #5bbfbf, #34d399)' }} />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {chores.map(c => {
                 const color = getMemberColor(c.who);
                 return (
                   <div key={c.id}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors hover:bg-gray-50"
+                    className="flex items-center gap-3 px-4 py-3.5 rounded-2xl cursor-pointer transition-colors hover:bg-gray-50"
                     onClick={() => setChores(prev => prev.map(x => x.id === c.id ? { ...x, done: !x.done } : x))}
                   >
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all`}
@@ -329,10 +329,10 @@ export default function Dashboard({ setView }) {
           </div>
 
           {/* Shopping list */}
-          <div className="glass rounded-2xl p-5">
-            <div className="flex items-center justify-between mb-4">
+          <div className="glass rounded-3xl p-6">
+            <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-gray-800 font-semibold text-sm">Shopping List</h2>
+                <h2 className="text-gray-800 font-semibold">Shopping List</h2>
                 <p className="text-gray-400 text-xs mt-0.5">{shopDone}/{shopList.length} checked off</p>
               </div>
               <button onClick={() => setView('lists')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">All lists →</button>
@@ -340,10 +340,10 @@ export default function Dashboard({ setView }) {
             <div className="h-1.5 rounded-full overflow-hidden mb-4" style={{ background: 'rgba(0,0,0,0.06)' }}>
               <div className="h-full rounded-full transition-all duration-500" style={{ width: `${(shopDone / shopList.length) * 100}%`, background: 'linear-gradient(90deg, #5bbfbf, #6ee7b7)' }} />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {shopList.map(s => (
                 <div key={s.id}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors hover:bg-gray-50"
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-2xl cursor-pointer transition-colors hover:bg-gray-50"
                   onClick={() => setShopList(prev => prev.map(x => x.id === s.id ? { ...x, done: !x.done } : x))}
                 >
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all`}
@@ -355,24 +355,24 @@ export default function Dashboard({ setView }) {
                 </div>
               ))}
             </div>
-            <button className="mt-3 w-full py-2 text-xs text-gray-300 hover:text-teal-500 rounded-xl transition-colors" style={{ border: '1px dashed rgba(0,0,0,0.10)' }}>
+            <button className="mt-4 w-full py-2.5 text-xs text-gray-300 hover:text-teal-500 rounded-2xl transition-colors" style={{ border: '1px dashed rgba(0,0,0,0.10)' }}>
               + Add item
             </button>
           </div>
         </div>
 
         {/* Bottom row: On This Day + Recent Photos + Activity */}
-        <div className="grid lg:grid-cols-3 gap-5">
+        <div className="grid lg:grid-cols-3 gap-6">
 
           {/* On This Day */}
-          <div className="glass rounded-2xl p-4" style={{ border: '1px solid rgba(251,191,36,0.18)' }}>
-            <div className="flex items-center gap-2 mb-3">
+          <div className="glass rounded-3xl p-5" style={{ border: '1px solid rgba(251,191,36,0.18)' }}>
+            <div className="flex items-center gap-2 mb-4">
               <span>📅</span>
               <h3 className="text-amber-400 text-xs font-semibold uppercase tracking-wider">On This Day</h3>
             </div>
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {onThisDay.map((m, i) => (
-                <button key={i} onClick={() => setView('memories')} className="w-full flex items-start gap-2.5 rounded-lg p-1.5 -mx-1.5 hover:bg-gray-50 transition-colors text-left">
+                <button key={i} onClick={() => setView('memories')} className="w-full flex items-start gap-3 rounded-2xl px-3 py-2.5 hover:bg-gray-50 transition-colors text-left">
                   <span className="text-xl mt-0.5">{m.emoji}</span>
                   <div>
                     <p className="text-gray-600 text-xs font-medium">{m.label}</p>
@@ -385,25 +385,25 @@ export default function Dashboard({ setView }) {
           </div>
 
           {/* Recent Photos */}
-          <div className="glass rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
+          <div className="glass rounded-3xl p-5">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Recent Photos</h3>
               <button onClick={() => setView('photos')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">View all →</button>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2.5">
               {recentPhotos.map((p, i) => <Photo3D key={i} p={p} />)}
             </div>
           </div>
 
           {/* Family Activity */}
-          <div className="glass rounded-2xl p-4">
-            <div className="flex items-center justify-between mb-3">
+          <div className="glass rounded-3xl p-5">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Family Activity</h3>
               <button onClick={() => setView('notifications')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">All →</button>
             </div>
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {activity.map((a, i) => (
-                <div key={i} className={`flex items-start gap-2.5 p-2 rounded-xl ${a.unread ? '' : 'hover:bg-gray-50'} transition-colors`}
+                <div key={i} className={`flex items-start gap-3 p-3 rounded-2xl ${a.unread ? '' : 'hover:bg-gray-50'} transition-colors`}
                   style={a.unread ? { background: 'rgba(91,191,191,0.08)', border: '1px solid rgba(91,191,191,0.20)' } : {}}>
                   <div className={`w-7 h-7 rounded-full ${a.avatar} flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5`}>{a.who[0]}</div>
                   <div className="min-w-0 flex-1">

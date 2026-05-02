@@ -56,12 +56,12 @@ export default function Sidebar({ view, setView }) {
   return (
     <>
       {/* ── DESKTOP SIDEBAR ── */}
-      <aside className="hidden md:flex w-56 shrink-0 flex-col h-full relative z-10 glass-dark" style={{ borderRight: '1px solid #e2ecf0' }}>
+      <aside className="hidden md:flex w-60 shrink-0 flex-col h-full relative z-10 glass-dark" style={{ borderRight: '1px solid #e2ecf0' }}>
       {/* Subtle top border accent */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400/50 to-transparent" />
 
       {/* Logo */}
-      <div className="px-4 py-4" style={{ borderBottom: '1px solid #e2ecf0' }}>
+      <div className="px-4 py-5" style={{ borderBottom: '1px solid #e2ecf0' }}>
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #5bbfbf 0%, #3a9e9e 100%)', boxShadow: '0 4px 12px rgba(91,191,191,0.35)' }}>
             <span className="text-white font-black text-xs">K</span>
@@ -72,18 +72,18 @@ export default function Sidebar({ view, setView }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-2 py-3 overflow-y-auto scrollbar-thin space-y-4">
+      <nav className="flex-1 px-3 py-4 overflow-y-auto scrollbar-thin space-y-5">
         {nav.map((section) => (
           <div key={section.group}>
-            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-2 mb-1">{section.group}</p>
-            <div className="space-y-0.5">
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-2">{section.group}</p>
+            <div className="space-y-1">
               {section.items.map((item) => {
                 const active = view === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setView(item.id)}
-                    className={`nav-tab-3d w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-sm font-medium text-left relative overflow-hidden ${
+                    className={`nav-tab-3d w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-left relative overflow-hidden ${
                       active ? 'text-teal-600 nav-tab-3d-active' : 'text-gray-500 hover:text-gray-700'
                     }`}
                     style={active ? {
@@ -110,7 +110,7 @@ export default function Sidebar({ view, setView }) {
       </nav>
 
       {/* Live sync indicator */}
-      <div className="px-3 pt-3 pb-0">
+      <div className="px-3 pt-4 pb-0">
         <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg" style={{ background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.12)' }}>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
           <span className="text-[10px] text-emerald-400/70 font-medium">Frame synced · 2 screens live</span>
@@ -118,7 +118,7 @@ export default function Sidebar({ view, setView }) {
       </div>
 
       {/* Storage bar */}
-      <div className="px-3 py-3" style={{ borderTop: '1px solid #e2ecf0' }}>
+      <div className="px-4 py-4" style={{ borderTop: '1px solid #e2ecf0' }}>
         <div className="flex justify-between text-[10px] text-gray-400 mb-1.5">
           <span>Storage</span><span>4.1 GB / 5 GB</span>
         </div>
@@ -136,7 +136,7 @@ export default function Sidebar({ view, setView }) {
       </aside>
 
       {/* ── MOBILE BOTTOM NAV ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-2"
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-3"
         style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid #e2ecf0', paddingBottom: 'env(safe-area-inset-bottom, 8px)' }}>
         {mobileNav.map(item => {
           const active = view === item.id;
