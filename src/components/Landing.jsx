@@ -415,9 +415,9 @@ export default function Landing({ onEnter }) {
               transition: `transform ${tilt.x===0&&tilt.y===0 ? '0.9s' : '0.08s'} cubic-bezier(.22,.68,0,1.2)`,
               transformStyle: 'preserve-3d',
             }}>
-              {/* Smaller scale on mobile to avoid overflow */}
-              <div className="block sm:hidden"><FrameMockup scale={0.72} /></div>
-              <div className="hidden sm:block"><FrameMockup scale={1.1} /></div>
+              <div className="scale-75 sm:scale-100 origin-top">
+                <FrameMockup scale={1.1} />
+              </div>
             </div>
           </div>
         </div>
