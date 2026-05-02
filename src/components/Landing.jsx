@@ -1,41 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 
 // ─────────────────────────────────────────────
-//  DATA
+//  FRAME MOCKUP (hero visual)
 // ─────────────────────────────────────────────
 const frameSlides = [
-  { bg: 'from-rose-500 via-pink-500 to-orange-400',      emoji: '🌸', label: "Maya's 6th Birthday",   who: 'Mom · 2 yrs ago'   },
-  { bg: 'from-sky-500 via-blue-500 to-indigo-500',       emoji: '🌊', label: 'Beach Day, Cape Coast',  who: 'Dad · last summer'  },
-  { bg: 'from-emerald-500 via-teal-500 to-cyan-500',     emoji: '🌿', label: 'Forest Hike',             who: 'Emma · 3 mos ago'   },
-  { bg: 'from-violet-500 via-purple-500 to-fuchsia-500', emoji: '🎉', label: '10th Anniversary',        who: 'Dad · 6 mos ago'    },
+  { bg: 'from-rose-500 via-pink-500 to-orange-400',      emoji: '🌸', label: "Maya's 6th Birthday",  who: 'Mom · 2 yrs ago'  },
+  { bg: 'from-sky-500 via-blue-500 to-indigo-500',       emoji: '🌊', label: 'Beach Day, Cape Coast', who: 'Dad · last summer' },
+  { bg: 'from-emerald-500 via-teal-500 to-cyan-500',     emoji: '🌿', label: 'Forest Hike',            who: 'Emma · 3 mos ago' },
+  { bg: 'from-violet-500 via-purple-500 to-fuchsia-500', emoji: '🎉', label: '10th Anniversary',       who: 'Dad · 6 mos ago'  },
 ];
 
-const calDays   = [null,null,null,null,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31];
-const calEvents = { 3:'#5bbfbf', 8:'#f472b6', 10:'#fb923c', 15:'#34d399', 22:'#38bdf8', 28:'#a78bfa' };
-const calMembers = [['H','#f472b6'],['D','#38bdf8'],['M','#fb7185'],['E','#34d399'],['J','#fbbf24']];
-
-const FEATURES = [
-  { icon:'🖼️', color:'#5bbfbf', title:'Wi-Fi Photo Frame',  desc:'Beautiful memories cycling live on every screen.' },
-  { icon:'📅', color:'#34d399', title:'Shared Calendar',    desc:'Color-coded for every member. Zero double-bookings.' },
-  { icon:'✅', color:'#fbbf24', title:'Chores & Tasks',      desc:'Assign, reward, and celebrate every win together.' },
-  { icon:'✨', color:'#f472b6', title:'AI Memory Studio',   desc:'Restore, enhance, and upscale your oldest memories.' },
-];
-
-// ─────────────────────────────────────────────
-//  GLASS STYLE HELPERS
-// ─────────────────────────────────────────────
-const darkGlass = {
-  background: 'rgba(255,255,255,0.10)',
-  backdropFilter: 'blur(24px) saturate(150%)',
-  WebkitBackdropFilter: 'blur(24px) saturate(150%)',
-  border: '1px solid rgba(255,255,255,0.20)',
-  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.14)',
-};
-
-// ─────────────────────────────────────────────
-//  FRAME MOCKUP
-// ─────────────────────────────────────────────
-function FrameMockup() {
+function FrameMockup({ scale = 1 }) {
   const [idx, setIdx] = useState(0);
   const [fading, setFading] = useState(false);
   useEffect(() => {
@@ -46,187 +21,183 @@ function FrameMockup() {
     return () => clearInterval(t);
   }, []);
   const slide = frameSlides[idx];
+  const w = Math.round(300 * scale);
+
   return (
-    <div className="relative flex flex-col items-center">
-      {/* Notification pills */}
-      <div className="absolute -right-6 top-6 z-30" style={{ animation: 'floatMedium 3s ease-in-out infinite' }}>
-        <div className="flex items-center gap-1.5 pl-2 pr-3 py-1.5 rounded-2xl text-xs font-semibold shadow-2xl"
-          style={{ background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.40)', color: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.5)' }}>
-          <span className="text-sm">📅</span> Soccer · 3:30 PM
+    <div className="relative flex flex-col items-center select-none">
+      {/* Glow halo */}
+      <div className="absolute pointer-events-none" style={{ width: `${w * 1.4}px`, height: `${w * 0.9}px`, background: 'radial-gradient(ellipse, rgba(91,191,191,0.52) 0%, rgba(52,211,153,0.18) 40%, transparent 70%)', filter: 'blur(52px)', top: '-8%', left: '50%', transform: 'translateX(-50%)' }} />
+      <div className="absolute pointer-events-none" style={{ width: `${w * 0.9}px`, height: `${w * 0.5}px`, background: 'radial-gradient(ellipse, rgba(255,255,255,0.14) 0%, transparent 70%)', filter: 'blur(28px)', top: '5%', left: '50%', transform: 'translateX(-50%)' }} />
+
+      {/* Floating notification chips */}
+      <div className="absolute z-30" style={{ right: `${-w * 0.18}px`, top: '12%', animation: 'floatMedium 3s ease-in-out infinite' }}>
+        <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap"
+          style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.36)', color: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.5)' }}>
+          <span>📅</span> Soccer · 3:30 PM
         </div>
       </div>
-      <div className="absolute -left-6 top-[88px] z-30" style={{ animation: 'floatSlow 4.5s ease-in-out infinite', animationDelay: '1.4s' }}>
-        <div className="flex items-center gap-1.5 pl-2 pr-3 py-1.5 rounded-2xl text-xs font-semibold shadow-2xl"
-          style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.32)', color: 'rgba(255,255,255,0.94)', boxShadow: '0 8px 32px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.4)' }}>
-          <span className="text-sm">✅</span> Jake finished chores
+      <div className="absolute z-30" style={{ left: `${-w * 0.2}px`, top: '34%', animation: 'floatSlow 4.5s ease-in-out infinite', animationDelay: '1.4s' }}>
+        <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap"
+          style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.92)', boxShadow: '0 8px 32px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.4)' }}>
+          <span>✅</span> Jake finished chores
+        </div>
+      </div>
+      <div className="absolute z-30" style={{ right: `${-w * 0.14}px`, top: '58%', animation: 'floatMedium 5s ease-in-out infinite', animationDelay: '2.8s' }}>
+        <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap"
+          style={{ background: 'rgba(251,191,36,0.22)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(251,191,36,0.4)', color: '#fef3c7', boxShadow: '0 8px 24px rgba(251,191,36,0.25), inset 0 1px 0 rgba(255,255,255,0.3)' }}>
+          <span>🎂</span> Jake's birthday in 9d
         </div>
       </div>
 
-      {/* Wide ambient glow halo */}
-      <div className="absolute" style={{ width: '420px', height: '280px', background: 'radial-gradient(ellipse, rgba(91,191,191,0.50) 0%, rgba(52,211,153,0.18) 40%, transparent 70%)', filter: 'blur(52px)', top: '-10px', left: '50%', transform: 'translateX(-50%)' }} />
-      {/* Secondary warm glow */}
-      <div className="absolute" style={{ width: '260px', height: '160px', background: 'radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%)', filter: 'blur(30px)', top: '20px', left: '50%', transform: 'translateX(-50%)' }} />
-
-      {/* Frame device */}
+      {/* Device */}
       <div className="relative" style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.65)) drop-shadow(0 12px 24px rgba(0,0,0,0.40)) drop-shadow(0 2px 4px rgba(0,0,0,0.25))', transformStyle: 'preserve-3d' }}>
-        {/* Outer aluminum bezel */}
-        <div className="rounded-[24px] p-[10px] relative" style={{
+        <div className="rounded-[22px] p-[9px]" style={{
           background: 'linear-gradient(145deg, #3a3a3a 0%, #1e1e1e 40%, #2a2a2a 70%, #161616 100%)',
           boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.14), inset 0 -2px 0 rgba(0,0,0,0.6), inset 2px 0 0 rgba(255,255,255,0.06), inset -2px 0 0 rgba(0,0,0,0.3)',
         }}>
-          {/* Screen */}
-          <div className="w-[280px] rounded-[14px] overflow-hidden relative" style={{ aspectRatio: '16/10' }}>
-            {/* Photo */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${slide.bg} flex items-center justify-center transition-opacity duration-350`}
-              style={{ opacity: fading ? 0 : 1 }}>
-              <span className="text-[80px]" style={{ filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.5))' }}>{slide.emoji}</span>
+          <div style={{ width: `${w}px`, borderRadius: '13px', overflow: 'hidden', aspectRatio: '16/10', position: 'relative' }}>
+            <div className={`absolute inset-0 bg-gradient-to-br ${slide.bg} flex items-center justify-center transition-opacity duration-300`} style={{ opacity: fading ? 0 : 1 }}>
+              <span style={{ fontSize: `${w * 0.27}px`, filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.5))' }}>{slide.emoji}</span>
             </div>
-            {/* Screen glass reflection overlay */}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%)', zIndex: 5 }} />
-            {/* Clock */}
-            <div className="absolute top-3 left-3.5 z-10">
-              <p className="text-white font-mono text-[13px] font-bold tracking-wide" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.8)' }}>10:32</p>
-              <p className="text-white/55 text-[9px] tracking-wide">Thu · May 1</p>
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 50%)', zIndex: 5 }} />
+            <div className="absolute top-2.5 left-3 z-10">
+              <p className="font-mono font-bold tracking-wide" style={{ fontSize: `${w * 0.047}px`, color: 'white', textShadow: '0 1px 6px rgba(0,0,0,0.8)' }}>10:32</p>
+              <p style={{ fontSize: `${w * 0.033}px`, color: 'rgba(255,255,255,0.5)' }}>Thu · May 1</p>
             </div>
-            {/* Bottom caption gradient */}
-            <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-3" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)' }}>
-              <p className="text-white text-[13px] font-semibold leading-tight">{slide.label}</p>
-              <p className="text-white/55 text-[10px] mt-0.5">{slide.who}</p>
+            <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-2.5" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)' }}>
+              <p className="font-semibold leading-tight" style={{ fontSize: `${w * 0.048}px`, color: 'white' }}>{slide.label}</p>
+              <p style={{ fontSize: `${w * 0.036}px`, color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>{slide.who}</p>
             </div>
-            {/* Slide dots */}
-            <div className="absolute top-3 right-3 z-10 flex gap-1">
-              {frameSlides.map((_, i) => (
-                <div key={i} className="rounded-full transition-all duration-400"
-                  style={{ width: i===idx ? '16px' : '4px', height: '4px', background: i===idx ? 'white' : 'rgba(255,255,255,0.38)' }} />
-              ))}
+            <div className="absolute top-2.5 right-2.5 z-10 flex gap-1">
+              {frameSlides.map((_, i) => <div key={i} className="rounded-full transition-all duration-400" style={{ width: i===idx ? '14px' : '4px', height: '4px', background: i===idx ? 'white' : 'rgba(255,255,255,0.35)' }} />)}
             </div>
           </div>
-          {/* Bottom bezel bar */}
-          <div className="flex items-center justify-between px-2.5 pt-2 pb-0.5">
-            <span className="text-[8px] font-medium tracking-wider" style={{ color: 'rgba(255,255,255,0.28)' }}>KALENDA OS</span>
-            <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#34d399', boxShadow: '0 0 6px #34d399, 0 0 12px rgba(52,211,153,0.5)' }} />
-              <span className="text-[8px] tracking-wider" style={{ color: 'rgba(255,255,255,0.28)' }}>WI-FI</span>
+          <div className="flex items-center justify-between px-2 pt-1.5 pb-0.5">
+            <span style={{ fontSize: '8px', fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.25)' }}>KALENDA OS</span>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#34d399', boxShadow: '0 0 6px #34d399' }} />
+              <span style={{ fontSize: '7px', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.25)' }}>WI-FI</span>
             </div>
           </div>
         </div>
-        {/* Bezel edge highlight */}
-        <div className="absolute inset-0 rounded-[24px] pointer-events-none" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.4)' }} />
+        <div className="absolute inset-0 rounded-[22px] pointer-events-none" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(0,0,0,0.4)' }} />
       </div>
-      {/* Stand neck */}
-      <div style={{ width: '72px', height: '20px', background: 'linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%)', borderRadius: '0 0 12px 12px', boxShadow: '0 8px 20px rgba(0,0,0,0.5)' }} />
-      {/* Stand base */}
-      <div style={{ width: '130px', height: '9px', background: 'linear-gradient(90deg, #161616, #2e2e2e 40%, #2e2e2e 60%, #161616)', borderRadius: '6px', boxShadow: '0 6px 20px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)' }} />
-      {/* Cast shadow on surface */}
-      <div style={{ width: '200px', height: '18px', marginTop: '6px', background: 'radial-gradient(ellipse, rgba(0,0,0,0.45) 0%, transparent 70%)', filter: 'blur(10px)', borderRadius: '50%' }} />
-      {/* Subtle floor reflection */}
-      <div style={{ width: '160px', height: '8px', background: 'radial-gradient(ellipse, rgba(91,191,191,0.18) 0%, transparent 70%)', filter: 'blur(6px)', borderRadius: '50%', marginTop: '-4px' }} />
+      {/* Stand */}
+      <div style={{ width: `${w * 0.24}px`, height: `${w * 0.065}px`, background: 'linear-gradient(180deg, #2a2a2a, #1a1a1a)', borderRadius: `0 0 ${w*0.04}px ${w*0.04}px`, boxShadow: '0 8px 20px rgba(0,0,0,0.5)' }} />
+      <div style={{ width: `${w * 0.43}px`, height: `${w * 0.03}px`, background: 'linear-gradient(90deg, #161616, #2e2e2e 40%, #2e2e2e 60%, #161616)', borderRadius: '6px', boxShadow: '0 6px 20px rgba(0,0,0,0.55)' }} />
+      <div style={{ width: `${w * 0.66}px`, height: `${w * 0.056}px`, marginTop: `${w * 0.02}px`, background: 'radial-gradient(ellipse, rgba(0,0,0,0.48) 0%, transparent 70%)', filter: `blur(${w * 0.035}px)`, borderRadius: '50%' }} />
+      <div style={{ width: `${w * 0.52}px`, height: `${w * 0.025}px`, background: 'radial-gradient(ellipse, rgba(91,191,191,0.2) 0%, transparent 70%)', filter: `blur(${w * 0.025}px)`, borderRadius: '50%', marginTop: `-${w * 0.012}px` }} />
     </div>
   );
 }
 
 // ─────────────────────────────────────────────
-//  CALENDAR PREVIEW
+//  AUTH MODAL
 // ─────────────────────────────────────────────
-function CalendarPreview() {
+function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
+  const [mode, setMode] = useState(initialMode);
+  const [email, setEmail] = useState('demo@kalenda.app');
+  const [password, setPassword] = useState('kalenda2026');
+  const [name, setName] = useState('Demo Family');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    if (!email || !password) { setError('Please fill in all fields.'); return; }
+    if (mode === 'signup' && !name) { setError('Please enter your family name.'); return; }
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onEnter(name || email.split('@')[0]); }, 900);
+  }
+
   return (
-    <div className="rounded-3xl p-4" style={darkGlass}>
-      <div className="flex items-center justify-between mb-3">
-        <p className="text-white text-sm font-bold tracking-tight">May 2026</p>
-        <div className="flex gap-1">
-          {calMembers.map(([l, c], i) => (
-            <div key={i} className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-white text-[9px] font-black"
-              style={{ background: c, boxShadow: `0 2px 8px ${c}60` }}>{l}</div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && onClose()}>
+      {/* Backdrop */}
+      <div className="absolute inset-0" style={{ background: 'rgba(10,30,30,0.72)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }} />
+
+      <div className="relative w-full max-w-md rounded-[32px] p-8 z-10" style={{
+        background: 'rgba(255,255,255,0.97)',
+        boxShadow: '0 64px 160px rgba(0,0,0,0.22), 0 24px 60px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,1)',
+        animation: 'fadeInUp 0.35s cubic-bezier(.22,.68,0,1.2) both',
+      }}>
+        {/* Close */}
+        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors" style={{ background: 'rgba(0,0,0,0.05)' }}>
+          <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+        </button>
+
+        {/* Logo */}
+        <div className="flex items-center gap-2.5 mb-7">
+          <div className="w-9 h-9 rounded-2xl flex items-center justify-center text-white font-black text-base shadow-lg" style={{ background: 'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow: '0 6px 20px rgba(91,191,191,0.4)' }}>K</div>
+          <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
+        </div>
+
+        {/* Toggle */}
+        <div className="flex gap-1 p-1 rounded-2xl mb-7" style={{ background: 'rgba(240,248,248,0.9)', border: '1px solid rgba(219,234,234,0.8)' }}>
+          {[['signin','Sign In'],['signup','Create Account']].map(([m,l]) => (
+            <button key={m} onClick={() => { setMode(m); setError(''); }}
+              className="flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-200"
+              style={mode===m ? { background:'#fff', color:'#0f172a', boxShadow:'0 2px 8px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.9)' } : { color:'#94a3b8' }}>
+              {l}
+            </button>
           ))}
         </div>
-      </div>
-      <div className="grid grid-cols-7 gap-px mb-2">
-        {['S','M','T','W','T','F','S'].map((d, i) => (
-          <p key={i} className="text-center text-[9px] font-bold tracking-wider" style={{ color: 'rgba(255,255,255,0.38)' }}>{d}</p>
-        ))}
-      </div>
-      <div className="grid grid-cols-7 gap-px">
-        {calDays.map((d, i) => {
-          if (!d) return <div key={i} className="h-7" />;
-          const col = calEvents[d];
-          const isToday = d === 1;
-          return (
-            <div key={i} className="flex flex-col items-center gap-0.5 h-7">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-semibold"
-                style={isToday
-                  ? { background: '#e17055', color: 'white', fontWeight: 800, boxShadow: '0 2px 8px rgba(225,112,85,0.5)' }
-                  : { color: col ? 'white' : 'rgba(255,255,255,0.58)' }}>
-                {d}
-              </div>
-              {col && <div className="w-1.5 h-1.5 rounded-full" style={{ background: col, boxShadow: `0 0 4px ${col}` }} />}
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-3 pt-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
-        {[
-          { dot: '#fb923c', text: "Jake's Birthday 🎂", sub: 'May 10 · 9 days away' },
-          { dot: '#34d399', text: 'Family BBQ',          sub: 'May 15 · all members' },
-        ].map((ev, i) => (
-          <div key={i} className="flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full shrink-0" style={{ background: ev.dot, boxShadow: `0 0 6px ${ev.dot}` }} />
-            <div>
-              <p className="text-white/85 text-[11px] font-semibold leading-none">{ev.text}</p>
-              <p className="text-white/40 text-[9px] mt-0.5">{ev.sub}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
-// ─────────────────────────────────────────────
-//  AI BEFORE / AFTER
-// ─────────────────────────────────────────────
-function AIBeforeAfter() {
-  const [enhanced, setEnhanced] = useState(false);
-  return (
-    <div className="rounded-3xl overflow-hidden" style={darkGlass}>
-      <div className="relative overflow-hidden" style={{ aspectRatio: '16/8' }}>
-        {/* Before */}
-        <div className="absolute inset-0 flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)' }}>
-          <div className="grid grid-cols-3 gap-1.5 opacity-20">
-            {['🌸','🌊','🌿','🎉','🍂','❄️'].map((e, i) => (
-              <div key={i} className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
-                style={{ filter: 'grayscale(1) brightness(0.5)', background: 'rgba(255,255,255,0.04)' }}>{e}</div>
-            ))}
+        <h2 className="font-black text-gray-900 mb-1 tracking-tight" style={{ fontSize:'1.5rem', letterSpacing:'-0.03em' }}>
+          {mode==='signin' ? 'Welcome back 👋' : 'Join 4,200+ families'}
+        </h2>
+        <p className="text-gray-500 text-sm mb-6">{mode==='signin' ? 'Sign in to your Kalenda family hub.' : 'Free for 14 days — no credit card needed.'}</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {mode==='signup' && (
+            <div>
+              <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Your name</label>
+              <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="Harriet Appiah" autoComplete="name"
+                className="w-full px-4 py-3.5 text-sm text-gray-800 outline-none placeholder-gray-300 input-glass" />
+            </div>
+          )}
+          <div>
+            <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Email</label>
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@family.com" autoComplete="email"
+              className="w-full px-4 py-3.5 text-sm text-gray-800 outline-none placeholder-gray-300 input-glass" />
           </div>
-          <div className="absolute top-2.5 left-3 px-2 py-0.5 rounded-lg text-[10px] font-bold tracking-widest"
-            style={{ background: 'rgba(0,0,0,0.55)', color: 'rgba(255,255,255,0.4)' }}>BEFORE</div>
-        </div>
-        {/* After */}
-        <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-700"
-          style={{ opacity: enhanced ? 1 : 0, background: 'linear-gradient(135deg, #ec4899 0%, #f97316 50%, #fbbf24 100%)' }}>
-          <div className="grid grid-cols-3 gap-1.5">
-            {['🌸','🌊','🌿','🎉','🍂','❄️'].map((e, i) => (
-              <div key={i} className="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
-                style={{ background: 'rgba(255,255,255,0.20)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)' }}>{e}</div>
-            ))}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest">Password</label>
+              {mode==='signin' && <button type="button" className="text-xs font-semibold transition-colors" style={{color:'#3ab5b5'}}>Forgot?</button>}
+            </div>
+            <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••"
+              autoComplete={mode==='signin'?'current-password':'new-password'}
+              className="w-full px-4 py-3.5 text-sm text-gray-800 outline-none placeholder-gray-300 input-glass" />
           </div>
-          <div className="absolute top-2.5 right-3 px-2.5 py-0.5 rounded-lg text-[10px] font-black tracking-wide"
-            style={{ background: 'rgba(251,191,36,0.3)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.5)', boxShadow: '0 0 12px rgba(251,191,36,0.3)' }}>ENHANCED ✨</div>
+          {error && <div className="flex items-center gap-2 px-4 py-3 rounded-2xl text-sm" style={{ background:'rgba(254,242,242,0.9)', border:'1px solid rgba(252,165,165,0.5)', color:'#dc2626' }}><span>⚠️</span>{error}</div>}
+          <button type="submit" disabled={loading}
+            className="w-full py-4 rounded-2xl text-white font-black text-sm transition-all duration-200 active:scale-[0.98] mt-1"
+            style={{ background: loading ? '#8bd8d8' : 'linear-gradient(135deg,#2d9b9b 0%,#3ab5b5 50%,#5bbfbf 100%)', boxShadow: loading ? 'none' : '0 6px 24px rgba(91,191,191,0.45), inset 0 1px 0 rgba(255,255,255,0.25)', letterSpacing:'-0.01em' }}>
+            {loading ? <span className="flex items-center justify-center gap-2"><svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Please wait…</span>
+              : mode==='signin' ? 'Sign In to Kalenda →' : 'Create My Family Hub →'}
+          </button>
+        </form>
+
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px" style={{background:'rgba(226,236,240,0.8)'}}/>
+          <span className="text-[11px] text-gray-400 font-semibold tracking-widest">OR</span>
+          <div className="flex-1 h-px" style={{background:'rgba(226,236,240,0.8)'}}/>
         </div>
-        {/* Divider line */}
-        {enhanced && <div className="absolute inset-y-0 left-1/2 w-0.5 z-10" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.8), transparent)' }} />}
-      </div>
-      <div className="px-4 py-3 flex items-center justify-between">
-        <div>
-          <p className="text-white/90 text-xs font-bold">AI Memory Enhancement</p>
-          <p className="text-white/45 text-[10px] mt-0.5">Restore color · remove blur · upscale to 4K</p>
-        </div>
-        <button onClick={() => setEnhanced(e => !e)}
-          className="text-[11px] font-bold px-3.5 py-1.5 rounded-xl transition-all duration-300 active:scale-95"
-          style={enhanced
-            ? { background: 'rgba(251,191,36,0.22)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.45)', boxShadow: '0 0 16px rgba(251,191,36,0.25)' }
-            : { background: 'rgba(255,255,255,0.14)', color: 'rgba(255,255,255,0.88)', border: '1px solid rgba(255,255,255,0.25)' }}>
-          {enhanced ? '← Original' : 'Enhance ✨'}
+        <button type="button" className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl text-sm font-semibold text-gray-700 transition-all duration-200 active:scale-[0.98]"
+          style={{ background:'rgba(255,255,255,0.9)', border:'1.5px solid rgba(226,236,240,0.9)', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' }}>
+          <svg viewBox="0 0 24 24" className="w-4 h-4">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Continue with Google
+        </button>
+        <button type="button" onClick={() => onEnter('Guest')}
+          className="w-full py-3 mt-3 rounded-2xl text-sm font-semibold transition-all hover:opacity-70"
+          style={{ color:'#3ab5b5' }}>
+          Explore as guest →
         </button>
       </div>
     </div>
@@ -234,422 +205,475 @@ function AIBeforeAfter() {
 }
 
 // ─────────────────────────────────────────────
-//  DASHBOARD PREVIEW
+//  SECTION COMPONENTS
 // ─────────────────────────────────────────────
-function DashboardPreview() {
-  const [done, setDone] = useState([true, true, false]);
-  const schedule = [
-    { t: '8:00', l: 'School Drop-off', c: '#38bdf8', w: 'D' },
-    { t: '3:30', l: 'Soccer Practice',  c: '#fbbf24', w: 'J' },
-    { t: '7:00', l: 'Family Dinner',    c: '#5bbfbf', w: '★' },
-  ];
-  const chores = ['🗑️ Trash', '🍽️ Dishes', '🐕 Walk Dog'];
-  return (
-    <div className="rounded-3xl overflow-hidden" style={darkGlass}>
-      {/* Header */}
-      <div className="px-4 py-2.5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)' }}>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded-lg flex items-center justify-center text-white font-black text-[10px]"
-            style={{ background: 'linear-gradient(135deg,#5bbfbf,#3a9e9e)', boxShadow: '0 2px 8px rgba(91,191,191,0.5)' }}>K</div>
-          <span className="text-white/75 text-[11px] font-bold tracking-tight">Today · May 1, 2026</span>
-        </div>
-        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.08)' }}>
-          <span className="text-[11px]">⛅</span>
-          <span className="text-white/50 text-[9px] font-semibold">72°F · Accra</span>
-        </div>
-      </div>
-      <div className="p-3 grid grid-cols-2 gap-3">
-        {/* Schedule */}
-        <div>
-          <p className="text-[9px] font-black uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.38)' }}>Schedule</p>
-          <div className="space-y-1.5">
-            {schedule.map((ev, i) => (
-              <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.07)', borderLeft: `3px solid ${ev.c}`, boxShadow: `inset 3px 0 8px ${ev.c}18` }}>
-                <p className="text-[9px] font-mono w-6 shrink-0" style={{ color: 'rgba(255,255,255,0.38)' }}>{ev.t}</p>
-                <p className="text-[10px] flex-1 truncate font-medium" style={{ color: 'rgba(255,255,255,0.78)' }}>{ev.l}</p>
-                <div className="w-4 h-4 rounded-full flex items-center justify-center text-white text-[7px] font-black shrink-0"
-                  style={{ background: ev.c, boxShadow: `0 2px 6px ${ev.c}60` }}>{ev.w}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Chores */}
-        <div>
-          <p className="text-[9px] font-black uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.38)' }}>Chores</p>
-          <div className="space-y-1.5">
-            {chores.map((c, i) => (
-              <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-xl cursor-pointer transition-all active:scale-95"
-                style={{ background: 'rgba(255,255,255,0.07)' }}
-                onClick={() => setDone(p => p.map((v, j) => j === i ? !v : v))}>
-                <div className="w-4 h-4 rounded-full border-[1.5px] flex items-center justify-center shrink-0 transition-all duration-200"
-                  style={{ borderColor: done[i] ? '#5bbfbf' : 'rgba(255,255,255,0.22)', background: done[i] ? '#5bbfbf' : 'transparent', boxShadow: done[i] ? '0 0 8px rgba(91,191,191,0.5)' : 'none' }}>
-                  {done[i] && <svg viewBox="0 0 8 8" fill="none" className="w-2 h-2"><path d="M1 4l2 2 4-4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                </div>
-                <p className="text-[10px] transition-all duration-200"
-                  style={{ color: done[i] ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.78)', textDecoration: done[i] ? 'line-through' : 'none' }}>{c}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="px-3 pb-3">
-        <div className="flex items-center gap-2.5 px-3 py-2 rounded-2xl"
-          style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.22)', boxShadow: 'inset 0 1px 0 rgba(251,191,36,0.15)' }}>
-          <span className="text-base">🍽️</span>
-          <div>
-            <p className="text-[10px] font-bold" style={{ color: 'rgba(251,191,36,0.95)' }}>Tonight: Grilled Salmon + Rice</p>
-            <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.40)' }}>AI meal suggestion · tap to swap</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+
+const FEATURES = [
+  {
+    icon: '🖼️', color: '#5bbfbf', bg: 'from-teal-500 to-cyan-500',
+    title: 'Wi-Fi Photo Frame',
+    headline: 'Your memories, always on display.',
+    body: 'A living frame that cycles your family\'s best photos — automatically synced from every phone, no USB required.',
+    bullets: ['Auto-sync from iOS & Android', 'Beautiful transition effects', 'Display weather, time & events'],
+  },
+  {
+    icon: '📅', color: '#34d399', bg: 'from-emerald-500 to-teal-500',
+    title: 'Shared Calendar',
+    headline: 'Every schedule, in one view.',
+    body: 'Color-coded per family member. Add events from any device and they appear instantly on every screen.',
+    bullets: ['Per-member color coding', 'Event reminders & alerts', 'Syncs with Google Calendar'],
+  },
+  {
+    icon: '✅', color: '#fbbf24', bg: 'from-amber-500 to-orange-500',
+    title: 'Chores & Tasks',
+    headline: 'Assign, track, celebrate.',
+    body: 'Build responsibility in kids and keep the household running — with streaks, rewards, and real-time updates.',
+    bullets: ['Drag-and-drop assignment', 'Completion streaks & points', 'Instant family notifications'],
+  },
+  {
+    icon: '✨', color: '#f472b6', bg: 'from-pink-500 to-rose-500',
+    title: 'AI Memory Studio',
+    headline: 'Old photos, reborn.',
+    body: 'Restore faded photos, remove blur, upscale to 4K, colorize black & white — powered by AI in one tap.',
+    bullets: ['Auto colorization', 'Blur removal & upscaling', 'Face restoration technology'],
+  },
+];
+
+const TESTIMONIALS = [
+  { name: 'Sarah K.', role: 'Mom of 3 · Accra', avatar: '👩', stars: 5, quote: 'Kalenda replaced our kitchen whiteboard, photo frame, and family group chat. Our kids actually do their chores now because they can see everyone watching.' },
+  { name: 'James T.', role: 'Dad · London', avatar: '👨‍💼', stars: 5, quote: 'The Wi-Fi frame feature is stunning. Grandma in Kumasi sees new photos of the grandkids every single day without touching any app.' },
+  { name: 'Priya M.', role: 'Parent · Toronto', avatar: '👩‍💻', stars: 5, quote: 'The AI restoration feature made me cry. A 40-year-old faded photo of my parents — colorized, sharp, beautiful. Worth every penny.' },
+  { name: 'David L.', role: 'Father of 2 · NYC', avatar: '🧔', stars: 5, quote: 'Setup took 4 minutes. The whole family was using it within the hour. Best family tech purchase we\'ve ever made.' },
+  { name: 'Amara F.', role: 'Mom · Nairobi', avatar: '👩🏾', stars: 5, quote: 'My husband travels for work. The shared calendar and live photo frame keeps us connected as a family every single day.' },
+  { name: 'Chen W.', role: 'Parent · Singapore', avatar: '👨🏻', stars: 5, quote: 'The AI memory studio is genuinely magical. We restored 30-year-old photos of my in-laws\' wedding — they were in tears.' },
+];
+
+const PRICING = [
+  {
+    name: 'Starter', price: '$0', period: 'forever', color: '#94a3b8',
+    desc: 'For individuals getting started.',
+    features: ['1 family member', '50 photos', 'Basic calendar', 'Community support'],
+    cta: 'Start free', highlight: false,
+  },
+  {
+    name: 'Family', price: '$7', period: '/month', color: '#5bbfbf',
+    desc: 'Everything your household needs.',
+    features: ['Up to 8 members', 'Unlimited photos & videos', 'Shared calendar + reminders', 'Chores & task system', 'Shopping & meal lists', 'AI Memory Studio (20/mo)', 'Priority support', '3 Wi-Fi frames'],
+    cta: 'Start 14-day free trial', highlight: true, badge: 'Most Popular',
+  },
+  {
+    name: 'Extended', price: '$14', period: '/month', color: '#a78bfa',
+    desc: 'For larger or multi-generation families.',
+    features: ['Unlimited members', 'Unlimited storage', 'Everything in Family', 'AI Memory Studio unlimited', 'Custom frame themes', 'Shared albums with guests', 'Dedicated support', 'Unlimited frames'],
+    cta: 'Get Extended', highlight: false,
+  },
+];
+
+const FAQS = [
+  { q: 'What hardware do I need?', a: 'Any screen with a browser works — a smart TV, tablet, old iPad, Amazon Fire tablet, or even a spare phone in landscape mode. No special hardware required.' },
+  { q: 'How does the Wi-Fi frame work?', a: 'After setup, Kalenda displays your family photos on any screen in a beautiful slideshow. New photos added from any member\'s phone appear automatically within minutes.' },
+  { q: 'Is my family\'s data private?', a: 'Yes — all photos and data are end-to-end encrypted. We never use your memories for advertising or share them with third parties. COPPA compliant for families with children.' },
+  { q: 'Can I try it before paying?', a: 'Absolutely. The Starter plan is free forever. The Family plan comes with a full 14-day free trial — no credit card required to start.' },
+  { q: 'Does it work with Google Calendar?', a: 'Yes. Kalenda syncs bidirectionally with Google Calendar and can import iCal feeds. Events added in Kalenda appear in Google Calendar and vice versa.' },
+  { q: 'How good is the AI photo restoration?', a: 'Genuinely impressive. Our AI can colorize black & white photos, remove blur and grain, restore faded colors, and upscale low-resolution images to 4K quality.' },
+];
 
 // ─────────────────────────────────────────────
-//  MAIN LANDING
+//  MAIN LANDING PAGE
 // ─────────────────────────────────────────────
 export default function Landing({ onEnter }) {
-  const [mode, setMode] = useState('signin');
-  const [email, setEmail] = useState('demo@kalenda.app');
-  const [password, setPassword] = useState('kalenda2026');
-  const [name, setName] = useState('Demo Family');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  // 3D tilt state for the frame mockup
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('signup');
+  const [openFaq, setOpenFaq] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const panelRef = useRef(null);
-  const isSettling = useRef(false);
+  const heroRef = useRef(null);
 
-  function handleMouseMove(e) {
-    if (!panelRef.current) return;
-    const r = panelRef.current.getBoundingClientRect();
-    const cx = r.left + r.width * 0.5;
-    const cy = r.top + r.height * 0.3;
-    const MAX = 10;
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  function openSignup() { setAuthMode('signup'); setAuthOpen(true); }
+  function openSignin() { setAuthMode('signin'); setAuthOpen(true); }
+
+  function handleHeroMouseMove(e) {
+    if (!heroRef.current) return;
+    const r = heroRef.current.getBoundingClientRect();
+    const MAX = 8;
     setTilt({
-      x: Math.max(-MAX, Math.min(MAX, ((e.clientY - cy) / (r.height * 0.3)) * -MAX)),
-      y: Math.max(-MAX, Math.min(MAX, ((e.clientX - cx) / (r.width * 0.5)) * MAX)),
+      x: Math.max(-MAX, Math.min(MAX, ((e.clientY - r.top - r.height * 0.5) / (r.height * 0.5)) * -MAX)),
+      y: Math.max(-MAX, Math.min(MAX, ((e.clientX - r.left - r.width * 0.5) / (r.width * 0.5)) * MAX)),
     });
   }
-  function handleMouseLeave() { setTilt({ x: 0, y: 0 }); }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    setError('');
-    if (!email || !password) { setError('Please fill in all fields.'); return; }
-    if (mode === 'signup' && !name) { setError('Please enter your name.'); return; }
-    setLoading(true);
-    setTimeout(() => { setLoading(false); onEnter(name || email.split('@')[0]); }, 900);
-  }
+  function handleHeroMouseLeave() { setTilt({ x: 0, y: 0 }); }
 
   return (
-    <div className="min-h-screen flex overflow-hidden" style={{ background: '#f2f7f7' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: '#ffffff', color: '#0f172a' }}>
 
-      {/* ══════════════════════════════════════
-          LEFT: Marketing panel
-      ══════════════════════════════════════ */}
-      <div
-        ref={panelRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="hidden lg:flex flex-col w-[56%] overflow-y-auto relative noise"
-        style={{ scrollbarWidth: 'none' }}
-      >
-        {/* ── Aurora / animated mesh background ── */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
-          {/* Base gradient */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(160deg, #0b4040 0%, #165e5e 20%, #1e7a7a 45%, #2d9b9b 70%, #3db5b5 100%)' }} />
-          {/* Animated blobs */}
-          <div className="absolute orb-1" style={{ top: '-15%', left: '-15%', width: '70%', height: '70%', background: 'radial-gradient(circle, rgba(91,191,191,0.55) 0%, transparent 65%)', filter: 'blur(70px)' }} />
-          <div className="absolute orb-2" style={{ top: '35%', right: '-20%', width: '60%', height: '60%', background: 'radial-gradient(circle, rgba(52,211,153,0.35) 0%, transparent 70%)', filter: 'blur(80px)' }} />
-          <div className="absolute orb-3" style={{ bottom: '-10%', left: '15%', width: '55%', height: '55%', background: 'radial-gradient(circle, rgba(34,211,238,0.28) 0%, transparent 65%)', filter: 'blur(60px)' }} />
-          <div className="absolute orb-4" style={{ top: '55%', left: '-5%', width: '40%', height: '40%', background: 'radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-          {/* Subtle top shimmer */}
-          <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.4) 60%, transparent 100%)' }} />
+      {/* ══════════ NAVBAR ══════════ */}
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={scrolled
+          ? { background: 'rgba(255,255,255,0.94)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(226,236,240,0.8)', boxShadow: '0 2px 20px rgba(0,0,0,0.06)' }
+          : { background: 'transparent' }}>
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm" style={{ background: 'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow: '0 4px 12px rgba(91,191,191,0.4)' }}>K</div>
+            <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
+            <span className="hidden sm:inline text-[10px] px-2 py-0.5 rounded-full font-bold tracking-wide" style={{ background: 'rgba(91,191,191,0.12)', color: '#3a9e9e', border: '1px solid rgba(91,191,191,0.25)' }}>v2</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600">
+            <a href="#features" className="hover:text-gray-900 transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-gray-900 transition-colors">How it works</a>
+            <a href="#pricing" className="hover:text-gray-900 transition-colors">Pricing</a>
+            <a href="#faq" className="hover:text-gray-900 transition-colors">FAQ</a>
+          </nav>
+          <div className="flex items-center gap-2.5">
+            <button onClick={openSignin} className="hidden sm:block text-sm font-semibold text-gray-600 px-4 py-2 rounded-xl transition-colors hover:text-gray-900 hover:bg-gray-50">Sign in</button>
+            <button onClick={openSignup} className="text-sm font-bold text-white px-5 py-2.5 rounded-xl transition-all duration-200 active:scale-95"
+              style={{ background: 'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow: '0 4px 16px rgba(91,191,191,0.40)' }}>
+              Get started free
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* ══════════ HERO ══════════ */}
+      <section className="relative pt-28 pb-20 sm:pt-36 sm:pb-28 overflow-hidden" style={{ background: 'linear-gradient(165deg, #0b4040 0%, #165e5e 18%, #1e7a7a 42%, #2d9b9b 68%, #3db5b5 100%)' }}>
+        {/* Background mesh */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute orb-1" style={{ top:'-20%', left:'-15%', width:'70%', height:'70%', background:'radial-gradient(circle, rgba(91,191,191,0.55) 0%, transparent 65%)', filter:'blur(80px)' }}/>
+          <div className="absolute orb-2" style={{ top:'30%', right:'-20%', width:'60%', height:'60%', background:'radial-gradient(circle, rgba(52,211,153,0.35) 0%, transparent 70%)', filter:'blur(90px)' }}/>
+          <div className="absolute orb-3" style={{ bottom:'-10%', left:'20%', width:'50%', height:'50%', background:'radial-gradient(circle, rgba(34,211,238,0.28) 0%, transparent 65%)', filter:'blur(70px)' }}/>
+          {/* Grid overlay */}
+          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         </div>
 
-        {/* ── Scrollable content ── */}
-        <div className="relative z-10 flex flex-col gap-10 px-10 py-10">
-
-          {/* Logo row */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xl shadow-2xl"
-              style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.40)', color: 'white', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.5), 0 8px 24px rgba(0,0,0,0.2)' }}>K</div>
-            <span className="text-white font-black text-xl tracking-tight">Kalenda</span>
-            <span className="text-[11px] px-2 py-0.5 rounded-full font-bold tracking-wide"
-              style={{ background: 'rgba(255,255,255,0.16)', color: 'rgba(255,255,255,0.9)', border: '1px solid rgba(255,255,255,0.30)' }}>v2</span>
-            <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
-              style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.88)', border: '1px solid rgba(255,255,255,0.20)', backdropFilter: 'blur(8px)' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              4,200+ families
-            </div>
-          </div>
-
-          {/* ─── HERO: 3D Frame ─── */}
-          <div className="flex justify-center" style={{ perspective: '1200px' }}>
-            <div style={{
-              transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(0)`,
-              transition: `transform ${tilt.x === 0 && tilt.y === 0 ? '0.9s' : '0.08s'} cubic-bezier(.22,.68,0,1.2)`,
-              transformStyle: 'preserve-3d',
-            }}>
-              <FrameMockup />
+        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8">
+          {/* Eyebrow */}
+          <div className="flex justify-center mb-7">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
+              style={{ background: 'rgba(255,255,255,0.14)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.26)', color:'rgba(255,255,255,0.92)' }}>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Trusted by 4,200+ families in 38 countries
             </div>
           </div>
 
           {/* Headline */}
-          <div className="text-center">
-            <h1 className="text-white font-black leading-[1.1] tracking-tight mb-4"
-              style={{ fontSize: 'clamp(2rem, 2.6vw, 2.75rem)', textShadow: '0 4px 24px rgba(0,0,0,0.25)', letterSpacing: '-0.02em' }}>
-              The smart Wi‑Fi frame
+          <div className="text-center mb-8">
+            <h1 className="font-black leading-[1.06] tracking-tight mb-5"
+              style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)', color: 'white', letterSpacing: '-0.03em', textShadow: '0 4px 32px rgba(0,0,0,0.2)' }}>
+              The Wi‑Fi photo frame that runs
               <br />
-              <span style={{ background: 'linear-gradient(135deg, #a7f3d0, #6ee7b7, #34d399)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                for your whole family.
+              <span style={{ background: 'linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 40%, #34d399 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
+                your whole family.
               </span>
             </h1>
-            <p className="font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.92)', fontSize: '1rem', letterSpacing: '-0.01em' }}>
-              A smart Wi‑Fi photo frame that becomes your family's shared command center.
-            </p>
-            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.62)', maxWidth: '400px', margin: '0 auto' }}>
-              Calendar · chores · shopping lists · AI memories — synced live to every screen.
+            <p className="mx-auto text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.78)', maxWidth: '540px', letterSpacing: '-0.01em' }}>
+              One beautiful screen. Shared calendar, chores, shopping lists, AI-restored memories — synced live to every device and every frame in your home.
             </p>
           </div>
 
-          {/* ─── FEATURES 2×2 ─── */}
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] mb-4" style={{ color: 'rgba(255,255,255,0.40)' }}>
-              What Kalenda does
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              {FEATURES.map((f, fi) => (
-                <div key={f.title} className="flex items-start gap-3 p-3.5 rounded-3xl transition-transform duration-200 hover:-translate-y-0.5" style={{ ...darkGlass, cursor: 'default' }}>
-                  <div className="w-8 h-8 rounded-2xl flex items-center justify-center text-base shrink-0"
-                    style={{ background: f.color + '28', border: `1.5px solid ${f.color}45`, boxShadow: `0 4px 12px ${f.color}30` }}>
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
+            <button onClick={openSignup}
+              className="flex items-center gap-2.5 px-7 py-4 rounded-2xl text-base font-black text-white transition-all duration-200 active:scale-95"
+              style={{ background: 'linear-gradient(135deg, #1a6b6b 0%, #2d9b9b 40%, #5bbfbf 100%)', boxShadow: '0 6px 28px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.15)', border: '1px solid rgba(255,255,255,0.18)', letterSpacing: '-0.01em' }}>
+              Start free — 14 day trial
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+            <button onClick={() => onEnter('Guest')}
+              className="flex items-center gap-2 px-7 py-4 rounded-2xl text-base font-semibold transition-all duration-200 active:scale-95"
+              style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)' }}>
+              View live demo
+            </button>
+          </div>
+
+          {/* Hero visual — 3D tilt frame */}
+          <div ref={heroRef} onMouseMove={handleHeroMouseMove} onMouseLeave={handleHeroMouseLeave}
+            className="flex justify-center" style={{ perspective: '1400px' }}>
+            <div style={{
+              transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+              transition: `transform ${tilt.x===0&&tilt.y===0 ? '0.9s' : '0.08s'} cubic-bezier(.22,.68,0,1.2)`,
+              transformStyle: 'preserve-3d',
+            }}>
+              <FrameMockup scale={1.1} />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom fade to white */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent, #ffffff)' }} />
+      </section>
+
+      {/* ══════════ SOCIAL PROOF BAR ══════════ */}
+      <section className="py-12 border-b" style={{ borderColor: 'rgba(226,236,240,0.6)' }}>
+        <div className="max-w-5xl mx-auto px-5 sm:px-8">
+          <p className="text-center text-xs font-bold uppercase tracking-[0.18em] text-gray-400 mb-8">Families from all over the world trust Kalenda</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+            {[
+              { n: '4,200+', l: 'Families worldwide' },
+              { n: '38',     l: 'Countries' },
+              { n: '1.2M+',  l: 'Photos synced' },
+              { n: '4.9 ★',  l: 'App Store rating' },
+            ].map(s => (
+              <div key={s.l} className="text-center">
+                <p className="font-black text-3xl text-gray-900 tracking-tight mb-1" style={{ letterSpacing: '-0.04em' }}>{s.n}</p>
+                <p className="text-sm text-gray-500">{s.l}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ FEATURES ══════════ */}
+      <section id="features" className="py-24 sm:py-32">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-16 sm:mb-20">
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>What Kalenda does</p>
+            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em', lineHeight: '1.1' }}>
+              Everything your family needs,<br />in one place.
+            </h2>
+            <p className="text-gray-500 text-lg mx-auto" style={{ maxWidth: '480px' }}>No more juggling 5 apps. Kalenda brings photos, calendar, tasks, and AI into a single beautifully designed hub.</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-6 lg:gap-8">
+            {FEATURES.map((f, fi) => (
+              <div key={f.title} className="group relative rounded-3xl p-8 overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                style={{ background: '#f8fbfb', border: '1px solid rgba(226,236,240,0.8)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 20px 60px rgba(0,0,0,0.08), 0 4px 16px ${f.color}20`; e.currentTarget.style.borderColor = f.color + '50'; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = 'rgba(226,236,240,0.8)'; }}>
+                {/* BG glow */}
+                <div className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{ background: `radial-gradient(circle, ${f.color}18 0%, transparent 70%)`, transform: 'translate(30%, -30%)' }} />
+
+                <div className="flex items-start gap-5">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0"
+                    style={{ background: f.color + '18', border: `1.5px solid ${f.color}35`, boxShadow: `0 4px 16px ${f.color}25` }}>
                     {f.icon}
                   </div>
-                  <div>
-                    <p className="text-white text-[12px] font-bold leading-tight">{f.title}</p>
-                    <p className="text-[10px] mt-1 leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>{f.desc}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-black uppercase tracking-widest mb-2" style={{ color: f.color }}>{ f.title }</p>
+                    <h3 className="text-gray-900 font-bold text-xl mb-2 leading-tight" style={{ letterSpacing: '-0.02em' }}>{f.headline}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed mb-5">{f.body}</p>
+                    <ul className="space-y-2">
+                      {f.bullets.map(b => (
+                        <li key={b} className="flex items-center gap-2.5 text-sm text-gray-700">
+                          <svg viewBox="0 0 12 12" fill="none" className="w-4 h-4 shrink-0"><circle cx="6" cy="6" r="6" fill={f.color + '25'}/><path d="M3 6l2 2 4-4" stroke={f.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ─── CALENDAR ─── */}
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] mb-3" style={{ color: 'rgba(255,255,255,0.40)' }}>
-              Color-coded family calendar
-            </p>
-            <CalendarPreview />
-          </div>
-
-          {/* ─── AI BEFORE/AFTER ─── */}
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] mb-3" style={{ color: 'rgba(255,255,255,0.40)' }}>
-              AI Memory Studio — tap to enhance
-            </p>
-            <AIBeforeAfter />
-          </div>
-
-          {/* ─── DASHBOARD ─── */}
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] mb-3" style={{ color: 'rgba(255,255,255,0.40)' }}>
-              Family command center
-            </p>
-            <DashboardPreview />
-          </div>
-
-          {/* ─── TESTIMONIALS ─── */}
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.18em] mb-4" style={{ color: 'rgba(255,255,255,0.40)' }}>
-              Loved by families worldwide
-            </p>
-            <div className="space-y-3">
-              {[
-                { name: 'Sarah K.', role: 'Mom of 3', quote: 'Kalenda replaced our whiteboard, our photo frame, and our family group chat — all in one beautiful screen.', avatar: '👩', stars: 5 },
-                { name: 'James T.', role: 'Dad', quote: 'The Wi-Fi frame feature alone is worth every penny. Our grandparents love seeing new photos every day.', avatar: '👨‍💼', stars: 5 },
-                { name: 'Priya M.', role: 'Parent', quote: 'Finally, a family app that feels truly premium. The calendar sync is flawless.', avatar: '👩‍💻', stars: 5 },
-              ].map(t => (
-                <div key={t.name} className="flex items-start gap-3 p-4 rounded-3xl" style={darkGlass}>
-                  <span className="text-2xl shrink-0 mt-0.5">{t.avatar}</span>
-                  <div>
-                    <div className="flex gap-0.5 mb-1.5">
-                      {Array(t.stars).fill(0).map((_, i) => <span key={i} className="text-[11px]">⭐</span>)}
-                    </div>
-                    <p className="text-[12px] leading-relaxed mb-2" style={{ color: 'rgba(255,255,255,0.82)', fontStyle: 'italic' }}>"{t.quote}"</p>
-                    <p className="text-white text-[11px] font-bold">{t.name}{' '}
-                      <span className="font-normal" style={{ color: 'rgba(255,255,255,0.48)' }}>· {t.role}</span>
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <p className="text-center text-xs pb-4" style={{ color: 'rgba(255,255,255,0.25)', letterSpacing: '0.05em' }}>
-            © 2026 Kalenda · Privacy · Terms
-          </p>
-        </div>
-      </div>
-
-      {/* ══════════════════════════════════════
-          RIGHT: Auth panel
-      ══════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col items-center justify-center p-5 sm:p-8 lg:p-12 relative overflow-y-auto"
-        style={{ background: 'linear-gradient(160deg, #f0fafa 0%, #e8f5f5 30%, #f5fafa 60%, #f2f7f7 100%)' }}>
-
-        {/* Right-side background orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute orb-1" style={{ top: '-20%', right: '-20%', width: '60%', height: '60%', background: 'radial-gradient(circle, rgba(91,191,191,0.12) 0%, transparent 70%)', filter: 'blur(60px)' }} />
-          <div className="absolute orb-3" style={{ bottom: '5%', left: '-10%', width: '50%', height: '50%', background: 'radial-gradient(circle, rgba(168,218,218,0.15) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-        </div>
-
-        {/* Mobile logo */}
-        <div className="lg:hidden flex flex-col items-center gap-2 mb-8 text-center">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-lg"
-              style={{ background: 'linear-gradient(135deg,#3ab5b5,#5bbfbf)', boxShadow: '0 8px 24px rgba(91,191,191,0.35)' }}>K</div>
-            <span className="text-gray-800 font-black text-2xl tracking-tight">Kalenda</span>
-          </div>
-          <p className="text-gray-500 text-xs max-w-xs leading-relaxed">A smart Wi‑Fi photo frame that becomes your family's shared command center.</p>
-        </div>
-
-        {/* ─── Floating Auth Card ─── */}
-        <div className="relative z-10 w-full max-w-[420px] auth-card px-10 py-10">
-
-          {/* Mode toggle */}
-          <div className="flex gap-1 p-1 rounded-2xl mb-8" style={{ background: 'rgba(240,244,248,0.9)', border: '1px solid rgba(226,236,240,0.8)' }}>
-            {[['signin','Sign In'],['signup','Create Account']].map(([m, l]) => (
-              <button key={m}
-                onClick={() => { setMode(m); setError(''); }}
-                className="flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-200"
-                style={mode === m
-                  ? { background: '#ffffff', color: '#0f172a', boxShadow: '0 2px 8px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.9)', letterSpacing: '-0.01em' }
-                  : { background: 'transparent', color: '#94a3b8' }}>
-                {l}
-              </button>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Heading */}
-          <div className="mb-7">
-            <h2 className="font-black text-gray-900 mb-1.5 tracking-tight" style={{ fontSize: '1.6rem', letterSpacing: '-0.03em' }}>
-              {mode === 'signin' ? 'Welcome back 👋' : 'Set up your family hub'}
-            </h2>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              {mode === 'signin' ? 'Sign in to your Kalenda account to continue.' : 'Free for 14 days — no credit card required.'}
-            </p>
+      {/* ══════════ HOW IT WORKS ══════════ */}
+      <section id="how-it-works" className="py-24 sm:py-32" style={{ background: 'linear-gradient(165deg, #0b4040 0%, #165e5e 25%, #1e7a7a 55%, #2d9b9b 100%)' }}>
+        <div className="max-w-5xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-16">
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#6ee7b7' }}>Setup in minutes</p>
+            <h2 className="font-black mb-4" style={{ color: 'white', fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>Up and running in 4 steps.</h2>
+            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.1rem' }}>No technical knowledge needed. If you can set up Netflix, you can set up Kalenda.</p>
           </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === 'signup' && (
-              <div>
-                <label className="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Your name</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Harriet Appiah" autoComplete="name"
-                  className="w-full px-4 py-3.5 text-sm text-gray-800 outline-none placeholder-gray-300 input-glass"
-                  style={{ width: '100%' }} />
-              </div>
-            )}
-            <div>
-              <label className="block text-[11px] font-bold text-gray-500 mb-1.5 uppercase tracking-widest">Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@family.com" autoComplete="email"
-                className="w-full px-4 py-3.5 text-sm text-gray-800 outline-none placeholder-gray-300 input-glass" />
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-widest">Password</label>
-                {mode === 'signin' && (
-                  <button type="button" className="text-xs font-semibold transition-colors hover:opacity-70" style={{ color: '#3ab5b5' }}>
-                    Forgot password?
-                  </button>
-                )}
-              </div>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
-                autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-                className="w-full px-4 py-3.5 text-sm text-gray-800 outline-none placeholder-gray-300 input-glass" />
-            </div>
-
-            {error && (
-              <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl text-sm font-medium"
-                style={{ background: 'rgba(254,242,242,0.9)', border: '1px solid rgba(252,165,165,0.6)', color: '#dc2626', backdropFilter: 'blur(8px)' }}>
-                <span>⚠️</span>{error}
-              </div>
-            )}
-
-            <button type="submit" disabled={loading}
-              className="w-full py-4 rounded-2xl text-white font-black text-sm transition-all duration-200 active:scale-[0.98] mt-2"
-              style={{
-                background: loading ? '#8bd8d8' : 'linear-gradient(135deg, #2d9b9b 0%, #3ab5b5 50%, #5bbfbf 100%)',
-                boxShadow: loading ? 'none' : '0 6px 24px rgba(91,191,191,0.45), 0 2px 8px rgba(91,191,191,0.25), inset 0 1px 0 rgba(255,255,255,0.25)',
-                letterSpacing: '-0.01em',
-              }}>
-              {loading
-                ? <span className="flex items-center justify-center gap-2">
-                    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                    </svg>
-                    Signing in…
-                  </span>
-                : mode === 'signin' ? 'Sign In to Kalenda →' : 'Create My Family Hub →'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px" style={{ background: 'rgba(226,236,240,0.8)' }} />
-            <span className="text-[11px] text-gray-400 font-semibold tracking-widest">OR</span>
-            <div className="flex-1 h-px" style={{ background: 'rgba(226,236,240,0.8)' }} />
-          </div>
-
-          <div className="space-y-3">
-            {/* Google */}
-            <button type="button"
-              className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl text-sm font-semibold text-gray-700 transition-all duration-200 active:scale-[0.98]"
-              style={{ background: 'rgba(255,255,255,0.9)', border: '1.5px solid rgba(226,236,240,0.9)', boxShadow: '0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,1)', backdropFilter: 'blur(8px)' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#b0d4d4'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(91,191,191,0.12), inset 0 1px 0 rgba(255,255,255,1)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(226,236,240,0.9)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,1)'; }}>
-              <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-              </svg>
-              Continue with Google
-            </button>
-            {/* Guest */}
-            <button type="button" onClick={() => onEnter('Guest')}
-              className="w-full py-3 rounded-2xl text-sm font-semibold transition-all duration-200 hover:opacity-70"
-              style={{ color: '#3ab5b5', background: 'transparent', letterSpacing: '-0.01em' }}>
-              Explore as guest →
-            </button>
-          </div>
-
-          {/* Trust badges */}
-          <div className="flex items-center justify-center gap-5 mt-8 pt-6" style={{ borderTop: '1px solid rgba(226,236,240,0.7)' }}>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: '🔒', label: 'End-to-end encrypted' },
-              { icon: '🛡️', label: 'COPPA compliant' },
-              { icon: '✅', label: '14-day free trial' },
-            ].map(b => (
-              <div key={b.label} className="flex items-center gap-1 text-[10px] font-semibold text-gray-400 tracking-wide">
-                <span className="text-xs">{b.icon}</span> {b.label}
+              { n:'1', icon:'📲', title:'Download the app', body:'Install Kalenda on each family member\'s phone — iOS or Android.' },
+              { n:'2', icon:'👨‍👩‍👧','title':'Create your hub', body:'Set up your family hub and invite each member with their colour.' },
+              { n:'3', icon:'🖼️', title:'Plug in your frame', body:'Open Kalenda on any screen and set it as your family frame display.' },
+              { n:'4', icon:'✨', title:'Enjoy together', body:'Photos, calendar, chores and AI features are all live in seconds.' },
+            ].map(step => (
+              <div key={step.n} className="relative rounded-3xl p-6" style={{ background: 'rgba(255,255,255,0.09)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)', border:'1px solid rgba(255,255,255,0.15)', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.22)' }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black mb-4" style={{ background: 'rgba(255,255,255,0.18)', color: 'white', border: '1.5px solid rgba(255,255,255,0.3)' }}>{step.n}</div>
+                <span className="text-3xl mb-3 block">{step.icon}</span>
+                <h3 className="text-white font-bold mb-2 text-base">{step.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.58)' }}>{step.body}</p>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        <p className="absolute bottom-5 text-[11px] text-gray-400" style={{ letterSpacing: '0.04em' }}>
-          © 2026 Kalenda &nbsp;·&nbsp;{' '}
-          <span className="hover:text-gray-600 cursor-pointer transition-colors">Privacy</span>
-          &nbsp;·&nbsp;{' '}
-          <span className="hover:text-gray-600 cursor-pointer transition-colors">Terms</span>
-        </p>
-      </div>
+      {/* ══════════ TESTIMONIALS ══════════ */}
+      <section className="py-24 sm:py-32 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-16">
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>Real families, real stories</p>
+            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>
+              Families love Kalenda.
+            </h2>
+            <div className="flex items-center justify-center gap-1">
+              {Array(5).fill(0).map((_,i) => <span key={i} className="text-amber-400 text-lg">★</span>)}
+              <span className="ml-2 text-gray-500 text-sm font-semibold">4.9 / 5 from 2,100+ reviews</span>
+            </div>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="rounded-3xl p-6 flex flex-col" style={{ background: i % 3 === 1 ? 'linear-gradient(135deg, #0b4040, #1e7a7a)' : '#f8fbfb', border: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(226,236,240,0.7)'}`, boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+                <div className="flex gap-0.5 mb-4">
+                  {Array(t.stars).fill(0).map((_,j) => <span key={j} style={{ color: i%3===1 ? '#fbbf24' : '#f59e0b', fontSize:'13px' }}>★</span>)}
+                </div>
+                <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: i%3===1 ? 'rgba(255,255,255,0.82)' : '#4b5563', fontStyle:'italic' }}>"{t.quote}"</p>
+                <div className="flex items-center gap-3 pt-4" style={{ borderTop: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(226,236,240,0.7)'}` }}>
+                  <span className="text-2xl">{t.avatar}</span>
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: i%3===1 ? 'white' : '#0f172a' }}>{t.name}</p>
+                    <p className="text-xs" style={{ color: i%3===1 ? 'rgba(255,255,255,0.48)' : '#94a3b8' }}>{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ PRICING ══════════ */}
+      <section id="pricing" className="py-24 sm:py-32" style={{ background: '#f8fbfb' }}>
+        <div className="max-w-5xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-16">
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>Simple pricing</p>
+            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>One price. No surprises.</h2>
+            <p className="text-gray-500 text-lg">Free to start. Upgrade when your family is ready.</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {PRICING.map((p, i) => (
+              <div key={p.name} className="relative rounded-3xl p-7 flex flex-col transition-all duration-300"
+                style={p.highlight
+                  ? { background: 'linear-gradient(145deg, #0b4040, #1e7a7a)', border: '1px solid rgba(91,191,191,0.4)', boxShadow: '0 24px 64px rgba(11,64,64,0.25), 0 4px 16px rgba(91,191,191,0.20)' }
+                  : { background: '#ffffff', border: '1px solid rgba(226,236,240,0.9)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+                {p.badge && <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-black text-white" style={{ background: 'linear-gradient(135deg,#5bbfbf,#3a9e9e)', boxShadow:'0 4px 14px rgba(91,191,191,0.5)' }}>{p.badge}</div>}
+                <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: p.highlight ? 'rgba(255,255,255,0.5)' : p.color }}>{p.name}</p>
+                <div className="flex items-baseline gap-1.5 mb-2">
+                  <span className="font-black text-4xl" style={{ color: p.highlight ? 'white' : '#0f172a', letterSpacing:'-0.05em' }}>{p.price}</span>
+                  <span className="text-sm font-medium" style={{ color: p.highlight ? 'rgba(255,255,255,0.5)' : '#94a3b8' }}>{p.period}</span>
+                </div>
+                <p className="text-sm mb-6" style={{ color: p.highlight ? 'rgba(255,255,255,0.6)' : '#64748b' }}>{p.desc}</p>
+                <ul className="space-y-3 flex-1 mb-7">
+                  {p.features.map(f => (
+                    <li key={f} className="flex items-center gap-2.5 text-sm" style={{ color: p.highlight ? 'rgba(255,255,255,0.85)' : '#374151' }}>
+                      <svg viewBox="0 0 12 12" fill="none" className="w-4 h-4 shrink-0">
+                        <circle cx="6" cy="6" r="6" fill={p.highlight ? 'rgba(255,255,255,0.18)' : p.color + '22'}/>
+                        <path d="M3 6l2 2 4-4" stroke={p.highlight ? '#6ee7b7' : p.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={openSignup}
+                  className="w-full py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 active:scale-[0.98]"
+                  style={p.highlight
+                    ? { background: 'linear-gradient(135deg,#5bbfbf,#3ab5b5)', color: 'white', boxShadow: '0 4px 20px rgba(91,191,191,0.45), inset 0 1px 0 rgba(255,255,255,0.25)' }
+                    : { background: 'rgba(0,0,0,0.04)', color: '#374151', border: '1px solid rgba(226,236,240,0.9)' }}>
+                  {p.cta}
+                </button>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm text-gray-400 mt-8">All plans include a 14-day free trial. Cancel anytime. No hidden fees.</p>
+        </div>
+      </section>
+
+      {/* ══════════ FAQ ══════════ */}
+      <section id="faq" className="py-24 sm:py-32">
+        <div className="max-w-2xl mx-auto px-5 sm:px-8">
+          <div className="text-center mb-14">
+            <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#5bbfbf' }}>Got questions?</p>
+            <h2 className="font-black text-gray-900" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>Frequently asked.</h2>
+          </div>
+          <div className="space-y-3">
+            {FAQS.map((faq, i) => (
+              <div key={i} className="rounded-2xl overflow-hidden transition-all duration-200"
+                style={{ border: `1px solid ${openFaq===i ? 'rgba(91,191,191,0.4)' : 'rgba(226,236,240,0.8)'}`, background: openFaq===i ? '#f0fafa' : '#ffffff', boxShadow: openFaq===i ? '0 4px 20px rgba(91,191,191,0.08)' : 'none' }}>
+                <button className="w-full flex items-center justify-between px-6 py-4.5 text-left" style={{ paddingTop:'18px', paddingBottom:'18px' }}
+                  onClick={() => setOpenFaq(openFaq===i ? null : i)}>
+                  <span className="font-semibold text-gray-900 pr-4 text-sm sm:text-base">{faq.q}</span>
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-200"
+                    style={{ background: openFaq===i ? 'rgba(91,191,191,0.2)' : 'rgba(0,0,0,0.06)', transform: openFaq===i ? 'rotate(45deg)' : 'none' }}>
+                    <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3"><path d="M6 2v8M2 6h8" stroke={openFaq===i ? '#3a9e9e' : '#94a3b8'} strokeWidth="1.8" strokeLinecap="round"/></svg>
+                  </div>
+                </button>
+                {openFaq===i && <div className="px-6 pb-5 text-sm leading-relaxed text-gray-600">{faq.a}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ FINAL CTA ══════════ */}
+      <section className="py-24 sm:py-32 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #0b4040 0%, #165e5e 30%, #1e7a7a 65%, #2d9b9b 100%)' }}>
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute orb-2" style={{ top:'-30%', right:'-20%', width:'60%', height:'60%', background:'radial-gradient(circle, rgba(52,211,153,0.3) 0%, transparent 65%)', filter:'blur(80px)' }}/>
+          <div className="absolute orb-3" style={{ bottom:'-20%', left:'-10%', width:'55%', height:'55%', background:'radial-gradient(circle, rgba(91,191,191,0.4) 0%, transparent 65%)', filter:'blur(70px)' }}/>
+        </div>
+        <div className="relative z-10 max-w-3xl mx-auto px-5 sm:px-8 text-center">
+          <p className="text-xs font-black uppercase tracking-[0.18em] mb-5" style={{ color: '#6ee7b7' }}>Start today</p>
+          <h2 className="font-black text-white mb-5" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.03em', lineHeight: '1.1' }}>
+            Your family deserves a hub this good.
+          </h2>
+          <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.68)', maxWidth: '480px', margin: '0 auto 2.5rem' }}>
+            Join 4,200+ families already using Kalenda. Free to start, takes 4 minutes to set up.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button onClick={openSignup}
+              className="flex items-center gap-2.5 px-8 py-4.5 rounded-2xl font-black text-white transition-all duration-200 active:scale-95 text-base"
+              style={{ paddingTop:'18px', paddingBottom:'18px', background:'linear-gradient(135deg,#1a6b6b,#2d9b9b 40%,#5bbfbf 100%)', boxShadow:'0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)', border:'1px solid rgba(255,255,255,0.18)', letterSpacing:'-0.01em' }}>
+              Get started free
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+            <button onClick={openSignin} className="px-8 py-4 rounded-2xl font-semibold text-base transition-all hover:opacity-80" style={{ color:'rgba(255,255,255,0.78)' }}>
+              Sign in instead
+            </button>
+          </div>
+          <p className="mt-6 text-xs" style={{ color: 'rgba(255,255,255,0.38)' }}>No credit card required · Cancel anytime · COPPA compliant</p>
+        </div>
+      </section>
+
+      {/* ══════════ FOOTER ══════════ */}
+      <footer className="py-14 border-t" style={{ borderColor: 'rgba(226,236,240,0.6)', background:'#ffffff' }}>
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="grid sm:grid-cols-4 gap-8 mb-12">
+            <div className="sm:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm" style={{ background:'linear-gradient(135deg,#2d9b9b,#5bbfbf)', boxShadow:'0 4px 12px rgba(91,191,191,0.35)' }}>K</div>
+                <span className="font-black text-gray-900 text-lg tracking-tight">Kalenda</span>
+              </div>
+              <p className="text-sm text-gray-500 leading-relaxed mb-4">The smart Wi-Fi photo frame built for modern families.</p>
+              <div className="flex gap-3">
+                {['App Store', 'Google Play'].map(s => (
+                  <div key={s} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500" style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)' }}>{s}</div>
+                ))}
+              </div>
+            </div>
+            {[
+              { title: 'Product', links: ['Features', 'Pricing', 'Changelog', 'Roadmap'] },
+              { title: 'Company', links: ['About', 'Blog', 'Careers', 'Press'] },
+              { title: 'Support', links: ['Help Center', 'Privacy Policy', 'Terms of Service', 'Contact'] },
+            ].map(col => (
+              <div key={col.title}>
+                <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">{col.title}</p>
+                <ul className="space-y-2.5">
+                  {col.links.map(l => <li key={l}><a href="#" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">{l}</a></li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-4" style={{ borderTop: '1px solid rgba(226,236,240,0.6)' }}>
+            <p className="text-sm text-gray-400">© 2026 Kalenda · Built with ❤️ for families everywhere</p>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs text-gray-400">All systems operational</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* ══════════ AUTH MODAL ══════════ */}
+      {authOpen && <AuthModal onEnter={(n) => { setAuthOpen(false); onEnter(n); }} onClose={() => setAuthOpen(false)} initialMode={authMode} />}
     </div>
   );
 }
