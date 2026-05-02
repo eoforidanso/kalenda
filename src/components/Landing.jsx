@@ -240,12 +240,12 @@ const FEATURES = [
 ];
 
 const TESTIMONIALS = [
-  { name: 'Sarah K.', role: 'Mom of 3 · Accra', avatar: '👩', stars: 5, quote: 'Kalenda replaced our kitchen whiteboard, photo frame, and family group chat. Our kids actually do their chores now because they can see everyone watching.' },
-  { name: 'James T.', role: 'Dad · London', avatar: '👨‍💼', stars: 5, quote: 'The Wi-Fi frame feature is stunning. Grandma in Kumasi sees new photos of the grandkids every single day without touching any app.' },
-  { name: 'Priya M.', role: 'Parent · Toronto', avatar: '👩‍💻', stars: 5, quote: 'The AI restoration feature made me cry. A 40-year-old faded photo of my parents — colorized, sharp, beautiful. Worth every penny.' },
-  { name: 'David L.', role: 'Father of 2 · NYC', avatar: '🧔', stars: 5, quote: 'Setup took 4 minutes. The whole family was using it within the hour. Best family tech purchase we\'ve ever made.' },
-  { name: 'Amara F.', role: 'Mom · Nairobi', avatar: '👩🏾', stars: 5, quote: 'My husband travels for work. The shared calendar and live photo frame keeps us connected as a family every single day.' },
-  { name: 'Chen W.', role: 'Parent · Singapore', avatar: '👨🏻', stars: 5, quote: 'The AI memory studio is genuinely magical. We restored 30-year-old photos of my in-laws\' wedding — they were in tears.' },
+  { name: 'Sarah K.', role: 'Mom of 3 · Accra', stars: 5, quote: 'Kalenda replaced our kitchen whiteboard, photo frame, and family group chat. Our kids actually do their chores now because they can see everyone watching.' },
+  { name: 'James T.', role: 'Dad · London', stars: 5, quote: 'The Wi-Fi frame feature is stunning. Grandma in Kumasi sees new photos of the grandkids every single day without touching any app.' },
+  { name: 'Priya M.', role: 'Parent · Toronto', stars: 5, quote: 'The AI restoration feature made me cry. A 40-year-old faded photo of my parents — colorized, sharp, beautiful. Worth every penny.' },
+  { name: 'David L.', role: 'Father of 2 · NYC', stars: 5, quote: 'Setup took 4 minutes. The whole family was using it within the hour. Best family tech purchase we\'ve ever made.' },
+  { name: 'Amara F.', role: 'Mom · Nairobi', stars: 5, quote: 'My husband travels for work. The shared calendar and live photo frame keeps us connected as a family every single day.' },
+  { name: 'Chen W.', role: 'Parent · Singapore', stars: 5, quote: 'The AI memory studio is genuinely magical. We restored 30-year-old photos of my in-laws\' wedding — they were in tears.' },
 ];
 
 const PRICING = [
@@ -522,7 +522,10 @@ export default function Landing({ onEnter }) {
                 </div>
                 <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: i%3===1 ? 'rgba(255,255,255,0.82)' : '#4b5563', fontStyle:'italic' }}>"{t.quote}"</p>
                 <div className="flex items-center gap-3 pt-4" style={{ borderTop: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(226,236,240,0.7)'}` }}>
-                  <span className="text-2xl">{t.avatar}</span>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-sm font-black"
+                    style={{ background: i%3===1 ? 'rgba(255,255,255,0.18)' : 'rgba(91,191,191,0.14)', color: i%3===1 ? 'white' : '#2d9b9b', border: i%3===1 ? '1px solid rgba(255,255,255,0.22)' : '1px solid rgba(91,191,191,0.25)' }}>
+                    {t.name.split(' ').map(w => w[0]).join('').slice(0,2)}
+                  </div>
                   <div>
                     <p className="font-bold text-sm" style={{ color: i%3===1 ? 'white' : '#0f172a' }}>{t.name}</p>
                     <p className="text-xs" style={{ color: i%3===1 ? 'rgba(255,255,255,0.48)' : '#94a3b8' }}>{t.role}</p>
