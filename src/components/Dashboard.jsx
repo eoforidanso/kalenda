@@ -165,7 +165,7 @@ export default function Dashboard({ setView }) {
         </div>
       </div>
 
-      <div className="px-4 md:px-6 py-7 space-y-7">
+      <div className="px-4 md:px-6 py-8 space-y-10">
 
         {/* Family member filter bar — like Cozi color coding */}
         <div className="glass rounded-3xl p-5">

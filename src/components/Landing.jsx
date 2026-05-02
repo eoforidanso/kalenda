@@ -62,11 +62,13 @@ function FrameMockup() {
         </div>
       </div>
 
-      {/* Glow halo behind frame */}
-      <div className="absolute" style={{ width: '340px', height: '240px', background: 'radial-gradient(ellipse, rgba(91,191,191,0.45) 0%, transparent 70%)', filter: 'blur(40px)', top: '10px' }} />
+      {/* Wide ambient glow halo */}
+      <div className="absolute" style={{ width: '420px', height: '280px', background: 'radial-gradient(ellipse, rgba(91,191,191,0.50) 0%, rgba(52,211,153,0.18) 40%, transparent 70%)', filter: 'blur(52px)', top: '-10px', left: '50%', transform: 'translateX(-50%)' }} />
+      {/* Secondary warm glow */}
+      <div className="absolute" style={{ width: '260px', height: '160px', background: 'radial-gradient(ellipse, rgba(255,255,255,0.12) 0%, transparent 70%)', filter: 'blur(30px)', top: '20px', left: '50%', transform: 'translateX(-50%)' }} />
 
       {/* Frame device */}
-      <div className="relative" style={{ filter: 'drop-shadow(0 32px 64px rgba(0,0,0,0.55)) drop-shadow(0 8px 16px rgba(0,0,0,0.3))', transformStyle: 'preserve-3d' }}>
+      <div className="relative" style={{ filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.65)) drop-shadow(0 12px 24px rgba(0,0,0,0.40)) drop-shadow(0 2px 4px rgba(0,0,0,0.25))', transformStyle: 'preserve-3d' }}>
         {/* Outer aluminum bezel */}
         <div className="rounded-[24px] p-[10px] relative" style={{
           background: 'linear-gradient(145deg, #3a3a3a 0%, #1e1e1e 40%, #2a2a2a 70%, #161616 100%)',
@@ -115,6 +117,10 @@ function FrameMockup() {
       <div style={{ width: '72px', height: '20px', background: 'linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%)', borderRadius: '0 0 12px 12px', boxShadow: '0 8px 20px rgba(0,0,0,0.5)' }} />
       {/* Stand base */}
       <div style={{ width: '130px', height: '9px', background: 'linear-gradient(90deg, #161616, #2e2e2e 40%, #2e2e2e 60%, #161616)', borderRadius: '6px', boxShadow: '0 6px 20px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06)' }} />
+      {/* Cast shadow on surface */}
+      <div style={{ width: '200px', height: '18px', marginTop: '6px', background: 'radial-gradient(ellipse, rgba(0,0,0,0.45) 0%, transparent 70%)', filter: 'blur(10px)', borderRadius: '50%' }} />
+      {/* Subtle floor reflection */}
+      <div style={{ width: '160px', height: '8px', background: 'radial-gradient(ellipse, rgba(91,191,191,0.18) 0%, transparent 70%)', filter: 'blur(6px)', borderRadius: '50%', marginTop: '-4px' }} />
     </div>
   );
 }
