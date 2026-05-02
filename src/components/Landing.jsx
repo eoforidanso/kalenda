@@ -1,48 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
 // ─────────────────────────────────────────────
-//  HERO FRAME PREVIEW (features section)
-// ─────────────────────────────────────────────
-const heroSlides = [
-  { bg: 'from-rose-500 via-pink-500 to-orange-400', emoji: '🌸', label: "Maya's Birthday", sub: 'Mom · 2 years ago' },
-  { bg: 'from-sky-500 via-blue-500 to-indigo-500',  emoji: '🌊', label: 'Cape Coast Beach',  sub: 'Dad · last summer' },
-  { bg: 'from-violet-500 via-purple-500 to-fuchsia-500', emoji: '🎉', label: '10th Anniversary', sub: 'Dad · 6 months ago' },
-];
-
-function HeroFramePreview() {
-  const [idx, setIdx] = useState(0);
-  const [fading, setFading] = useState(false);
-  useEffect(() => {
-    const t = setInterval(() => {
-      setFading(true);
-      setTimeout(() => { setIdx(i => (i + 1) % heroSlides.length); setFading(false); }, 280);
-    }, 2800);
-    return () => clearInterval(t);
-  }, []);
-  const s = heroSlides[idx];
-  return (
-    <div className={`relative w-full h-full bg-gradient-to-br ${s.bg} flex items-center justify-center transition-opacity duration-280`}
-      style={{ opacity: fading ? 0 : 1 }}>
-      <span style={{ fontSize: '56px', filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.4))' }}>{s.emoji}</span>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)' }} />
-      <div className="absolute top-2 left-2.5">
-        <p className="font-mono font-bold text-white text-[11px]" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.7)' }}>10:32</p>
-        <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.55)' }}>Thu · May 1</p>
-      </div>
-      <div className="absolute bottom-0 inset-x-0 px-2.5 py-2" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75), transparent)' }}>
-        <p className="text-white text-[11px] font-semibold leading-tight">{s.label}</p>
-        <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{s.sub}</p>
-      </div>
-      <div className="absolute top-2 right-2 flex gap-0.5">
-        {heroSlides.map((_, i) => (
-          <div key={i} className="rounded-full transition-all duration-300" style={{ width: i===idx ? '12px' : '3px', height: '3px', background: i===idx ? 'white' : 'rgba(255,255,255,0.4)' }} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────
 //  FRAME MOCKUP (hero visual)
 // ─────────────────────────────────────────────
 const frameSlides = [
@@ -538,38 +496,28 @@ export default function Landing({ onEnter }) {
                 </button>
               </div>
 
-              {/* Right: animated frame preview */}
-              <div className="flex-shrink-0 flex justify-center items-center" style={{ minWidth: '260px' }}>
-                <div className="relative">
-                  {/* Glow behind frame */}
-                  <div className="absolute inset-0 rounded-[20px] pointer-events-none" style={{ background: 'radial-gradient(ellipse, rgba(91,191,191,0.6) 0%, transparent 70%)', filter: 'blur(40px)', transform: 'scale(1.3)' }} />
-                  {/* Floating chips */}
-                  <div className="absolute z-20 -right-4 top-8" style={{ animation: 'floatMedium 3.5s ease-in-out infinite' }}>
-                    <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-1.5 rounded-2xl text-xs font-semibold whitespace-nowrap"
-                      style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', boxShadow: '0 6px 20px rgba(0,0,0,0.2)' }}>
-                      <span>📸</span> 3 new photos synced
-                    </div>
-                  </div>
-                  <div className="absolute z-20 -left-6 bottom-12" style={{ animation: 'floatSlow 5s ease-in-out infinite', animationDelay: '1.2s' }}>
-                    <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-1.5 rounded-2xl text-xs font-semibold whitespace-nowrap"
-                      style={{ background: 'rgba(52,211,153,0.25)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(52,211,153,0.4)', color: '#d1fae5', boxShadow: '0 6px 20px rgba(0,0,0,0.15)' }}>
-                      <span>✅</span> Frame updated
-                    </div>
-                  </div>
-                  {/* Compact frame device */}
-                  <div className="rounded-[18px] p-[7px]" style={{ background: 'linear-gradient(145deg, #3a3a3a 0%, #1e1e1e 50%, #2a2a2a 100%)', boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.12), 0 32px 64px rgba(0,0,0,0.6)' }}>
-                    <div className="rounded-[12px] overflow-hidden" style={{ width: '260px', aspectRatio: '16/10' }}>
-                      <HeroFramePreview />
-                    </div>
-                    <div className="flex items-center justify-between px-2 pt-1.5 pb-0.5">
-                      <span style={{ fontSize: '7px', fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.25)' }}>KALENDA FRAME</span>
-                      <div className="flex items-center gap-1">
-                        <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#34d399', boxShadow: '0 0 6px #34d399' }} />
-                        <span style={{ fontSize: '7px', color: 'rgba(255,255,255,0.25)' }}>LIVE</span>
+              {/* Right: photo mosaic — unique, no frame hardware repeat */}
+              <div className="flex-shrink-0" style={{ minWidth: '240px' }}>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { bg: 'from-rose-400 to-pink-500',     emoji: '🌸', label: "Maya's 6th" },
+                    { bg: 'from-sky-400 to-blue-500',      emoji: '🌊', label: 'Cape Coast' },
+                    { bg: 'from-amber-400 to-orange-500',  emoji: '🏕️', label: 'Family trip' },
+                    { bg: 'from-violet-400 to-purple-500', emoji: '🎉', label: 'Anniversary' },
+                  ].map((photo, pi) => (
+                    <div key={pi} className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${photo.bg}`}
+                      style={{ aspectRatio: '4/3' }}>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span style={{ fontSize: '26px', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }}>{photo.emoji}</span>
+                      </div>
+                      <div className="absolute bottom-0 inset-x-0 px-2 py-1.5"
+                        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)' }}>
+                        <p className="text-white text-[10px] font-semibold leading-tight">{photo.label}</p>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
+                <p className="text-center text-xs mt-3" style={{ color: 'rgba(255,255,255,0.42)' }}>Auto-synced from every phone</p>
               </div>
             </div>
           </div>
@@ -598,14 +546,24 @@ export default function Landing({ onEnter }) {
                 <h3 className="text-gray-900 font-bold text-lg mb-2 leading-snug" style={{ letterSpacing: '-0.02em' }}>{f.headline}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed mb-5">{f.body}</p>
 
-                <ul className="space-y-2">
-                  {f.bullets.map(b => (
-                    <li key={b} className="flex items-center gap-2 text-sm text-gray-700">
-                      <svg viewBox="0 0 12 12" fill="none" className="w-3.5 h-3.5 shrink-0"><circle cx="6" cy="6" r="6" fill={f.color + '22'}/><path d="M3 6l2 2 4-4" stroke={f.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
+                {f.title === 'AI Memory Studio' ? (
+                  <div className="rounded-2xl overflow-hidden mt-1" style={{ border: `1px solid ${f.color}28` }}>
+                    <div className="flex" style={{ height: '76px' }}>
+                      <div className="flex-1 flex flex-col items-center justify-center gap-1.5" style={{ background: '#f1f5f9' }}>
+                        <span style={{ fontSize: '28px', filter: 'grayscale(1) opacity(0.4)' }}>🖼️</span>
+                        <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Before</span>
+                      </div>
+                      <div className="w-px" style={{ background: `${f.color}35` }} />
+                      <div className="flex-1 flex flex-col items-center justify-center gap-1.5" style={{ background: `${f.color}12` }}>
+                        <span style={{ fontSize: '28px' }}>🖼️</span>
+                        <span className="text-[9px] font-black uppercase tracking-wider" style={{ color: f.color }}>After</span>
+                      </div>
+                    </div>
+                    <div className="py-2 text-center text-[10px] font-bold" style={{ background: `${f.color}10`, color: f.color }}>
+                      Colorized · 4K · Restored in 1 tap
+                    </div>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
