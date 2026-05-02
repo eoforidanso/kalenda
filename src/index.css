@@ -18,25 +18,65 @@
 }
 
 @layer components {
-  /* Light card */
+  /* True glassmorphism card — light context */
   .glass {
-    background: #ffffff;
-    border: 1px solid #e2ecf0;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      0 1px 6px rgba(0, 0, 0, 0.03),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.02);
   }
-  /* White sidebar */
+  /* Frosted glass sidebar */
   .glass-dark {
-    background: #ffffff;
-    border: 1px solid #e2ecf0;
-    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border-right: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow:
+      4px 0 32px rgba(0, 0, 0, 0.05),
+      inset -1px 0 0 rgba(255, 255, 255, 0.85);
+  }
+  /* Dark glass panel (landing left side cards) */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+      0 8px 32px rgba(0, 0, 0, 0.14);
+  }
+  /* Floating auth card */
+  .auth-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.98);
+    box-shadow:
+      0 48px 120px rgba(0, 0, 0, 0.10),
+      0 16px 48px rgba(0, 0, 0, 0.05),
+      0 4px 16px rgba(0, 0, 0, 0.03),
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.02);
+    border-radius: 32px;
   }
   /* 3D card hover tilt */
   .card-3d {
     transform-style: preserve-3d;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.2s cubic-bezier(.22,.68,0,1.2), box-shadow 0.2s ease;
+    will-change: transform;
   }
   .card-3d:hover {
-    box-shadow: 0 20px 60px rgba(91, 191, 191, 0.15), 0 8px 24px rgba(0,0,0,0.08);
+    transform: perspective(800px) rotateX(-3deg) rotateY(2deg) translateZ(8px);
+    box-shadow:
+      0 32px 80px rgba(91, 191, 191, 0.18),
+      0 12px 32px rgba(0,0,0,0.10),
+      inset 0 1px 0 rgba(255,255,255,0.9);
   }
   /* Teal gradient button */
   .btn-glass {
@@ -89,9 +129,45 @@
   /* Teal glow */
   .glow-violet { box-shadow: 0 0 20px rgba(91, 191, 191, 0.35); }
   .glow-cyan   { box-shadow: 0 0 20px rgba(77, 182, 172, 0.3); }
-  /* Float animation */
-  .float-slow { animation: floatSlow 8s ease-in-out infinite; }
-  .float-medium { animation: floatMedium 6s ease-in-out infinite; }
+  /* Float / ambient animations */
+  .float-slow   { animation: floatSlow   8s  ease-in-out infinite; }
+  .float-medium { animation: floatMedium 6s  ease-in-out infinite; }
+  .orb-1 { animation: orbFloat1 14s ease-in-out infinite; }
+  .orb-2 { animation: orbFloat2 18s ease-in-out infinite; animation-delay: -6s; }
+  .orb-3 { animation: orbFloat3 12s ease-in-out infinite; animation-delay: -3s; }
+  .orb-4 { animation: orbFloat4 20s ease-in-out infinite; animation-delay: -10s; }
+  /* Shimmer sweep */
+  .shimmer { position: relative; overflow: hidden; }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
+    animation: shimmerSweep 3s ease-in-out infinite;
+  }
+  /* Noise texture overlay */
+  .noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* Glass input */
+  .input-glass {
+    background: rgba(248, 250, 252, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(226, 236, 240, 0.9);
+    border-radius: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-glass:focus {
+    border-color: #5bbfbf;
+    box-shadow: 0 0 0 4px rgba(91,191,191,0.12), 0 2px 8px rgba(91,191,191,0.08);
+    outline: none;
+  }
 }
 
 @keyframes floatSlow {
@@ -102,3 +178,36 @@
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-12px); }
 }
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(40px, -30px) scale(1.06); }
+  50%  { transform: translate(20px, 50px) scale(0.94); }
+  75%  { transform: translate(-30px, 20px) scale(1.03); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(-50px, 30px) scale(0.96); }
+  66%  { transform: translate(35px, -45px) scale(1.07); }
+}
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%  { transform: translate(30px, 60px) scale(1.04); }
+  80%  { transform: translate(-20px, -30px) scale(0.97); }
+}
+@keyframes orbFloat4 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50%  { transform: translate(-40px, -20px) scale(1.08) rotate(180deg); }
+}
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(200%); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.5s cubic-bezier(.22,.68,0,1.2) both; }
+.fade-in-up-1 { animation-delay: 0.1s; }
+.fade-in-up-2 { animation-delay: 0.2s; }
+.fade-in-up-3 { animation-delay: 0.3s; }
+.fade-in-up-4 { animation-delay: 0.4s; }

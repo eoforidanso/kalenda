@@ -27,11 +27,12 @@ export default function App() {
 
   return (
     <div className="flex h-screen overflow-hidden relative" style={{ background: '#f5f8fa' }}>
-      {/* Subtle ambient orbs */}
+      {/* Ambient orbs — visible through glass panels */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-15%] left-[-8%] w-[700px] h-[700px] rounded-full float-slow" style={{ background: 'radial-gradient(circle, rgba(91,191,191,0.08) 0%, transparent 70%)' }} />
-        <div className="absolute top-[35%] right-[-12%] w-[550px] h-[550px] rounded-full float-medium" style={{ background: 'radial-gradient(circle, rgba(168,218,218,0.10) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-[-10%] left-[30%] w-[500px] h-[500px] rounded-full float-slow" style={{ background: 'radial-gradient(circle, rgba(245,184,184,0.07) 0%, transparent 70%)' }} />
+        <div className="absolute top-[-18%] left-[-10%] w-[800px] h-[800px] rounded-full orb-1" style={{ background: 'radial-gradient(circle, rgba(91,191,191,0.14) 0%, transparent 65%)' }} />
+        <div className="absolute top-[30%] right-[-15%] w-[650px] h-[650px] rounded-full orb-2" style={{ background: 'radial-gradient(circle, rgba(52,211,153,0.10) 0%, transparent 65%)' }} />
+        <div className="absolute bottom-[-12%] left-[25%] w-[580px] h-[580px] rounded-full orb-3" style={{ background: 'radial-gradient(circle, rgba(245,184,184,0.09) 0%, transparent 65%)' }} />
+        <div className="absolute top-[60%] left-[-5%] w-[400px] h-[400px] rounded-full orb-4" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)' }} />
       </div>
       <div className="relative z-10 flex h-full w-full">
         <Sidebar view={view} setView={setView} />
