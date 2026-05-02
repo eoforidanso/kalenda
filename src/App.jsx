@@ -36,7 +36,7 @@ export default function App() {
       </div>
       <div className="relative z-10 flex h-full w-full">
         <Sidebar view={view} setView={setView} />
-        <div className="flex-1 overflow-hidden" style={{ paddingBottom: 0 }}>
+        <div className="flex-1 flex flex-col h-full overflow-hidden">
           <View setView={setView} />
         </div>
       </div>
