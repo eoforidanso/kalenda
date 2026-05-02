@@ -243,12 +243,12 @@ const FEATURES = [
 ];
 
 const TESTIMONIALS = [
-  { name: 'Sarah K.', role: 'Mom of 3 · Accra', stars: 5, quote: 'Kalenda replaced our kitchen whiteboard, photo frame, and family group chat. Our kids actually do their chores now because they can see everyone watching.' },
-  { name: 'James T.', role: 'Dad · London', stars: 5, quote: 'The Wi-Fi frame feature is stunning. Grandma in Kumasi sees new photos of the grandkids every single day without touching any app.' },
-  { name: 'Priya M.', role: 'Parent · Toronto', stars: 5, quote: 'The AI restoration feature made me cry. A 40-year-old faded photo of my parents — colorized, sharp, beautiful. Worth every penny.' },
-  { name: 'David L.', role: 'Father of 2 · NYC', stars: 5, quote: 'Setup took 4 minutes. The whole family was using it within the hour. Best family tech purchase we\'ve ever made.' },
-  { name: 'Amara F.', role: 'Mom · Nairobi', stars: 5, quote: 'My husband travels for work. The shared calendar and live photo frame keeps us connected as a family every single day.' },
-  { name: 'Chen W.', role: 'Parent · Singapore', stars: 5, quote: 'The AI memory studio is genuinely magical. We restored 30-year-old photos of my in-laws\' wedding — they were in tears.' },
+  { name: 'Sarah K.', role: 'Mom of 3 · Accra',     quote: 'Kalenda replaced our whiteboard, photo frame, and group chat. Our kids do their chores now — because everyone can see.' },
+  { name: 'James T.', role: 'Dad · London',          quote: 'Grandma in Kumasi sees new photos of the grandkids every day — without ever touching an app.' },
+  { name: 'Priya M.', role: 'Parent · Toronto',      quote: 'The AI restoration made me cry. A faded photo of my parents — colorized, sharp, beautiful again.' },
+  { name: 'David L.', role: 'Father of 2 · NYC',    quote: 'Setup took 4 minutes. The whole family was using it within the hour.' },
+  { name: 'Amara F.', role: 'Mom · Nairobi',         quote: 'My husband travels for work. Kalenda keeps our family connected — every single day.' },
+  { name: 'Chen W.',  role: 'Parent · Singapore',    quote: 'The AI studio is magical. We restored 30-year-old wedding photos of my in-laws — they were in tears.' },
 ];
 
 const PRICING = [
@@ -343,7 +343,7 @@ export default function Landing({ onEnter }) {
       </header>
 
       {/* ══════════ HERO ══════════ */}
-      <section className="relative pt-28 pb-20 sm:pt-36 sm:pb-28 overflow-hidden" style={{ background: 'linear-gradient(165deg, #0b4040 0%, #165e5e 18%, #1e7a7a 42%, #2d9b9b 68%, #3db5b5 100%)' }}>
+      <section className="relative pt-36 pb-28 sm:pt-52 sm:pb-44 overflow-hidden" style={{ background: 'linear-gradient(165deg, #0b4040 0%, #165e5e 18%, #1e7a7a 42%, #2d9b9b 68%, #3db5b5 100%)' }}>
         {/* Background mesh */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute orb-1" style={{ top:'-20%', left:'-15%', width:'70%', height:'70%', background:'radial-gradient(circle, rgba(91,191,191,0.55) 0%, transparent 65%)', filter:'blur(80px)' }}/>
@@ -378,16 +378,16 @@ export default function Landing({ onEnter }) {
           </div>
 
           {/* Headline */}
-          <div className="text-center mb-8">
-            <h1 className="font-black leading-[1.06] tracking-tight mb-5"
-              style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)', color: 'white', letterSpacing: '-0.03em', textShadow: '0 4px 32px rgba(0,0,0,0.2)' }}>
+          <div className="text-center mb-14">
+            <h1 className="font-black leading-[1.12] tracking-tight mb-9"
+              style={{ fontSize: 'clamp(2.75rem, 5vw, 3.5rem)', color: 'white', letterSpacing: '-0.03em', textShadow: '0 4px 32px rgba(0,0,0,0.2)' }}>
               The frame that holds
               <br />
               <span style={{ background: 'linear-gradient(135deg, #fde68a 0%, #fbbf24 45%, #f59e0b 100%)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>
                 your family together.
               </span>
             </h1>
-            <p className="mx-auto" style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.0625rem', lineHeight: 1.55, maxWidth: '600px', letterSpacing: '-0.01em' }}>
+            <p className="mx-auto" style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1.5rem', lineHeight: 1.4, maxWidth: '600px', letterSpacing: '-0.01em' }}>
               Every photo, every plan, every memory — alive on one beautiful screen. Synced in real time from every phone in your home.
             </p>
           </div>
@@ -447,16 +447,16 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ FEATURES — Part 1: Hero Feature (Wi-Fi Frame) ══════════ */}
-      <section id="features" className="py-24 sm:py-32 overflow-hidden">
+      <section id="features" className="py-32 sm:py-44 overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
 
           {/* Section label */}
           <div className="text-center mb-16 sm:mb-20 reveal" ref={el => el && new IntersectionObserver(([e]) => e.isIntersecting && e.target.classList.add('visible'), { threshold: 0.2 }).observe(el)}>
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>What makes Kalenda home</p>
-            <h2 className="font-black text-gray-900 mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>
+            <h2 className="font-black text-gray-900 mb-6" style={{ fontSize: 'clamp(2.875rem, 4vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.15 }}>
               Four things your<br className="hidden sm:block" /> family will love.
             </h2>
-            <p className="mx-auto" style={{ color: '#64748b', fontSize: '1.0625rem', lineHeight: 1.55, maxWidth: '640px' }}>No more juggling 5 apps. One beautiful hub — photos, calendar, chores, and AI — that actually feels like home.</p>
+            <p className="mx-auto" style={{ color: '#64748b', fontSize: '1.5rem', lineHeight: 1.3, maxWidth: '660px' }}>No more juggling 5 apps. One beautiful hub — photos, calendar, chores, and AI — that actually feels like home.</p>
           </div>
 
           {/* ── Hero feature: Wi-Fi Frame ── */}
@@ -483,14 +483,6 @@ export default function Landing({ onEnter }) {
                 <p className="mb-6" style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1.0625rem', lineHeight: 1.55 }}>
                   A living Wi-Fi photo frame that cycles your family's best moments — auto-synced from every phone. No USB, no fuss, just beauty.
                 </p>
-                <ul className="space-y-3 mb-8">
-                  {['Auto-sync from iOS & Android', 'Weather, time & upcoming events', 'Beautiful cinematic transitions', 'Works on any screen or tablet'].map(b => (
-                    <li key={b} className="flex items-center gap-3 text-sm" style={{ color: 'rgba(255,255,255,0.82)' }}>
-                      <svg viewBox="0 0 12 12" fill="none" className="w-4 h-4 shrink-0"><circle cx="6" cy="6" r="6" fill="rgba(255,255,255,0.18)"/><path d="M3 6l2 2 4-4" stroke="#6ee7b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
                 <button onClick={openSignup}
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white transition-all duration-200 active:scale-95"
                   style={{ background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)' }}>
@@ -499,26 +491,23 @@ export default function Landing({ onEnter }) {
                 </button>
               </div>
 
-              {/* Right: photo mosaic — unique, no frame hardware repeat */}
-              <div className="flex-shrink-0" style={{ minWidth: '240px' }}>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { bg: 'from-rose-400 to-pink-500',     label: "Maya's 6th" },
-                    { bg: 'from-sky-400 to-blue-500',      label: 'Cape Coast' },
-                    { bg: 'from-amber-400 to-orange-500',  label: 'Family trip' },
-                    { bg: 'from-violet-400 to-purple-500', label: 'Anniversary' },
-                  ].map((photo, pi) => (
-                    <div key={pi} className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${photo.bg}`}
-                      style={{ aspectRatio: '4/3' }}>
-                      <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.2) 0%, transparent 60%)' }} />
-                      <div className="absolute bottom-0 inset-x-0 px-2 py-1.5"
-                        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)' }}>
-                        <p className="text-white text-[10px] font-semibold leading-tight">{photo.label}</p>
-                      </div>
+              {/* Right: key specs — no frame hardware repeat */}
+              <div className="flex-shrink-0 w-full lg:w-72">
+                {[
+                  { label: 'Works on any screen', note: 'TV · tablet · spare phone' },
+                  { label: 'Syncs in under 2 min', note: 'From any iOS or Android' },
+                  { label: 'Runs 24 / 7 hands-free', note: 'Auto-rotates, no touching' },
+                  { label: '4K photo quality', note: 'AI-upscaled before display' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4 py-4"
+                    style={{ borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
+                    <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: 'rgba(110,231,183,0.7)' }} />
+                    <div>
+                      <p className="font-semibold text-white" style={{ fontSize: '0.9375rem', lineHeight: 1.3 }}>{item.label}</p>
+                      <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>{item.note}</p>
                     </div>
-                  ))}
-                </div>
-                <p className="text-center text-xs mt-3" style={{ color: 'rgba(255,255,255,0.42)' }}>Auto-synced from every phone</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -545,19 +534,29 @@ export default function Landing({ onEnter }) {
 
                 <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: f.color }}>{f.title}</p>
                 <h3 className="text-gray-900 font-bold mb-3" style={{ fontSize: '1.25rem', letterSpacing: '-0.025em', lineHeight: 1.25 }}>{f.headline}</h3>
-                <p className="text-gray-500 mb-5" style={{ fontSize: '0.9375rem', lineHeight: 1.6 }}>{f.body}</p>
+                <p className="text-gray-500 mb-5" style={{ fontSize: '1.0625rem', lineHeight: 1.55 }}>{f.body}</p>
 
                 {f.title === 'AI Memory Studio' ? (
-                  <div className="rounded-2xl overflow-hidden mt-1" style={{ border: `1px solid ${f.color}28` }}>
+                    <div className="rounded-2xl overflow-hidden mt-1" style={{ border: `1px solid ${f.color}28`, height: '96px' }}>
                     <div className="flex" style={{ height: '76px' }}>
-                      <div className="flex-1 flex flex-col items-center justify-center gap-2" style={{ background: '#f1f5f9' }}>
-                        <div className="w-8 h-8 rounded-lg" style={{ background: 'linear-gradient(135deg, #cbd5e1, #94a3b8)', opacity: 0.5 }} />
-                        <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Before</span>
+                      <div className="flex-1 relative overflow-hidden" style={{ background: '#e2e8f0' }}>
+                        <div className="h-full flex flex-col items-center justify-center gap-2 px-3">
+                          <div className="w-10 h-10 rounded-xl" style={{ background: 'linear-gradient(135deg, #cbd5e1, #94a3b8)', opacity: 0.55 }} />
+                          <div>
+                            <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-400 text-center">Before</p>
+                            <p className="text-[9px] text-slate-400 text-center mt-0.5" style={{ lineHeight: 1.4 }}>Faded · Blurred</p>
+                          </div>
+                        </div>
                       </div>
                       <div className="w-px" style={{ background: `${f.color}35` }} />
-                      <div className="flex-1 flex flex-col items-center justify-center gap-2" style={{ background: `${f.color}12` }}>
-                        <div className="w-8 h-8 rounded-lg" style={{ background: `linear-gradient(135deg, ${f.color}60, ${f.color})` }} />
-                        <span className="text-[9px] font-black uppercase tracking-wider" style={{ color: f.color }}>After</span>
+                      <div className="flex-1 relative overflow-hidden" style={{ background: `${f.color}12` }}>
+                        <div className="h-full flex flex-col items-center justify-center gap-2 px-3">
+                          <div className="w-10 h-10 rounded-xl" style={{ background: `linear-gradient(135deg, ${f.color}70, ${f.color})` }} />
+                          <div>
+                            <p className="text-[9px] font-black uppercase tracking-[0.15em] text-center" style={{ color: f.color }}>After</p>
+                            <p className="text-[9px] text-center mt-0.5" style={{ lineHeight: 1.4, color: f.color }}>4K · Colorized</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="py-2 text-center text-[10px] font-bold" style={{ background: `${f.color}10`, color: f.color }}>
@@ -573,12 +572,12 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ HOW IT WORKS ══════════ */}
-      <section id="how-it-works" className="py-24 sm:py-32" style={{ background: 'linear-gradient(165deg, #0b4040 0%, #165e5e 25%, #1e7a7a 55%, #2d9b9b 100%)' }}>
+      <section id="how-it-works" className="py-32 sm:py-44" style={{ background: 'linear-gradient(165deg, #0b4040 0%, #165e5e 25%, #1e7a7a 55%, #2d9b9b 100%)' }}>
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#6ee7b7' }}>Setup in minutes</p>
-            <h2 className="font-black mb-5" style={{ color: 'white', fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>You're four steps away from home.</h2>
-            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.0625rem', lineHeight: 1.55 }}>No tech skills needed. If you can set up Netflix, you can set up Kalenda.</p>
+            <h2 className="font-black mb-6" style={{ color: 'white', fontSize: 'clamp(2.875rem, 4vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.15 }}>You’re four steps away from home.</h2>
+            <p style={{ color: 'rgba(255,255,255,0.62)', fontSize: '1.5rem', lineHeight: 1.3 }}>No tech skills needed. If you can set up Netflix, you can set up Kalenda.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -598,11 +597,11 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ TESTIMONIALS ══════════ */}
-      <section className="py-24 sm:py-32 overflow-hidden">
+      <section className="py-32 sm:py-44 overflow-hidden">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>From families who found their home</p>
-            <h2 className="font-black text-gray-900 mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>
+            <h2 className="font-black text-gray-900 mb-6" style={{ fontSize: 'clamp(2.875rem, 4vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.15 }}>
               Some things you can only feel.
             </h2>
             <div className="flex items-center justify-center gap-1">
@@ -612,11 +611,8 @@ export default function Landing({ onEnter }) {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="rounded-3xl p-6 flex flex-col" style={{ background: i % 3 === 1 ? 'linear-gradient(135deg, #0b4040, #1e7a7a)' : '#fffbf5', border: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(245,158,11,0.12)'}`, boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}>
-                <div className="flex gap-0.5 mb-4">
-                  {Array(t.stars).fill(0).map((_,j) => <span key={j} style={{ color: i%3===1 ? '#fbbf24' : '#f59e0b', fontSize:'13px' }}>★</span>)}
-                </div>
-                <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: i%3===1 ? 'rgba(255,255,255,0.82)' : '#4b5563', fontStyle:'italic' }}>"{t.quote}"</p>
+              <div key={i} className="rounded-3xl p-7 flex flex-col" style={{ background: i % 3 === 1 ? 'linear-gradient(135deg, #0b4040, #1e7a7a)' : '#fffbf5', border: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(245,158,11,0.12)'}`, boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}>
+                <p className="flex-1 mb-6" style={{ color: i%3===1 ? 'rgba(255,255,255,0.82)' : '#4b5563', fontStyle:'italic', fontSize: '1.0625rem', lineHeight: 1.6 }}>“{t.quote}”</p>
                 <div className="flex items-center gap-3 pt-4" style={{ borderTop: `1px solid ${i%3===1 ? 'rgba(255,255,255,0.12)' : 'rgba(226,236,240,0.7)'}` }}>
                   <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-sm font-black"
                     style={{ background: i%3===1 ? 'rgba(255,255,255,0.18)' : 'rgba(91,191,191,0.14)', color: i%3===1 ? 'white' : '#2d9b9b', border: i%3===1 ? '1px solid rgba(255,255,255,0.22)' : '1px solid rgba(91,191,191,0.25)' }}>
@@ -634,12 +630,12 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ PRICING ══════════ */}
-      <section id="pricing" className="py-24 sm:py-32" style={{ background: '#fffbf5' }}>
+      <section id="pricing" className="py-32 sm:py-44" style={{ background: '#fffbf5' }}>
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>Find your family's plan</p>
-            <h2 className="font-black text-gray-900 mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>One price. Your whole family.</h2>
-            <p style={{ color: '#64748b', fontSize: '1.0625rem', lineHeight: 1.55 }}>Free to start. Upgrade when your family is ready.</p>
+            <h2 className="font-black text-gray-900 mb-6" style={{ fontSize: 'clamp(2.875rem, 4vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.15 }}>One price. Your whole family.</h2>
+            <p className="mx-auto" style={{ color: '#64748b', fontSize: '1.5rem', lineHeight: 1.3, maxWidth: '660px' }}>One subscription. Your family’s memories, routines, and connection — finally in one place.</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {PRICING.map((p, i) => (
@@ -680,11 +676,11 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ FAQ ══════════ */}
-      <section id="faq" className="py-24 sm:py-32">
+      <section id="faq" className="py-32 sm:py-44">
         <div className="max-w-2xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-14">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>Got questions?</p>
-            <h2 className="font-black text-gray-900" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>Everything you're wondering.</h2>
+            <h2 className="font-black text-gray-900" style={{ fontSize: 'clamp(2.875rem, 4vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.15 }}>Everything you’re wondering.</h2>
           </div>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
@@ -706,17 +702,17 @@ export default function Landing({ onEnter }) {
       </section>
 
       {/* ══════════ FINAL CTA ══════════ */}
-      <section className="py-24 sm:py-32 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #0b4040 0%, #165e5e 30%, #1e7a7a 65%, #2d9b9b 100%)' }}>
+      <section className="py-32 sm:py-44 relative overflow-hidden" style={{ background: 'linear-gradient(145deg, #0b4040 0%, #165e5e 30%, #1e7a7a 65%, #2d9b9b 100%)' }}>
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute orb-2" style={{ top:'-30%', right:'-20%', width:'60%', height:'60%', background:'radial-gradient(circle, rgba(52,211,153,0.3) 0%, transparent 65%)', filter:'blur(80px)' }}/>
           <div className="absolute orb-3" style={{ bottom:'-20%', left:'-10%', width:'55%', height:'55%', background:'radial-gradient(circle, rgba(91,191,191,0.4) 0%, transparent 65%)', filter:'blur(70px)' }}/>
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-5 sm:px-8 text-center">
           <p className="text-xs font-black uppercase tracking-[0.18em] mb-5" style={{ color: '#6ee7b7' }}>Start today</p>
-          <h2 className="font-black text-white mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>
+          <h2 className="font-black text-white mb-6" style={{ fontSize: 'clamp(2.875rem, 4vw, 3.25rem)', letterSpacing: '-0.03em', lineHeight: 1.15 }}>
             Your family deserves<br />a frame this good.
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: '1.0625rem', lineHeight: 1.55, maxWidth: '640px', margin: '0 auto 2.5rem' }}>
+          <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: '1.5rem', lineHeight: 1.35, maxWidth: '620px', margin: '0 auto 2.5rem' }}>
             4,200 families are already home. Join them — free to start, live in 4 minutes.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
