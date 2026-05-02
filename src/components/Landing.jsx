@@ -15,9 +15,9 @@ const testimonials = [
 
 export default function Landing({ onEnter }) {
   const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState('demo@kalenda.app');
+  const [password, setPassword] = useState('kalenda2026');
+  const [name, setName] = useState('Demo Family');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -101,7 +101,7 @@ export default function Landing({ onEnter }) {
       </div>
 
       {/* ── RIGHT PANEL ── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-5 sm:p-8 lg:p-12 relative overflow-y-auto">
 
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2.5 mb-8">

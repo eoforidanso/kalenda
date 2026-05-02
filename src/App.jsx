@@ -35,7 +35,9 @@ export default function App() {
       </div>
       <div className="relative z-10 flex h-full w-full">
         <Sidebar view={view} setView={setView} />
-        <View setView={setView} />
+        <div className="flex-1 overflow-hidden pb-16 md:pb-0">
+          <View setView={setView} />
+        </div>
       </div>
     </div>
   );

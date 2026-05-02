@@ -68,7 +68,7 @@ export default function Family() {
       {showInvite && <InviteModal onClose={() => setShowInvite(false)} />}
 
       {/* Topbar */}
-      <div className="sticky top-0 z-10 px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">Family</h1>
           <p className="text-gray-400 text-xs mt-0.5">{members.length} members · {pending.length} pending invite</p>
@@ -81,7 +81,7 @@ export default function Family() {
         </button>
       </div>
 
-      <div className="px-6 py-5 space-y-5">
+      <div className="px-4 md:px-6 py-5 space-y-5">
         {/* Members list */}
         <div className="glass rounded-2xl overflow-hidden">
             <div className="px-5 py-3.5" style={{ borderBottom: '1px solid #e8ecf0' }}>

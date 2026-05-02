@@ -91,12 +91,12 @@ export default function Settings() {
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin" style={{ background: 'transparent' }}>
       {/* Header */}
-      <div className="sticky top-0 z-10 px-6 py-3.5" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <h1 className="text-gray-800 font-semibold">Settings</h1>
         <p className="text-gray-400 text-xs mt-0.5">Manage your account and preferences</p>
       </div>
 
-      <div className="px-6 py-5 max-w-2xl space-y-5">
+      <div className="px-4 md:px-6 py-5 max-w-2xl space-y-5">
 
         {/* ── PROFILE ─────────────────────────────── */}
         <Section title="Profile">

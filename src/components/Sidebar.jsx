@@ -1,3 +1,12 @@
+// Bottom nav items for mobile (5 most important)
+const mobileNav = [
+  { id: 'dashboard', label: 'Home', icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zm8-8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zm0 8a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg> },
+  { id: 'calendar', label: 'Calendar', icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/></svg> },
+  { id: 'photos', label: 'Photos', icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd"/></svg> },
+  { id: 'family', label: 'Family', icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg> },
+  { id: 'settings', label: 'More', icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/></svg> },
+];
+
 export default function Sidebar({ view, setView }) {
   const nav = [
     {
@@ -45,7 +54,9 @@ export default function Sidebar({ view, setView }) {
   ];
 
   return (
-    <aside className="w-56 shrink-0 flex flex-col h-full relative z-10 glass-dark" style={{ borderRight: '1px solid #e2ecf0' }}>
+    <>
+      {/* ── DESKTOP SIDEBAR ── */}
+      <aside className="hidden md:flex w-56 shrink-0 flex-col h-full relative z-10 glass-dark" style={{ borderRight: '1px solid #e2ecf0' }}>
       {/* Subtle top border accent */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400/50 to-transparent" />
 
@@ -122,6 +133,28 @@ export default function Sidebar({ view, setView }) {
           </div>
         </div>
       </div>
-    </aside>
+      </aside>
+
+      {/* ── MOBILE BOTTOM NAV ── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-2"
+        style={{ background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid #e2ecf0', paddingBottom: 'env(safe-area-inset-bottom, 8px)' }}>
+        {mobileNav.map(item => {
+          const active = view === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setView(item.id)}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all"
+              style={active ? { color: '#3a9e9e' } : { color: '#94a3b8' }}
+            >
+              <div className={`p-1.5 rounded-xl transition-all ${active ? 'bg-teal-50' : ''}`}>
+                {item.icon}
+              </div>
+              <span className="text-[10px] font-semibold">{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
+    </>
   );
 }

@@ -38,7 +38,7 @@ export default function AIStudio({ setView }) {
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col">
-      <div className="sticky top-0 z-10 px-6 py-3.5 flex items-center justify-between shrink-0" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between shrink-0" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">AI Studio</h1>
           <p className="text-gray-500 text-xs">Enhance, restore & transform your family photos</p>

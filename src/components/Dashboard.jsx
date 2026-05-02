@@ -154,18 +154,18 @@ export default function Dashboard({ setView }) {
     <div className="flex-1 overflow-y-auto scrollbar-thin" style={{ background: 'transparent' }}>
 
       {/* Header */}
-      <div className="sticky top-0 z-10 px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">Today</h1>
           <p className="text-gray-500 text-xs">Good morning, Harriet 👋 · May 1, 2026</p>
         </div>
-        <div className="flex items-center gap-4">
-          <WeatherWidget />
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="hidden sm:block"><WeatherWidget /></div>
           <LiveClock />
         </div>
       </div>
 
-      <div className="px-6 py-5 space-y-5">
+      <div className="px-4 md:px-6 py-5 space-y-5">
 
         {/* Family member filter bar — like Cozi color coding */}
         <div className="glass rounded-2xl p-4">
@@ -173,7 +173,7 @@ export default function Dashboard({ setView }) {
             <h2 className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Family Members</h2>
             <button onClick={() => setView('family')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">Manage →</button>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
             <button
               onClick={() => setActiveFilter('All')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${activeFilter === 'All' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
@@ -198,7 +198,7 @@ export default function Dashboard({ setView }) {
         </div>
 
         {/* Main 3-column grid */}
-        <div className="grid lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
           {/* TODAY'S SCHEDULE — color-coded by member (Cozi style) */}
           <div className="lg:col-span-2 glass rounded-2xl p-5">
@@ -288,7 +288,7 @@ export default function Dashboard({ setView }) {
         </div>
 
         {/* CHORES + SHOPPING — side by side (Skylight style) */}
-        <div className="grid md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
           {/* Chores */}
           <div className="glass rounded-2xl p-5">

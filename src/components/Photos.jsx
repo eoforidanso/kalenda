@@ -122,7 +122,7 @@ export default function Photos() {
       {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
 
       {/* Topbar */}
-      <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-4 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold text-lg">Photos</h1>
           <p className="text-gray-500 text-xs mt-0.5">{filtered.length} of {allPhotos.length} photos · 4.1 GB used</p>
@@ -138,7 +138,7 @@ export default function Photos() {
         </button>
       </div>
 
-      <div className="px-6 py-5">
+      <div className="px-4 md:px-6 py-5">
         {/* Member filter */}
         <div className="flex gap-2 mb-2.5 flex-wrap">
           {members.map((m) => (

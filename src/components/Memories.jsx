@@ -44,14 +44,14 @@ export default function Memories({ setView }) {
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin">
-      <div className="sticky top-0 z-10 px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">Memories</h1>
           <p className="text-gray-500 text-xs">Relive your family's story</p>
         </div>
       </div>
 
-      <div className="px-6 py-5 space-y-6">
+      <div className="px-4 md:px-6 py-5 space-y-6">
         {/* On This Day hero */}
         <div className="rounded-2xl p-5" style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.2)' }}>
           <div className="flex items-center gap-2 mb-4">

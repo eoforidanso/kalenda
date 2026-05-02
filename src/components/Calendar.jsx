@@ -504,7 +504,7 @@ export default function Calendar({ setView }) {
         </div>
       ) : null}
 
-      <div className="px-6 py-5 grid lg:grid-cols-3 gap-5">
+      <div className="px-4 md:px-6 py-5 grid lg:grid-cols-3 gap-5">
         {/* Main area */}
         <div className="lg:col-span-2 space-y-4">
           {/* Nav + filter row */}
