@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 //  FRAME MOCKUP (hero visual)
 // ─────────────────────────────────────────────
 const frameSlides = [
-  { bg: 'from-rose-500 via-pink-500 to-orange-400',      emoji: '🌸', label: "Maya's 6th Birthday",  who: 'Mom · 2 yrs ago'  },
-  { bg: 'from-sky-500 via-blue-500 to-indigo-500',       emoji: '🌊', label: 'Beach Day, Cape Coast', who: 'Dad · last summer' },
-  { bg: 'from-emerald-500 via-teal-500 to-cyan-500',     emoji: '🌿', label: 'Forest Hike',            who: 'Emma · 3 mos ago' },
-  { bg: 'from-violet-500 via-purple-500 to-fuchsia-500', emoji: '🎉', label: '10th Anniversary',       who: 'Dad · 6 mos ago'  },
+  { bg: 'from-rose-500 via-pink-500 to-orange-400',      label: "Maya's 6th Birthday",  who: 'Mom · 2 yrs ago'  },
+  { bg: 'from-sky-500 via-blue-500 to-indigo-500',       label: 'Beach Day, Cape Coast', who: 'Dad · last summer' },
+  { bg: 'from-emerald-500 via-teal-500 to-cyan-500',     label: 'Forest Hike',            who: 'Emma · 3 mos ago' },
+  { bg: 'from-violet-500 via-purple-500 to-fuchsia-500', label: '10th Anniversary',       who: 'Dad · 6 mos ago'  },
 ];
 
 function FrameMockup({ scale = 1 }) {
@@ -33,19 +33,22 @@ function FrameMockup({ scale = 1 }) {
       <div className="absolute z-30" style={{ right: `${-w * 0.18}px`, top: '12%', animation: 'floatMedium 3s ease-in-out infinite' }}>
         <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap"
           style={{ background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.36)', color: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.5)' }}>
-          <span>📅</span> Soccer · 3:30 PM
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{width:'11px',height:'11px',opacity:0.75}}><rect x="1" y="2" width="12" height="11" rx="1.5"/><path d="M5 1v2M9 1v2M1 6h12"/></svg>
+          Soccer · 3:30 PM
         </div>
       </div>
       <div className="absolute z-30" style={{ left: `${-w * 0.2}px`, top: '34%', animation: 'floatSlow 4.5s ease-in-out infinite', animationDelay: '1.4s' }}>
         <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap"
           style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.28)', color: 'rgba(255,255,255,0.92)', boxShadow: '0 8px 32px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.4)' }}>
-          <span>✅</span> Jake finished chores
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{width:'11px',height:'11px',opacity:0.75}}><circle cx="7" cy="7" r="6"/><path d="M4.5 7l2 2 3.5-3.5"/></svg>
+          Jake finished chores
         </div>
       </div>
       <div className="absolute z-30" style={{ right: `${-w * 0.14}px`, top: '58%', animation: 'floatMedium 5s ease-in-out infinite', animationDelay: '2.8s' }}>
         <div className="flex items-center gap-1.5 pl-2.5 pr-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap"
           style={{ background: 'rgba(251,191,36,0.22)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(251,191,36,0.4)', color: '#fef3c7', boxShadow: '0 8px 24px rgba(251,191,36,0.25), inset 0 1px 0 rgba(255,255,255,0.3)' }}>
-          <span>🎂</span> Jake's birthday in 9d
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{width:'11px',height:'11px',opacity:0.75}}><path d="M7 1v1.5M4 9V7a3 3 0 016 0v2M1.5 9h11l1 3.5H.5L1.5 9zM5.5 12.5a1.5 1.5 0 003 0"/></svg>
+          Jake's birthday in 9d
         </div>
       </div>
 
@@ -56,8 +59,8 @@ function FrameMockup({ scale = 1 }) {
           boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.14), inset 0 -2px 0 rgba(0,0,0,0.6), inset 2px 0 0 rgba(255,255,255,0.06), inset -2px 0 0 rgba(0,0,0,0.3)',
         }}>
           <div style={{ width: `${w}px`, borderRadius: '13px', overflow: 'hidden', aspectRatio: '16/10', position: 'relative' }}>
-            <div className={`absolute inset-0 bg-gradient-to-br ${slide.bg} flex items-center justify-center transition-opacity duration-300`} style={{ opacity: fading ? 0 : 1 }}>
-              <span style={{ fontSize: `${w * 0.27}px`, filter: 'drop-shadow(0 6px 20px rgba(0,0,0,0.5))' }}>{slide.emoji}</span>
+            <div className={`absolute inset-0 bg-gradient-to-br ${slide.bg} transition-opacity duration-300`} style={{ opacity: fading ? 0 : 1 }}>
+              <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 38% 38%, rgba(255,255,255,0.22) 0%, transparent 55%)' }} />
             </div>
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 50%)', zIndex: 5 }} />
             <div className="absolute top-2.5 left-3 z-10">
@@ -144,7 +147,7 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
         </div>
 
         <h2 className="font-black text-gray-900 mb-1 tracking-tight" style={{ fontSize:'1.5rem', letterSpacing:'-0.03em' }}>
-          {mode==='signin' ? 'Welcome back 👋' : 'Join 4,200+ families'}
+          {mode==='signin' ? 'Welcome back' : 'Join 4,200+ families'}
         </h2>
         <p className="text-gray-500 text-sm mb-6">{mode==='signin' ? 'Sign in to your Kalenda family hub.' : 'Free for 14 days — no credit card needed.'}</p>
 
@@ -210,32 +213,32 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
 
 const FEATURES = [
   {
-    icon: '🖼️', color: '#5bbfbf', bg: 'from-teal-500 to-cyan-500',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{width:'20px',height:'20px'}}><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>,
+    color: '#5bbfbf', bg: 'from-teal-500 to-cyan-500',
     title: 'Wi-Fi Photo Frame',
     headline: 'Your memories, always on display.',
     body: 'A living frame that cycles your family\'s best photos — automatically synced from every phone, no USB required.',
-    bullets: ['Auto-sync from iOS & Android', 'Beautiful transition effects', 'Display weather, time & events'],
   },
   {
-    icon: '📅', color: '#34d399', bg: 'from-emerald-500 to-teal-500',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{width:'20px',height:'20px'}}><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>,
+    color: '#34d399', bg: 'from-emerald-500 to-teal-500',
     title: 'Shared Calendar',
     headline: 'Every schedule, in one view.',
     body: 'Color-coded per family member. Add events from any device and they appear instantly on every screen.',
-    bullets: ['Per-member color coding', 'Event reminders & alerts', 'Syncs with Google Calendar'],
   },
   {
-    icon: '✅', color: '#fbbf24', bg: 'from-amber-500 to-orange-500',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{width:'20px',height:'20px'}}><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>,
+    color: '#fbbf24', bg: 'from-amber-500 to-orange-500',
     title: 'Chores & Tasks',
     headline: 'Assign, track, celebrate.',
     body: 'Build responsibility in kids and keep the household running — with streaks, rewards, and real-time updates.',
-    bullets: ['Drag-and-drop assignment', 'Completion streaks & points', 'Instant family notifications'],
   },
   {
-    icon: '✨', color: '#f472b6', bg: 'from-pink-500 to-rose-500',
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{width:'20px',height:'20px'}}><path d="M15 4l5 5L8 21H3v-5L15 4zM14 7l3 3"/></svg>,
+    color: '#f472b6', bg: 'from-pink-500 to-rose-500',
     title: 'AI Memory Studio',
     headline: 'Old photos, reborn.',
     body: 'Restore faded photos, remove blur, upscale to 4K, colorize black & white — powered by AI in one tap.',
-    bullets: ['Auto colorization', 'Blur removal & upscaling', 'Face restoration technology'],
   },
 ];
 
@@ -384,7 +387,7 @@ export default function Landing({ onEnter }) {
                 your family together.
               </span>
             </h1>
-            <p className="mx-auto text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)', maxWidth: '520px', letterSpacing: '-0.01em' }}>
+            <p className="mx-auto" style={{ color: 'rgba(255,255,255,0.75)', fontSize: '1.0625rem', lineHeight: 1.55, maxWidth: '600px', letterSpacing: '-0.01em' }}>
               Every photo, every plan, every memory — alive on one beautiful screen. Synced in real time from every phone in your home.
             </p>
           </div>
@@ -450,10 +453,10 @@ export default function Landing({ onEnter }) {
           {/* Section label */}
           <div className="text-center mb-16 sm:mb-20 reveal" ref={el => el && new IntersectionObserver(([e]) => e.isIntersecting && e.target.classList.add('visible'), { threshold: 0.2 }).observe(el)}>
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>What makes Kalenda home</p>
-            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em', lineHeight: '1.1' }}>
+            <h2 className="font-black text-gray-900 mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>
               Four things your<br className="hidden sm:block" /> family will love.
             </h2>
-            <p className="text-gray-500 text-lg mx-auto" style={{ maxWidth: '480px' }}>No more juggling 5 apps. One beautiful hub — photos, calendar, chores, and AI — that actually feels like home.</p>
+            <p className="mx-auto" style={{ color: '#64748b', fontSize: '1.0625rem', lineHeight: 1.55, maxWidth: '640px' }}>No more juggling 5 apps. One beautiful hub — photos, calendar, chores, and AI — that actually feels like home.</p>
           </div>
 
           {/* ── Hero feature: Wi-Fi Frame ── */}
@@ -474,10 +477,10 @@ export default function Landing({ onEnter }) {
                   style={{ background: 'rgba(251,191,36,0.22)', border: '1px solid rgba(251,191,36,0.4)', color: '#fde68a' }}>
                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#fbbf24' }} /> Signature feature
                 </div>
-                <h3 className="font-black text-white mb-4 leading-tight" style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', letterSpacing: '-0.03em' }}>
+                <h3 className="font-black text-white mb-4" style={{ fontSize: 'clamp(1.75rem, 2.8vw, 2.25rem)', letterSpacing: '-0.03em', lineHeight: 1.12 }}>
                   Your memories, always on display.
                 </h3>
-                <p className="mb-6 leading-relaxed" style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1.05rem' }}>
+                <p className="mb-6" style={{ color: 'rgba(255,255,255,0.72)', fontSize: '1.0625rem', lineHeight: 1.55 }}>
                   A living Wi-Fi photo frame that cycles your family's best moments — auto-synced from every phone. No USB, no fuss, just beauty.
                 </p>
                 <ul className="space-y-3 mb-8">
@@ -500,16 +503,14 @@ export default function Landing({ onEnter }) {
               <div className="flex-shrink-0" style={{ minWidth: '240px' }}>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { bg: 'from-rose-400 to-pink-500',     emoji: '🌸', label: "Maya's 6th" },
-                    { bg: 'from-sky-400 to-blue-500',      emoji: '🌊', label: 'Cape Coast' },
-                    { bg: 'from-amber-400 to-orange-500',  emoji: '🏕️', label: 'Family trip' },
-                    { bg: 'from-violet-400 to-purple-500', emoji: '🎉', label: 'Anniversary' },
+                    { bg: 'from-rose-400 to-pink-500',     label: "Maya's 6th" },
+                    { bg: 'from-sky-400 to-blue-500',      label: 'Cape Coast' },
+                    { bg: 'from-amber-400 to-orange-500',  label: 'Family trip' },
+                    { bg: 'from-violet-400 to-purple-500', label: 'Anniversary' },
                   ].map((photo, pi) => (
                     <div key={pi} className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${photo.bg}`}
                       style={{ aspectRatio: '4/3' }}>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span style={{ fontSize: '26px', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }}>{photo.emoji}</span>
-                      </div>
+                      <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.2) 0%, transparent 60%)' }} />
                       <div className="absolute bottom-0 inset-x-0 px-2 py-1.5"
                         style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)' }}>
                         <p className="text-white text-[10px] font-semibold leading-tight">{photo.label}</p>
@@ -537,25 +538,25 @@ export default function Landing({ onEnter }) {
                   style={{ background: `radial-gradient(circle, ${f.color}20 0%, transparent 70%)`, transform: 'translate(30%, -30%)' }} />
 
                 {/* Icon */}
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl mb-5 transition-transform duration-300 group-hover:scale-110"
-                  style={{ background: f.color + '18', border: `1.5px solid ${f.color}35`, boxShadow: `0 4px 14px ${f.color}22` }}>
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
+                  style={{ background: f.color + '18', border: `1.5px solid ${f.color}35`, boxShadow: `0 4px 14px ${f.color}22`, color: f.color }}>
                   {f.icon}
                 </div>
 
-                <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: f.color }}>{f.title}</p>
-                <h3 className="text-gray-900 font-bold text-lg mb-2 leading-snug" style={{ letterSpacing: '-0.02em' }}>{f.headline}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-5">{f.body}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest mb-3" style={{ color: f.color }}>{f.title}</p>
+                <h3 className="text-gray-900 font-bold mb-3" style={{ fontSize: '1.25rem', letterSpacing: '-0.025em', lineHeight: 1.25 }}>{f.headline}</h3>
+                <p className="text-gray-500 mb-5" style={{ fontSize: '0.9375rem', lineHeight: 1.6 }}>{f.body}</p>
 
                 {f.title === 'AI Memory Studio' ? (
                   <div className="rounded-2xl overflow-hidden mt-1" style={{ border: `1px solid ${f.color}28` }}>
                     <div className="flex" style={{ height: '76px' }}>
-                      <div className="flex-1 flex flex-col items-center justify-center gap-1.5" style={{ background: '#f1f5f9' }}>
-                        <span style={{ fontSize: '28px', filter: 'grayscale(1) opacity(0.4)' }}>🖼️</span>
+                      <div className="flex-1 flex flex-col items-center justify-center gap-2" style={{ background: '#f1f5f9' }}>
+                        <div className="w-8 h-8 rounded-lg" style={{ background: 'linear-gradient(135deg, #cbd5e1, #94a3b8)', opacity: 0.5 }} />
                         <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Before</span>
                       </div>
                       <div className="w-px" style={{ background: `${f.color}35` }} />
-                      <div className="flex-1 flex flex-col items-center justify-center gap-1.5" style={{ background: `${f.color}12` }}>
-                        <span style={{ fontSize: '28px' }}>🖼️</span>
+                      <div className="flex-1 flex flex-col items-center justify-center gap-2" style={{ background: `${f.color}12` }}>
+                        <div className="w-8 h-8 rounded-lg" style={{ background: `linear-gradient(135deg, ${f.color}60, ${f.color})` }} />
                         <span className="text-[9px] font-black uppercase tracking-wider" style={{ color: f.color }}>After</span>
                       </div>
                     </div>
@@ -576,21 +577,20 @@ export default function Landing({ onEnter }) {
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#6ee7b7' }}>Setup in minutes</p>
-            <h2 className="font-black mb-4" style={{ color: 'white', fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>You're four steps away from home.</h2>
-            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.1rem' }}>No tech skills needed. If you can set up Netflix, you can set up Kalenda.</p>
+            <h2 className="font-black mb-5" style={{ color: 'white', fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>You're four steps away from home.</h2>
+            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '1.0625rem', lineHeight: 1.55 }}>No tech skills needed. If you can set up Netflix, you can set up Kalenda.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { n:'1', icon:'📲', title:'Download the app', body:'Install Kalenda on each family member\'s phone — iOS or Android.' },
-              { n:'2', icon:'👨‍👩‍👧','title':'Create your hub', body:'Set up your family hub and invite each member with their colour.' },
-              { n:'3', icon:'🖼️', title:'Plug in your frame', body:'Open Kalenda on any screen and set it as your family frame display.' },
-              { n:'4', icon:'✨', title:'Enjoy together', body:'Photos, calendar, chores and AI features are all live in seconds.' },
+              { n:'1', title:'Download the app', body:'Install Kalenda on each family member\'s phone — iOS or Android.' },
+              { n:'2', title:'Create your hub',   body:'Set up your family hub and invite each member with their colour.' },
+              { n:'3', title:'Plug in your frame', body:'Open Kalenda on any screen and set it as your family frame display.' },
+              { n:'4', title:'Enjoy together',     body:'Photos, calendar, chores and AI features are all live in seconds.' },
             ].map(step => (
-              <div key={step.n} className="relative rounded-3xl p-6" style={{ background: 'rgba(255,255,255,0.09)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)', border:'1px solid rgba(255,255,255,0.15)', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.22)' }}>
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black mb-4" style={{ background: 'rgba(255,255,255,0.18)', color: 'white', border: '1.5px solid rgba(255,255,255,0.3)' }}>{step.n}</div>
-                <span className="text-3xl mb-3 block">{step.icon}</span>
-                <h3 className="text-white font-bold mb-2 text-base">{step.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.58)' }}>{step.body}</p>
+              <div key={step.n} className="relative rounded-3xl p-7" style={{ background: 'rgba(255,255,255,0.09)', backdropFilter:'blur(16px)', WebkitBackdropFilter:'blur(16px)', border:'1px solid rgba(255,255,255,0.15)', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.22)' }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-black mb-5" style={{ background: 'rgba(255,255,255,0.18)', color: 'white', border: '1.5px solid rgba(255,255,255,0.3)' }}>{step.n}</div>
+                <h3 className="text-white font-bold mb-2" style={{ fontSize: '1rem', letterSpacing: '-0.01em' }}>{step.title}</h3>
+                <p style={{ color: 'rgba(255,255,255,0.58)', fontSize: '0.9375rem', lineHeight: 1.6 }}>{step.body}</p>
               </div>
             ))}
           </div>
@@ -602,7 +602,7 @@ export default function Landing({ onEnter }) {
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>From families who found their home</p>
-            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>
+            <h2 className="font-black text-gray-900 mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>
               Some things you can only feel.
             </h2>
             <div className="flex items-center justify-center gap-1">
@@ -638,8 +638,8 @@ export default function Landing({ onEnter }) {
         <div className="max-w-5xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-16">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>Find your family's plan</p>
-            <h2 className="font-black text-gray-900 mb-4" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>One price. Your whole family.</h2>
-            <p className="text-gray-500 text-lg">Free to start. Upgrade when your family is ready.</p>
+            <h2 className="font-black text-gray-900 mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>One price. Your whole family.</h2>
+            <p style={{ color: '#64748b', fontSize: '1.0625rem', lineHeight: 1.55 }}>Free to start. Upgrade when your family is ready.</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {PRICING.map((p, i) => (
@@ -684,7 +684,7 @@ export default function Landing({ onEnter }) {
         <div className="max-w-2xl mx-auto px-5 sm:px-8">
           <div className="text-center mb-14">
             <p className="text-xs font-black uppercase tracking-[0.18em] mb-4" style={{ color: '#d97706' }}>Got questions?</p>
-            <h2 className="font-black text-gray-900" style={{ fontSize: 'clamp(1.9rem, 3.5vw, 3rem)', letterSpacing: '-0.03em' }}>Everything you're wondering.</h2>
+            <h2 className="font-black text-gray-900" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>Everything you're wondering.</h2>
           </div>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
@@ -713,10 +713,10 @@ export default function Landing({ onEnter }) {
         </div>
         <div className="relative z-10 max-w-3xl mx-auto px-5 sm:px-8 text-center">
           <p className="text-xs font-black uppercase tracking-[0.18em] mb-5" style={{ color: '#6ee7b7' }}>Start today</p>
-          <h2 className="font-black text-white mb-5" style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', letterSpacing: '-0.03em', lineHeight: '1.1' }}>
+          <h2 className="font-black text-white mb-5" style={{ fontSize: 'clamp(3rem, 4vw, 3.75rem)', letterSpacing: '-0.03em', lineHeight: '1.08' }}>
             Your family deserves<br />a frame this good.
           </h2>
-          <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.68)', maxWidth: '480px', margin: '0 auto 2.5rem' }}>
+          <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: '1.0625rem', lineHeight: 1.55, maxWidth: '640px', margin: '0 auto 2.5rem' }}>
             4,200 families are already home. Join them — free to start, live in 4 minutes.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -779,7 +779,7 @@ export default function Landing({ onEnter }) {
 
           {/* Bottom bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between pt-8 gap-3" style={{ borderTop: '1px solid rgba(226,236,240,0.6)' }}>
-            <p className="text-sm text-gray-400 text-center sm:text-left">© 2026 Kalenda · Built with ❤️ for families everywhere</p>
+            <p className="text-sm text-gray-400 text-center sm:text-left">© 2026 Kalenda · Built for families everywhere</p>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs text-gray-400">All systems operational</span>
