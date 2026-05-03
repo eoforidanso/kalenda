@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const allPhotos = [
   // May 2026
@@ -123,6 +123,27 @@ export default function Photos() {
     setSelected(null);
   }
 
+  const selectedIdx = selected ? filtered.findIndex(p => p.id === selected.id) : -1;
+
+  const showPrev = useCallback(() => {
+    if (selectedIdx > 0) setSelected(filtered[selectedIdx - 1]);
+  }, [selectedIdx, filtered]);
+
+  const showNext = useCallback(() => {
+    if (selectedIdx < filtered.length - 1) setSelected(filtered[selectedIdx + 1]);
+  }, [selectedIdx, filtered]);
+
+  useEffect(() => {
+    if (!selected) return;
+    function onKey(e) {
+      if (e.key === 'Escape') setSelected(null);
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'ArrowRight') showNext();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selected, showPrev, showNext]);
+
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0">
       {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
@@ -207,52 +228,77 @@ export default function Photos() {
         </div>
       </div>
 
-      {/* Photo detail panel */}
+      {/* Lightbox */}
       {selected && (
-        <div className="fixed inset-y-0 right-0 w-72 bg-white border-l border-gray-100 flex flex-col z-30 shadow-2xl">
-          <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-            <p className="text-gray-800 font-semibold text-sm">Photo Details</p>
-            <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-700 transition-colors">
-              <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
-                <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/>
-              </svg>
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(12px)' }}
+          onClick={(e) => { if (e.target === e.currentTarget) setSelected(null); }}>
+
+          {/* Close */}
+          <button onClick={() => setSelected(null)}
+            className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all z-10">
+            <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+          </button>
+
+          {/* Counter */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/40 text-xs">
+            {selectedIdx + 1} / {filtered.length}
           </div>
-          <div className={`aspect-square w-full bg-gradient-to-br ${selected.bg} flex items-center justify-center text-5xl shrink-0`}>
-            {selected.emoji}
-          </div>
-          <div className="p-4 space-y-3 overflow-y-auto scrollbar-thin">
-            <div>
-              <p className="text-gray-400 text-xs mb-0.5">Title</p>
-              <p className="text-gray-800 text-sm font-medium">{selected.label}</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-0.5">Shared by</p>
-              <p className="text-gray-800 text-sm">{selected.who}</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-0.5">Date</p>
-              <p className="text-gray-800 text-sm">{selected.date}</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-0.5">AI Enhancement</p>
-              {selected.ai ? (
-                <span className="inline-flex items-center gap-1.5 text-amber-400 text-sm">
-                  <span>✨</span> Enhanced
-                </span>
-              ) : (
-                <button className="text-xs text-gray-400 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-amber-500/50 hover:text-amber-500 transition-colors">
-                  Enhance now
-                </button>
+
+          {/* Prev */}
+          <button onClick={showPrev} disabled={selectedIdx === 0}
+            className="absolute left-3 md:left-6 w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+            <svg viewBox="0 0 16 16" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M9.78 4.22a.75.75 0 010 1.06L7.06 8l2.72 2.72a.75.75 0 11-1.06 1.06L5.47 8.53a.75.75 0 010-1.06l3.25-3.25a.75.75 0 011.06 0z" clipRule="evenodd"/></svg>
+          </button>
+
+          {/* Next */}
+          <button onClick={showNext} disabled={selectedIdx === filtered.length - 1}
+            className="absolute right-3 md:right-6 w-10 h-10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all">
+            <svg viewBox="0 0 16 16" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M6.22 4.22a.75.75 0 011.06 0l3.25 3.25a.75.75 0 010 1.06l-3.25 3.25a.75.75 0 01-1.06-1.06L8.94 8 6.22 5.28a.75.75 0 010-1.06z" clipRule="evenodd"/></svg>
+          </button>
+
+          {/* Photo */}
+          <div className="flex flex-col items-center w-full max-w-2xl px-16 md:px-24">
+            <div className={`w-full aspect-square max-h-[60vh] rounded-2xl bg-gradient-to-br ${selected.bg} flex items-center justify-center relative overflow-hidden shadow-2xl`}
+              style={{ maxWidth: 'min(80vw, 480px)' }}>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.10),transparent_60%)]" />
+              <div className="text-8xl">{selected.emoji}</div>
+              {selected.ai && (
+                <div className="absolute top-3 right-3 bg-amber-500/90 rounded-lg px-2 py-0.5 text-[10px] font-bold text-black">✨ AI</div>
               )}
             </div>
-            <div className="flex gap-2 pt-2">
-              <button className="flex-1 py-2 text-xs bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-gray-700 rounded-xl border border-gray-200 transition-colors">
-                Send to Frame
-              </button>
-              <button onClick={() => deletePhoto(selected.id)} className="flex-1 py-2 text-xs bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded-xl border border-gray-200 hover:border-red-300 transition-colors">
-                Delete
-              </button>
+
+            {/* Details bar */}
+            <div className="mt-5 w-full" style={{ maxWidth: 'min(80vw, 480px)' }}>
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div>
+                  <p className="text-white font-semibold text-base leading-tight">{selected.label}</p>
+                  <p className="text-white/40 text-xs mt-1">{selected.who} · {selected.date}</p>
+                  <div className="flex gap-1.5 mt-2 flex-wrap">
+                    {selected.tags?.map(t => (
+                      <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/50">{t}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button className="px-3 py-1.5 rounded-xl text-xs font-medium bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all">
+                    Send to Frame
+                  </button>
+                  <button onClick={() => deletePhoto(selected.id)}
+                    className="px-3 py-1.5 rounded-xl text-xs font-medium bg-white/10 hover:bg-red-500/30 text-white/70 hover:text-red-300 transition-all">
+                    Delete
+                  </button>
+                </div>
+              </div>
+              {/* Dot nav strip */}
+              <div className="flex items-center justify-center gap-1">
+                {filtered.slice(Math.max(0, selectedIdx - 4), Math.min(filtered.length, selectedIdx + 5)).map((p, i) => {
+                  const absIdx = Math.max(0, selectedIdx - 4) + i;
+                  return (
+                    <button key={p.id} onClick={() => setSelected(p)}
+                      className={`rounded-full transition-all ${absIdx === selectedIdx ? 'w-4 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/25 hover:bg-white/50'}`} />
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

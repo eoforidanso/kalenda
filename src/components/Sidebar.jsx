@@ -7,7 +7,7 @@ const mobileNav = [
   { id: 'settings', label: 'More', icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/></svg> },
 ];
 
-export default function Sidebar({ view, setView, notifUnread = 0 }) {
+export default function Sidebar({ view, setView, notifUnread = 0, onSearchOpen }) {
   const nav = [
     {
       group: 'Main',
@@ -69,6 +69,16 @@ export default function Sidebar({ view, setView, notifUnread = 0 }) {
           <span className="font-bold text-gray-800 text-base tracking-tight">Kalenda</span>
           <span className="ml-auto text-[9px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'rgba(91,191,191,0.12)', color: '#3a9e9e', border: '1px solid rgba(91,191,191,0.25)' }}>v2</span>
         </div>
+        {/* Search button */}
+        <button onClick={onSearchOpen}
+          className="mt-3 w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-gray-400 hover:text-gray-600 text-xs transition-colors"
+          style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid #e2ecf0' }}>
+          <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 shrink-0">
+            <path fillRule="evenodd" d="M9.965 11.026a5 5 0 111.06-1.06l2.755 2.754a.75.75 0 11-1.06 1.06l-2.755-2.754zM10.5 7a3.5 3.5 0 11-7 0 3.5 3.5 0 017 0z" clipRule="evenodd"/>
+          </svg>
+          <span className="flex-1 text-left">Search…</span>
+          <kbd className="text-[9px] border border-gray-200 rounded px-1 font-mono text-gray-300">/</kbd>
+        </button>
       </div>
 
       {/* Nav */}
