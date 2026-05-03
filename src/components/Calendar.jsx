@@ -3,7 +3,7 @@ import { useState } from 'react';
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-const EVENT_DB = {
+const INITIAL_EVENT_DB = {
   '2026-05-01': [
     { id: 1, type: 'photo', icon: '📸', label: 'Weekly photo dump', time: 'All day', color: 'sky', who: 'Family', notes: 'Recurring every Friday', recur: 'weekly' },
   ],
@@ -90,15 +90,15 @@ function formatDateKey(key) {
   const parts = key.split('-');
   return MONTHS[parseInt(parts[1], 10) - 1] + ' ' + parseInt(parts[2], 10) + ', ' + parts[0];
 }
-function getUpcoming(fromKey, count) {
-  return Object.entries(EVENT_DB)
+function getUpcoming(eventDB, fromKey, count) {
+  return Object.entries(eventDB)
     .filter(function(entry) { return entry[0] >= fromKey; })
     .sort(function(a, b) { return a[0].localeCompare(b[0]); })
     .flatMap(function(entry) { return entry[1].map(function(e) { return Object.assign({}, e, { dateKey: entry[0] }); }); })
     .slice(0, count);
 }
 
-function AddEventModal({ defaultDay, onClose }) {
+function AddEventModal({ defaultDay, onClose, onSave }) {
   const [label, setLabel] = useState('');
   const [date, setDate] = useState(defaultDay || todayKey());
   const [time, setTime] = useState('');
@@ -194,7 +194,11 @@ function AddEventModal({ defaultDay, onClose }) {
         </div>
         <div className="flex gap-2 mt-5">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-xl text-gray-500 text-sm hover:bg-gray-50 transition-colors" style={{ border: '1px solid #e2ecf0' }}>Cancel</button>
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold transition-all" style={{ background: 'linear-gradient(135deg, #5bbfbf, #4db6ac)', boxShadow: '0 4px 16px rgba(91,191,191,0.35)' }}>Save Event</button>
+          <button onClick={function() {
+            if (!label.trim()) return;
+            onSave({ label, date, time: allDay ? 'All day' : time, type, color, who, notes, recur: recur === 'none' ? null : recur });
+            onClose();
+          }} className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold transition-all" style={{ background: 'linear-gradient(135deg, #5bbfbf, #4db6ac)', boxShadow: '0 4px 16px rgba(91,191,191,0.35)' }}>Save Event</button>
         </div>
       </div>
     </div>
@@ -226,7 +230,7 @@ function EventPill({ ev, compact }) {
   );
 }
 
-function MonthView({ year, month, selectedDay, onSelectDay, filter }) {
+function MonthView({ year, month, selectedDay, onSelectDay, filter, eventDB }) {
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = getFirstDay(year, month);
   const cells = Array(firstDay).fill(null).concat(
@@ -245,7 +249,7 @@ function MonthView({ year, month, selectedDay, onSelectDay, filter }) {
         {cells.map(function(day, idx) {
           if (!day) return <div key={idx} />;
           const key = toKey(year, month, day);
-          const dayEvents = (EVENT_DB[key] || []).filter(function(e) {
+          const dayEvents = (eventDB[key] || []).filter(function(e) {
             return filter === 'All' || e.type === filter.toLowerCase();
           });
           const photos = PHOTO_COUNTS[key] || 0;
@@ -283,7 +287,7 @@ function MonthView({ year, month, selectedDay, onSelectDay, filter }) {
   );
 }
 
-function WeekView({ year, month, day, onSelectDay, filter }) {
+function WeekView({ year, month, day, onSelectDay, filter, eventDB }) {
   const anchor = day ? new Date(day) : new Date(year, month, 1);
   const startOfWeek = new Date(anchor);
   startOfWeek.setDate(anchor.getDate() - anchor.getDay());
@@ -316,7 +320,7 @@ function WeekView({ year, month, day, onSelectDay, filter }) {
       <div className="grid grid-cols-7 min-h-[200px]">
         {weekDays.map(function(d, i) {
           const key = toKey(d.getFullYear(), d.getMonth(), d.getDate());
-          const dayEvents = (EVENT_DB[key] || []).filter(function(e) {
+          const dayEvents = (eventDB[key] || []).filter(function(e) {
             return filter === 'All' || e.type === filter.toLowerCase();
           });
           const photos = PHOTO_COUNTS[key] || 0;
@@ -336,9 +340,9 @@ function WeekView({ year, month, day, onSelectDay, filter }) {
   );
 }
 
-function AgendaView({ year, month, filter }) {
+function AgendaView({ year, month, filter, eventDB }) {
   const startKey = toKey(year, month, 1);
-  const entries = Object.entries(EVENT_DB)
+  const entries = Object.entries(eventDB)
     .filter(function(entry) { return entry[0] >= startKey; })
     .sort(function(a, b) { return a[0].localeCompare(b[0]); })
     .map(function(entry) {
@@ -390,6 +394,16 @@ export default function Calendar({ setView }) {
   const [showAdd, setShowAdd] = useState(false);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
+  const [eventDB, setEventDB] = useState(INITIAL_EVENT_DB);
+
+  function handleSaveEvent({ label, date, time, type, color, who, notes, recur }) {
+    const TYPE_ICONS = { birthday: '🎂', event: '🎉', milestone: '🏆', photo: '📸', reminder: '🔔' };
+    const newEvent = {
+      id: Date.now(),
+      type, icon: TYPE_ICONS[type] || '📅', label, time, color, who, notes, recur,
+    };
+    setEventDB(prev => ({ ...prev, [date]: [...(prev[date] || []), newEvent] }));
+  }
 
   function prevMonth() {
     if (month === 0) { setYear(function(y) { return y - 1; }); setMonth(11); }
@@ -404,13 +418,13 @@ export default function Calendar({ setView }) {
   }
 
   const selectedEvents = selectedDay
-    ? (EVENT_DB[selectedDay] || []).filter(function(e) { return filter === 'All' || e.type === filter.toLowerCase(); })
+    ? (eventDB[selectedDay] || []).filter(function(e) { return filter === 'All' || e.type === filter.toLowerCase(); })
     : [];
   const selectedPhotos = selectedDay ? (PHOTO_COUNTS[selectedDay] || 0) : 0;
 
-  const upcoming = getUpcoming(todayKey(), 6);
+  const upcoming = getUpcoming(eventDB, todayKey(), 6);
 
-  const birthdays = Object.entries(EVENT_DB)
+  const birthdays = Object.entries(eventDB)
     .flatMap(function(entry) {
       return entry[1].filter(function(e) { return e.type === 'birthday'; }).map(function(e) {
         return Object.assign({}, e, { dateKey: entry[0] });
@@ -421,14 +435,14 @@ export default function Calendar({ setView }) {
     })
     .sort(function(a, b) { return a.dateKey.localeCompare(b.dateKey); });
 
-  const monthEventCount = Object.entries(EVENT_DB)
+  const monthEventCount = Object.entries(eventDB)
     .filter(function(entry) {
       return entry[0] >= toKey(year, month, 1) && entry[0] <= toKey(year, month, 31);
     })
     .flatMap(function(entry) { return entry[1]; }).length;
 
   const filteredSearch = search.trim()
-    ? Object.entries(EVENT_DB).flatMap(function(entry) {
+    ? Object.entries(eventDB).flatMap(function(entry) {
         return entry[1].filter(function(e) { return e.label.toLowerCase().includes(search.toLowerCase()); }).map(function(e) {
           return Object.assign({}, e, { dateKey: entry[0] });
         });
@@ -472,7 +486,7 @@ export default function Calendar({ setView }) {
         </button>
       </div>
 
-      {showAdd ? <AddEventModal defaultDay={selectedDay} onClose={function() { setShowAdd(false); }} /> : null}
+      {showAdd ? <AddEventModal defaultDay={selectedDay} onClose={function() { setShowAdd(false); }} onSave={handleSaveEvent} /> : null}
 
       {/* Search results */}
       {filteredSearch ? (
@@ -531,9 +545,9 @@ export default function Calendar({ setView }) {
             </div>
           </div>
 
-          {viewMode === 'month' ? <MonthView year={year} month={month} selectedDay={selectedDay} onSelectDay={setSelectedDay} filter={filter} /> : null}
-          {viewMode === 'week' ? <WeekView year={year} month={month} day={selectedDay} onSelectDay={setSelectedDay} filter={filter} /> : null}
-          {viewMode === 'agenda' ? <AgendaView year={year} month={month} filter={filter} /> : null}
+          {viewMode === 'month' ? <MonthView year={year} month={month} selectedDay={selectedDay} onSelectDay={setSelectedDay} filter={filter} eventDB={eventDB} /> : null}
+          {viewMode === 'week' ? <WeekView year={year} month={month} day={selectedDay} onSelectDay={setSelectedDay} filter={filter} eventDB={eventDB} /> : null}
+          {viewMode === 'agenda' ? <AgendaView year={year} month={month} filter={filter} eventDB={eventDB} /> : null}
 
           {/* Day detail */}
           {selectedDay && viewMode !== 'agenda' ? (

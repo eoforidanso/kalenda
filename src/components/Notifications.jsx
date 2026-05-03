@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const allNotifications = [
   { id: 1, type: 'photos', icon: '🌊', who: 'Dad', whoColor: 'bg-sky-400', action: 'shared 3 new photos', sub: 'Beach Day album', time: '2m ago', unread: true },
@@ -15,11 +15,13 @@ const allNotifications = [
 
 const filters = ['All', 'Unread', 'Photos', 'Reactions', 'System', 'Family'];
 
-export default function Notifications({ setView }) {
+export default function Notifications({ setView, onUnreadChange }) {
   const [filter, setFilter] = useState('All');
   const [notifications, setNotifications] = useState(allNotifications);
 
   const unreadCount = notifications.filter(n => n.unread).length;
+
+  useEffect(() => { onUnreadChange?.(unreadCount); }, [unreadCount]);
 
   const filtered = notifications.filter(n => {
     if (filter === 'All') return true;

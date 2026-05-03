@@ -19,6 +19,7 @@ const views = { dashboard: Dashboard, photos: Photos, albums: Albums, calendar: 
 export default function App() {
   const [view, setView] = useState('dashboard');
   const [user, setUser] = useState(null);
+  const [notifUnread, setNotifUnread] = useState(4);
   const View = views[view] || Dashboard;
 
   if (!user) {
@@ -35,9 +36,11 @@ export default function App() {
         <div className="absolute top-[60%] left-[-5%] w-[400px] h-[400px] rounded-full orb-4" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)' }} />
       </div>
       <div className="relative z-10 flex h-full w-full">
-        <Sidebar view={view} setView={setView} />
+        <Sidebar view={view} setView={setView} notifUnread={notifUnread} />
         <div className="flex-1 flex flex-col h-full overflow-hidden">
-          <View setView={setView} />
+          {view === 'notifications'
+            ? <Notifications setView={setView} onUnreadChange={setNotifUnread} />
+            : <View setView={setView} />}
         </div>
       </div>
     </div>
