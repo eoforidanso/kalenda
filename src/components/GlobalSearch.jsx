@@ -73,16 +73,26 @@ function score(item, q) {
   return 0;
 }
 
-export default function GlobalSearch({ onClose, setView }) {
+export default function GlobalSearch({ onClose, setView, livePhotos, liveEvents }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
   const [cursor, setCursor] = useState(0);
+
+  const LIVE_SECTIONS = SECTIONS.map(sec => {
+    if (sec.key === 'photos' && livePhotos) {
+      return { ...sec, items: livePhotos.map(p => ({ id: String(p.id), label: p.label, who: p.who, date: p.date, tags: p.tags || [] })) };
+    }
+    if (sec.key === 'events' && liveEvents) {
+      return { ...sec, items: liveEvents.map(e => ({ id: String(e.id || e.label + e.dateKey), label: e.label, who: e.who || '', date: e.dateKey })) };
+    }
+    return sec;
+  });
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
   const q = query.trim().toLowerCase();
 
-  const results = q.length < 1 ? [] : SECTIONS.flatMap(sec =>
+  const results = q.length < 1 ? [] : LIVE_SECTIONS.flatMap(sec =>
     sec.items
       .map(item => ({ ...item, _sec: sec, _score: score(item, q) }))
       .filter(item => item._score > 0)
@@ -91,7 +101,7 @@ export default function GlobalSearch({ onClose, setView }) {
   );
 
   // group results by section
-  const grouped = SECTIONS.map(sec => ({
+  const grouped = LIVE_SECTIONS.map(sec => ({
     ...sec,
     hits: results.filter(r => r._sec.key === sec.key),
   })).filter(g => g.hits.length > 0);
@@ -147,7 +157,7 @@ export default function GlobalSearch({ onClose, setView }) {
             <div className="px-4 py-8 text-center">
               <p className="text-gray-400 text-sm">Start typing to search across your family's content</p>
               <div className="flex items-center justify-center gap-4 mt-4 flex-wrap">
-                {SECTIONS.map(s => (
+                {LIVE_SECTIONS.map(s => (
                   <button key={s.key} onClick={() => { setView(s.key === 'members' ? 'family' : s.key); onClose(); }}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs text-gray-500 hover:text-gray-800 hover:bg-gray-50 transition-colors border border-gray-100">
                     <span>{s.icon}</span>{s.label}

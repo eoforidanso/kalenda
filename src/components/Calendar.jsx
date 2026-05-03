@@ -3,7 +3,7 @@ import { useState } from 'react';
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-const INITIAL_EVENT_DB = {
+export const INITIAL_EVENT_DB = {
   '2026-05-01': [
     { id: 1, type: 'photo', icon: '📸', label: 'Weekly photo dump', time: 'All day', color: 'sky', who: 'Family', notes: 'Recurring every Friday', recur: 'weekly' },
   ],
@@ -108,6 +108,7 @@ function AddEventModal({ defaultDay, onClose, onSave }) {
   const [who, setWho] = useState('Family');
   const [notes, setNotes] = useState('');
   const [recur, setRecur] = useState('none');
+  const [error, setError] = useState('');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)' }}>
@@ -119,7 +120,7 @@ function AddEventModal({ defaultDay, onClose, onSave }) {
           </button>
         </div>
         <div className="space-y-3">
-          <input value={label} onChange={function(e) { setLabel(e.target.value); }} placeholder="Event name"
+          <input value={label} onChange={function(e) { setLabel(e.target.value); if (e.target.value.trim()) setError(''); }} placeholder="Event name"
             className="w-full rounded-xl px-3 py-2.5 text-gray-700 text-sm placeholder-gray-300 focus:outline-none" style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }} />
           <div className="grid grid-cols-2 gap-2">
             <div>
@@ -192,10 +193,12 @@ function AddEventModal({ defaultDay, onClose, onSave }) {
           <textarea value={notes} onChange={function(e) { setNotes(e.target.value); }} placeholder="Notes (optional)" rows={2}
             className="w-full rounded-xl px-3 py-2.5 text-gray-700 text-sm placeholder-gray-300 focus:outline-none resize-none" style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }} />
         </div>
-        <div className="flex gap-2 mt-5">
+        {error && <p className="text-red-500 text-xs mt-3 px-1">{error}</p>}
+        <div className="flex gap-2 mt-3">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-xl text-gray-500 text-sm hover:bg-gray-50 transition-colors" style={{ border: '1px solid #e2ecf0' }}>Cancel</button>
           <button onClick={function() {
-            if (!label.trim()) return;
+            if (!label.trim()) { setError('Event name is required'); return; }
+            if (!date) { setError('Date is required'); return; }
             onSave({ label, date, time: allDay ? 'All day' : time, type, color, who, notes, recur: recur === 'none' ? null : recur });
             onClose();
           }} className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold transition-all" style={{ background: 'linear-gradient(135deg, #5bbfbf, #4db6ac)', boxShadow: '0 4px 16px rgba(91,191,191,0.35)' }}>Save Event</button>
@@ -385,7 +388,7 @@ function AgendaView({ year, month, filter, eventDB }) {
   );
 }
 
-export default function Calendar({ setView }) {
+export default function Calendar({ setView, eventDB: propEventDB, setEventDB: propSetEventDB }) {
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
@@ -394,7 +397,9 @@ export default function Calendar({ setView }) {
   const [showAdd, setShowAdd] = useState(false);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
-  const [eventDB, setEventDB] = useState(INITIAL_EVENT_DB);
+  const [localEventDB, setLocalEventDB] = useState(INITIAL_EVENT_DB);
+  const eventDB = propEventDB ?? localEventDB;
+  const setEventDB = propSetEventDB ?? setLocalEventDB;
 
   function handleSaveEvent({ label, date, time, type, color, who, notes, recur }) {
     const TYPE_ICONS = { birthday: '🎂', event: '🎉', milestone: '🏆', photo: '📸', reminder: '🔔' };

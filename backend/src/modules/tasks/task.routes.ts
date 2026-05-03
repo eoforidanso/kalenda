@@ -1,8 +1,25 @@
 import { FastifyPluginAsync } from 'fastify';
+import { z } from 'zod';
 import { TaskService } from './task.service';
 import { authenticate } from '../../hooks/authenticate';
 import { ok } from '../../shared/api-response';
 import { TaskCategory } from './task.entity';
+
+const taskCategoryEnum = z.nativeEnum(TaskCategory);
+
+const createTaskSchema = z.object({
+  title:          z.string().min(1).max(255),
+  category:       taskCategoryEnum.optional(),
+  assignedToName: z.string().max(100).optional(),
+  stars:          z.number().int().min(1).max(5).optional(),
+  icon:           z.string().max(10).optional(),
+  isRecurring:    z.boolean().optional(),
+  recurrenceRule: z.string().max(500).optional(),
+});
+
+const updateTaskSchema = createTaskSchema.partial().extend({
+  done: z.boolean().optional(),
+});
 
 function requireFamily(req: any) {
   if (!req.user.familyId) throw Object.assign(new Error('No family associated'), { statusCode: 403 });
@@ -22,13 +39,15 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.post('/', { preHandler: [authenticate] }, async (req, reply) => {
     const familyId = requireFamily(req);
-    return reply.status(201).send(ok(await service.create(familyId, req.body as any)));
+    const body = createTaskSchema.parse(req.body);
+    return reply.status(201).send(ok(await service.create(familyId, body)));
   });
 
   fastify.patch('/:id', { preHandler: [authenticate] }, async (req) => {
     const familyId = requireFamily(req);
     const { id }   = req.params as { id: string };
-    return ok(await service.update(id, familyId, req.body as any));
+    const body = updateTaskSchema.parse(req.body);
+    return ok(await service.update(id, familyId, body));
   });
 
   fastify.delete('/:id', { preHandler: [authenticate] }, async (req, reply) => {

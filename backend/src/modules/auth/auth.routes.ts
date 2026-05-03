@@ -15,24 +15,31 @@ const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+const refreshSchema = z.object({
+  refreshToken: z.string().min(1),
+});
+
 const authRoutes: FastifyPluginAsync = async (fastify) => {
   const service = new AuthService(fastify.db);
 
-  fastify.post('/register', async (req, reply) => {
+  fastify.post('/register', {
+    config: { rateLimit: { max: 5, timeWindow: '1 hour' } },
+  }, async (req, reply) => {
     const body   = registerSchema.parse(req.body);
     const result = await service.register(body);
     return reply.status(201).send({ success: true, data: result });
   });
 
-  fastify.post('/login', async (req, reply) => {
+  fastify.post('/login', {
+    config: { rateLimit: { max: 10, timeWindow: '15 minutes' } },
+  }, async (req, reply) => {
     const body   = loginSchema.parse(req.body);
     const result = await service.login(body);
     return reply.send({ success: true, data: result });
   });
 
   fastify.post('/refresh', async (req, reply) => {
-    const { refreshToken } = req.body as { refreshToken?: string };
-    if (!refreshToken) return reply.status(400).send({ success: false, error: 'refreshToken required' });
+    const { refreshToken } = refreshSchema.parse(req.body);
     const result = await service.refresh(refreshToken);
     return reply.send({ success: true, data: result });
   });

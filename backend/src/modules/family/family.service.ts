@@ -48,4 +48,14 @@ export class FamilyService {
   async removeMember(familyId: string, userId: string) {
     await this.members.delete({ familyId, userId });
   }
+
+  async assertMember(familyId: string, userId: string) {
+    const m = await this.members.findOne({ where: { familyId, userId } });
+    if (!m) throw err('Access denied', 403);
+  }
+
+  async assertOwner(familyId: string, userId: string) {
+    const m = await this.members.findOne({ where: { familyId, userId } });
+    if (!m || m.role !== FamilyRole.OWNER) throw err('Only the family owner can do this', 403);
+  }
 }

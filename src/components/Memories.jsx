@@ -41,6 +41,7 @@ const milestones = [
 
 export default function Memories({ setView }) {
   const [expanded, setExpanded] = useState(null);
+  const todayLabel = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0">
@@ -58,7 +59,7 @@ export default function Memories({ setView }) {
             <span className="text-2xl">📅</span>
             <div>
               <h2 className="text-gray-800 font-semibold">On This Day</h2>
-              <p className="text-amber-500 text-xs">May 1st in past years</p>
+              <p className="text-amber-500 text-xs">{todayLabel} in past years</p>
             </div>
           </div>
           <div className="grid sm:grid-cols-3 gap-3">

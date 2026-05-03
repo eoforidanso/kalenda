@@ -1,5 +1,7 @@
 import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import rateLimit from '@fastify/rate-limit';
 import { ZodError } from 'zod';
 import { env } from './config/env';
 import typeormPlugin from './plugins/typeorm.plugin';
@@ -25,6 +27,15 @@ export async function buildApp() {
   });
 
   // ── Plugins ──────────────────────────────────────────────────
+  await app.register(helmet, {
+    // CSP only in production — dev tools break with strict CSP
+    contentSecurityPolicy: env.NODE_ENV === 'production',
+  });
+  await app.register(rateLimit, {
+    max: 120,
+    timeWindow: '1 minute',
+    errorResponseBuilder: () => ({ success: false, error: 'Too many requests — please slow down.' }),
+  });
   await app.register(cors, { origin: env.CORS_ORIGIN, credentials: true });
   await app.register(typeormPlugin);
   await app.register(jwtPlugin);

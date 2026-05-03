@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
-import Photos from './components/Photos';
+import Photos, { allPhotos } from './components/Photos';
 import Albums from './components/Albums';
-import Calendar from './components/Calendar';
+import Calendar, { INITIAL_EVENT_DB } from './components/Calendar';
 import AIStudio from './components/AIStudio';
 import Memories from './components/Memories';
 import Family from './components/Family';
@@ -19,15 +19,17 @@ const views = { dashboard: Dashboard, photos: Photos, albums: Albums, calendar: 
 
 export default function App() {
   const [view, setView] = useState('dashboard');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => localStorage.getItem('kalenda_user') || null);
   const [notifUnread, setNotifUnread] = useState(4);
   const [showSearch, setShowSearch] = useState(false);
+  const [photos, setPhotos] = useState(allPhotos);
+  const [eventDB, setEventDB] = useState(INITIAL_EVENT_DB);
   const View = views[view] || Dashboard;
 
   useEffect(() => {
     function onKey(e) {
-      // Open search on '/' unless already typing in an input
-      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+      const inInput = ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName);
+      if ((e.key === '/' && !inInput) || (e.key === 'k' && (e.metaKey || e.ctrlKey))) {
         e.preventDefault();
         setShowSearch(true);
       }
@@ -37,7 +39,7 @@ export default function App() {
   }, []);
 
   if (!user) {
-    return <Landing onEnter={(name) => setUser(name)} />;
+    return <Landing onEnter={(name) => { localStorage.setItem('kalenda_user', name); setUser(name); }} />;
   }
 
   return (
@@ -51,13 +53,18 @@ export default function App() {
       </div>
       <div className="relative z-10 flex h-full w-full">
         <Sidebar view={view} setView={setView} notifUnread={notifUnread} onSearchOpen={() => setShowSearch(true)} />
-        <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <div key={view} className="flex-1 flex flex-col h-full overflow-hidden view-fade">
           {view === 'notifications'
             ? <Notifications setView={setView} onUnreadChange={setNotifUnread} />
-            : <View setView={setView} />}
+            : <View setView={setView} photos={photos} setPhotos={setPhotos} eventDB={eventDB} setEventDB={setEventDB} />}
         </div>
       </div>
-      {showSearch && <GlobalSearch setView={setView} onClose={() => setShowSearch(false)} />}
+      {showSearch && <GlobalSearch
+        setView={setView}
+        onClose={() => setShowSearch(false)}
+        livePhotos={photos}
+        liveEvents={Object.entries(eventDB).flatMap(([dateKey, evs]) => evs.map(e => ({ ...e, dateKey })))}
+      />}
     </div>
   );
 }

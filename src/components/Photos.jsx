@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
-const allPhotos = [
+export const allPhotos = [
   // May 2026
   { id: 1,  bg: 'from-rose-800 via-pink-700 to-orange-700',    emoji: '🌸', label: "Maya's Birthday Party",      who: 'Mom',     date: 'May 10, 2026', ai: true,  tags: ['birthday','family'] },
   { id: 2,  bg: 'from-violet-800 via-purple-700 to-fuchsia-800', emoji: '🎉', label: 'Party Decorations',           who: 'Emma',    date: 'May 10, 2026', ai: false, tags: ['birthday'] },
@@ -106,8 +106,10 @@ function UploadModal({ onClose }) {
 
 const TAG_LABELS = { all: 'All', birthday: 'Birthday', milestone: 'Milestone', holiday: 'Holiday', travel: 'Travel', outdoors: 'Outdoors', food: 'Food', family: 'Family', kids: 'Kids', celebration: 'Celebration', misc: 'Misc' };
 
-export default function Photos() {
-  const [photos, setPhotos] = useState(allPhotos);
+export default function Photos({ photos: propPhotos, setPhotos: propSetPhotos }) {
+  const [_photos, _setPhotos] = useState(allPhotos);
+  const photos = propPhotos ?? _photos;
+  const setPhotos = propSetPhotos ?? _setPhotos;
   const [filter, setFilter] = useState('all');
   const [tagFilter, setTagFilter] = useState('all');
   const [showUpload, setShowUpload] = useState(false);
@@ -132,6 +134,8 @@ export default function Photos() {
   const showNext = useCallback(() => {
     if (selectedIdx < filtered.length - 1) setSelected(filtered[selectedIdx + 1]);
   }, [selectedIdx, filtered]);
+
+  const touchStartX = useRef(null);
 
   useEffect(() => {
     if (!selected) return;
@@ -231,7 +235,14 @@ export default function Photos() {
       {/* Lightbox */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(12px)' }}
-          onClick={(e) => { if (e.target === e.currentTarget) setSelected(null); }}>
+          onClick={(e) => { if (e.target === e.currentTarget) setSelected(null); }}
+          onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+          onTouchEnd={(e) => {
+            if (touchStartX.current === null) return;
+            const diff = touchStartX.current - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) { diff > 0 ? showNext() : showPrev(); }
+            touchStartX.current = null;
+          }}>
 
           {/* Close */}
           <button onClick={() => setSelected(null)}
