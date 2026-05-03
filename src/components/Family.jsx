@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const members = [
+const initialMembers = [
   { name: 'Harriet A.', role: 'Owner', avatar: 'bg-gradient-to-br from-rose-400 to-orange-400', joined: 'Jan 2026', photos: 312, status: 'active' },
   { name: 'Dad', role: 'Member', avatar: 'bg-gradient-to-br from-sky-400 to-blue-500', joined: 'Jan 2026', photos: 487, status: 'active' },
   { name: 'Mom', role: 'Member', avatar: 'bg-gradient-to-br from-rose-500 to-pink-500', joined: 'Jan 2026', photos: 621, status: 'active' },
@@ -9,15 +9,23 @@ const members = [
   { name: 'Grandma', role: 'Member', avatar: 'bg-gradient-to-br from-violet-400 to-purple-500', joined: 'Mar 2026', photos: 88, status: 'active' },
 ];
 
-const pending = [
+const initialPending = [
   { name: 'Uncle Bob', email: 'bob@example.com', sent: '2 days ago' },
 ];
 
-function InviteModal({ onClose }) {
+function InviteModal({ onClose, onInvite }) {
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('member');
+
+  function handleSend() {
+    if (!email.trim()) return;
+    onInvite(email.trim(), role);
+    onClose();
+  }
+
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="w-full bg-white border border-gray-100 rounded-2xl w-full max-w-sm p-6" style={{ background: '#ffffff', border: '1px solid #e2ecf0', boxShadow: '0 24px 80px rgba(0,0,0,0.12)' }}>
+      <div className="w-full max-w-sm p-6 rounded-2xl" style={{ background: '#ffffff', border: '1px solid #e2ecf0', boxShadow: '0 24px 80px rgba(0,0,0,0.12)' }}>
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-gray-800 font-semibold text-base">Invite Family Member</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -33,20 +41,22 @@ function InviteModal({ onClose }) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="grandpa@example.com"
+              autoFocus
               className="w-full rounded-xl px-3 py-2.5 text-gray-700 text-sm placeholder-gray-300 focus:outline-none focus:border-teal-500/50 transition-colors"
               style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}
             />
           </div>
           <div>
             <label className="text-gray-400 text-xs mb-1.5 block">Role</label>
-            <select className="w-full rounded-xl px-3 py-2.5 text-gray-600 text-sm focus:outline-none appearance-none" style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}>
-              <option value="member">Member — can view & share photos</option>
+            <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full rounded-xl px-3 py-2.5 text-gray-600 text-sm focus:outline-none appearance-none" style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}>
+              <option value="member">Member — can view &amp; share photos</option>
               <option value="viewer">Viewer — can only view photos</option>
             </select>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleSend}
             className="btn-glass w-full justify-center mt-1"
           >
             Send Invite
@@ -62,16 +72,31 @@ function InviteModal({ onClose }) {
 
 export default function Family() {
   const [showInvite, setShowInvite] = useState(false);
+  const [members, setMembers] = useState(initialMembers);
+  const [pending, setPending] = useState(initialPending);
+
+  function handleInvite(email, role) {
+    const name = email.split('@')[0];
+    setPending(prev => [...prev, { name, email, role, sent: 'Just now' }]);
+  }
+
+  function removeMember(name) {
+    setMembers(prev => prev.filter(m => m.name !== name));
+  }
+
+  function cancelInvite(email) {
+    setPending(prev => prev.filter(p => p.email !== email));
+  }
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>
-      {showInvite && <InviteModal onClose={() => setShowInvite(false)} />}
+      {showInvite && <InviteModal onClose={() => setShowInvite(false)} onInvite={handleInvite} />}
 
       {/* Topbar */}
       <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">Family</h1>
-          <p className="text-gray-400 text-xs mt-0.5">{members.length} members · {pending.length} pending invite</p>
+          <p className="text-gray-400 text-xs mt-0.5">{members.length} members · {pending.length} pending invite{pending.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={() => setShowInvite(true)}
@@ -108,7 +133,7 @@ export default function Family() {
                     <span className="text-gray-400 text-xs">Active</span>
                   </div>
                   {m.role !== 'Owner' && (
-                    <button className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-500 text-xs px-2 py-1 rounded-lg hover:bg-red-50">
+                    <button onClick={() => removeMember(m.name)} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-500 text-xs px-2 py-1 rounded-lg hover:bg-red-50">
                       Remove
                     </button>
                   )}
@@ -137,7 +162,7 @@ export default function Family() {
                   <button className="text-xs text-gray-400 hover:text-gray-600 px-2 py-1 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
                     Resend
                   </button>
-                  <button className="text-xs text-gray-400 hover:text-red-500 px-2 py-1 rounded-lg border border-gray-200 hover:border-red-300 transition-colors">
+                  <button onClick={() => cancelInvite(p.email)} className="text-xs text-gray-400 hover:text-red-500 px-2 py-1 rounded-lg border border-gray-200 hover:border-red-300 transition-colors">
                     Cancel
                   </button>
                 </div>

@@ -49,11 +49,20 @@ const meals = {
 
 // Upcoming events
 const upcomingEvents = [
-  { date: 'May 3',  label: "Emma's Piano Recital", icon: '🎹', who: 'Emma',    days: 2  },
-  { date: 'May 8',  label: "Mother's Day",          icon: '💐', who: 'Mom',     days: 7  },
-  { date: 'May 10', label: "Jake's Birthday 🎂",    icon: '🎂', who: 'Jake',    days: 9, isBirthday: true },
-  { date: 'May 15', label: 'Family BBQ',            icon: '🍖', who: 'All',     days: 14 },
+  { date: 'May 3',  label: "Emma's Piano Recital", icon: '🎹', who: 'Emma', isBirthday: false },
+  { date: 'May 8',  label: "Mother's Day",          icon: '💐', who: 'Mom',  isBirthday: false },
+  { date: 'May 10', label: "Jake's Birthday 🎂",    icon: '🎂', who: 'Jake', isBirthday: true  },
+  { date: 'May 15', label: 'Family BBQ',            icon: '🍖', who: 'All',  isBirthday: false },
 ];
+
+const MONTH_MAP = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+function daysFromToday(dateStr) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const [mon, day] = dateStr.split(' ');
+  const target = new Date(today.getFullYear(), MONTH_MAP[mon], parseInt(day));
+  if (target < today) target.setFullYear(today.getFullYear() + 1);
+  return Math.round((target - today) / 86400000);
+}
 
 // On This Day memories
 const onThisDay = [
@@ -276,7 +285,7 @@ export default function Dashboard({ setView }) {
                         <p className="text-gray-400 text-[10px]">{e.date}</p>
                       </div>
                       <span className="text-[10px] font-semibold shrink-0" style={{ color }}>
-                        {e.days === 0 ? 'Today!' : `${e.days}d`}
+                        {daysFromToday(e.date) === 0 ? 'Today!' : `${daysFromToday(e.date)}d`}
                       </span>
                     </div>
                   );
@@ -355,7 +364,7 @@ export default function Dashboard({ setView }) {
                 </div>
               ))}
             </div>
-            <button className="mt-4 w-full py-2.5 text-xs text-gray-300 hover:text-teal-500 rounded-2xl transition-colors" style={{ border: '1px dashed rgba(0,0,0,0.10)' }}>
+            <button onClick={() => setView('lists')} className="mt-4 w-full py-2.5 text-xs text-gray-300 hover:text-teal-500 rounded-2xl transition-colors" style={{ border: '1px dashed rgba(0,0,0,0.10)' }}>
               + Add item
             </button>
           </div>

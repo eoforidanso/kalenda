@@ -107,15 +107,21 @@ function UploadModal({ onClose }) {
 const TAG_LABELS = { all: 'All', birthday: 'Birthday', milestone: 'Milestone', holiday: 'Holiday', travel: 'Travel', outdoors: 'Outdoors', food: 'Food', family: 'Family', kids: 'Kids', celebration: 'Celebration', misc: 'Misc' };
 
 export default function Photos() {
+  const [photos, setPhotos] = useState(allPhotos);
   const [filter, setFilter] = useState('all');
   const [tagFilter, setTagFilter] = useState('all');
   const [showUpload, setShowUpload] = useState(false);
   const [selected, setSelected] = useState(null);
 
   const members = ['all', 'Mom', 'Dad', 'Emma', 'Maya', 'Jake', 'Grandma'];
-  const filtered = allPhotos
+  const filtered = photos
     .filter((p) => filter === 'all' || p.who === filter)
     .filter((p) => tagFilter === 'all' || (p.tags && p.tags.includes(tagFilter)));
+
+  function deletePhoto(id) {
+    setPhotos(prev => prev.filter(p => p.id !== id));
+    setSelected(null);
+  }
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0">
@@ -125,7 +131,7 @@ export default function Photos() {
       <div className="sticky top-0 z-10 px-4 md:px-6 py-4 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold text-lg">Photos</h1>
-          <p className="text-gray-500 text-xs mt-0.5">{filtered.length} of {allPhotos.length} photos · 4.1 GB used</p>
+          <p className="text-gray-500 text-xs mt-0.5">{filtered.length} of {photos.length} photos · 4.1 GB used</p>
         </div>
         <button
           onClick={() => setShowUpload(true)}
@@ -244,7 +250,7 @@ export default function Photos() {
               <button className="flex-1 py-2 text-xs bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-gray-700 rounded-xl border border-gray-200 transition-colors">
                 Send to Frame
               </button>
-              <button className="flex-1 py-2 text-xs bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded-xl border border-gray-200 hover:border-red-300 transition-colors">
+              <button onClick={() => deletePhoto(selected.id)} className="flex-1 py-2 text-xs bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-500 rounded-xl border border-gray-200 hover:border-red-300 transition-colors">
                 Delete
               </button>
             </div>
