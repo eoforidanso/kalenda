@@ -750,9 +750,18 @@ export default function Landing({ onEnter }) {
                 The smart Wi-Fi photo frame built for modern families.
               </p>
               <div className="flex gap-3">
-                {['App Store', 'Google Play'].map(s => (
-                  <div key={s} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500" style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)' }}>{s}</div>
-                ))}
+                <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+                  style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)' }}>
+                  <svg viewBox="0 0 14 14" fill="currentColor" className="w-3.5 h-3.5 shrink-0"><path d="M10.12 7.36c-.02-1.58.88-2.37 1.62-2.88-.9-1.28-2.28-1.43-2.77-1.46-1.18-.12-2.3.69-2.9.69-.6 0-1.54-.67-2.53-.65-1.3.02-2.5.76-3.17 1.92-1.35 2.35-.35 5.83.97 7.74.64.94 1.41 1.99 2.41 1.95.97-.04 1.33-.63 2.51-.63 1.18 0 1.5.63 2.53.61 1.04-.02 1.7-.95 2.34-1.9.47-.68.82-1.44 1.04-2.24-1.36-.58-2.05-2.14-2.05-3.15zM8.2 2.28C8.73 1.64 9.07.76 8.97 0c-.73.03-1.63.5-2.17 1.13-.48.56-.91 1.48-.79 2.34.79.06 1.6-.4 2.19-1.19z"/></svg>
+                  App Store
+                </a>
+                <a href="https://play.google.com" target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+                  style={{ background:'rgba(0,0,0,0.05)', border:'1px solid rgba(0,0,0,0.08)' }}>
+                  <svg viewBox="0 0 14 14" fill="currentColor" className="w-3.5 h-3.5 shrink-0"><path d="M1.5 1.07C1.19 1.4 1 1.93 1 2.63v8.74c0 .7.19 1.23.5 1.56l.08.08 4.9-4.9v-.11L1.58.99l-.08.08zm5.93 6.68L5.56 5.88v-.12l1.87-1.87.04.02 2.22 1.26c.63.36.63.94 0 1.3l-2.22 1.26-.04.02zM7.52 8l-1.96 1.96-4.06 4.06c.42.14.92.08 1.56-.28L9.7 10.1 7.52 8zM1.5.25 7.52 6 9.7 3.82 3.06.28C2.42-.08 1.92-.14 1.5.25z"/></svg>
+                  Google Play
+                </a>
               </div>
             </div>
 
