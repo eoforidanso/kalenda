@@ -275,6 +275,7 @@ export default function Messages() {
                 onKeyDown={handleKey}
                 placeholder="Message family…"
                 rows={1}
+                enterKeyHint="send"
                 className="w-full px-4 py-3 text-sm text-gray-700 outline-none resize-none scrollbar-thin"
                 style={{
                   background: 'white',
@@ -308,9 +309,8 @@ export default function Messages() {
             {/* Send */}
             <button
               onClick={sendMessage}
-              disabled={!input.trim()}
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-30"
-              style={{ background: input.trim() ? 'linear-gradient(135deg,#5bbfbf,#4db6ac)' : '#e2ecf0', boxShadow: input.trim() ? '0 4px 12px rgba(91,191,191,0.4)' : 'none' }}>
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95"
+              style={{ background: input.trim() ? 'linear-gradient(135deg,#5bbfbf,#4db6ac)' : '#e2ecf0', boxShadow: input.trim() ? '0 4px 12px rgba(91,191,191,0.4)' : 'none', opacity: input.trim() ? 1 : 0.35, cursor: input.trim() ? 'pointer' : 'default' }}>
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-white">
                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
               </svg>
