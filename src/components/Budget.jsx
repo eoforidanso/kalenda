@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useToast } from './Toast';
 
 const CATEGORIES = [
   { name: 'Food & Groceries', icon: '🛒', color: '#34d399', budget: 800,  spent: 613 },
@@ -104,6 +105,7 @@ export default function Budget() {
   const [showAdd, setShowAdd] = useState(false);
   const [catFilter, setCatFilter] = useState('All');
   const [liveLoaded, setLiveLoaded] = useState(false);
+  const toast = useToast();
 
   // Load real transactions from backend
   useEffect(() => {
@@ -154,10 +156,12 @@ export default function Budget() {
             date:   new Date(created.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             type:   created.type,
           }, ...prev]);
-        }).catch(() => setTxns(prev => [txn, ...prev]))
+          toast('Transaction added', 'success');
+        }).catch(() => { setTxns(prev => [txn, ...prev]); toast('Saved locally', 'info'); })
       );
     } else {
       setTxns(prev => [txn, ...prev]);
+      toast('Transaction added', 'success');
     }
     setShowAdd(false);
   }
@@ -168,7 +172,10 @@ export default function Budget() {
       try {
         const { deleteTransaction } = await import('../api/budget.js');
         await deleteTransaction(id);
-      } catch {}
+        toast('Transaction deleted', 'info');
+      } catch {
+        toast('Could not delete', 'error');
+      }
     }
   }
 

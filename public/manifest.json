@@ -1,0 +1,18 @@
+{
+  "name": "Kalenda — Family Command Center",
+  "short_name": "Kalenda",
+  "description": "Your family's shared calendar, chores, shopping lists and photo memories.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f8fa",
+  "theme_color": "#5bbfbf",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

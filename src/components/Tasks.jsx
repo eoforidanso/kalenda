@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useToast } from './Toast';
 
 const FAMILY = [
   { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500' },
@@ -55,6 +56,7 @@ export default function Tasks() {
   const [catFilter, setCatFilter] = useState('All');
   const [showAdd, setShowAdd] = useState(false);
   const [newTask, setNewTask] = useState({ label: '', who: 'Jake', stars: 1, cat: 'Chores', icon: '✅', recurring: null });
+  const toast = useToast();
 
   // Load tasks from API on mount; fall back to static initialTasks on error
   useEffect(() => {
@@ -102,8 +104,21 @@ export default function Tasks() {
       const { createTask } = await import('../api/tasks');
       const saved = await createTask(newTask);
       setTasks(prev => prev.map(t => t.id === tempId ? saved : t));
+      toast('Task added', 'success');
     } catch {
       setTasks(prev => prev.filter(t => t.id !== tempId));
+      toast('Failed to add task', 'error');
+    }
+  }
+
+  async function deleteTask(id, label) {
+    setTasks(prev => prev.filter(t => t.id !== id));
+    try {
+      const { deleteTask: apiDelete } = await import('../api/tasks');
+      await apiDelete(id);
+      toast(`"${label}" removed`, 'info');
+    } catch {
+      toast('Could not delete task', 'error');
     }
   }
 
@@ -215,6 +230,11 @@ export default function Tasks() {
                       {t.recurring && <p className="text-gray-400 text-[10px] mt-0.5">🔁 {t.recurring}</p>}
                     </div>
                     <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${m.bg} flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>{m.initial}</div>
+                    <button
+                      onClick={e => { e.stopPropagation(); deleteTask(t.id, t.label); }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-400 shrink-0 ml-1">
+                      <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+                    </button>
                   </div>
                 );
               })}

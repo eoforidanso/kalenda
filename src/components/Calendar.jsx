@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useToast } from './Toast';
 
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -98,23 +99,23 @@ function getUpcoming(eventDB, fromKey, count) {
     .slice(0, count);
 }
 
-function AddEventModal({ defaultDay, onClose, onSave }) {
-  const [label, setLabel] = useState('');
-  const [date, setDate] = useState(defaultDay || todayKey());
-  const [time, setTime] = useState('');
-  const [allDay, setAllDay] = useState(true);
-  const [type, setType] = useState('event');
-  const [color, setColor] = useState('amber');
-  const [who, setWho] = useState('Family');
-  const [notes, setNotes] = useState('');
-  const [recur, setRecur] = useState('none');
+function AddEventModal({ defaultDay, onClose, onSave, existing }) {
+  const [label, setLabel] = useState(existing?.label || '');
+  const [date, setDate] = useState(existing?.dateKey || defaultDay || todayKey());
+  const [time, setTime] = useState(existing?.time && existing.time !== 'All day' ? existing.time : '');
+  const [allDay, setAllDay] = useState(!existing?.time || existing.time === 'All day');
+  const [type, setType] = useState(existing?.type || 'event');
+  const [color, setColor] = useState(existing?.color || 'amber');
+  const [who, setWho] = useState(existing?.who || 'Family');
+  const [notes, setNotes] = useState(existing?.notes || '');
+  const [recur, setRecur] = useState(existing?.recur || 'none');
   const [error, setError] = useState('');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)' }}>
       <div className="w-full max-w-md p-6 rounded-2xl" style={{ background: '#ffffff', border: '1px solid #e2ecf0', boxShadow: '0 24px 64px rgba(0,0,0,0.15)' }}>
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-gray-800 font-semibold">Add Event</h2>
+          <h2 className="text-gray-800 font-semibold">{existing ? 'Edit Event' : 'Add Event'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
           </button>
@@ -199,16 +200,16 @@ function AddEventModal({ defaultDay, onClose, onSave }) {
           <button onClick={function() {
             if (!label.trim()) { setError('Event name is required'); return; }
             if (!date) { setError('Date is required'); return; }
-            onSave({ label, date, time: allDay ? 'All day' : time, type, color, who, notes, recur: recur === 'none' ? null : recur });
+            onSave({ id: existing?.id, dateKey: existing?.dateKey, label, date, time: allDay ? 'All day' : time, type, color, who, notes, recur: recur === 'none' ? null : recur });
             onClose();
-          }} className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold transition-all" style={{ background: 'linear-gradient(135deg, #5bbfbf, #4db6ac)', boxShadow: '0 4px 16px rgba(91,191,191,0.35)' }}>Save Event</button>
+          }} className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold transition-all" style={{ background: 'linear-gradient(135deg, #5bbfbf, #4db6ac)', boxShadow: '0 4px 16px rgba(91,191,191,0.35)' }}>{existing ? 'Update Event' : 'Save Event'}</button>
         </div>
       </div>
     </div>
   );
 }
 
-function EventPill({ ev, compact }) {
+function EventPill({ ev, compact, onEdit, onDelete }) {
   if (compact) {
     return (
       <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-medium border truncate ${COLOR_BADGE[ev.color]}`}>
@@ -218,16 +219,32 @@ function EventPill({ ev, compact }) {
     );
   }
   return (
-    <div className={`flex items-start gap-3 px-3 py-2.5 rounded-xl border ${COLOR_BADGE[ev.color]}`}>
+    <div className={`flex items-start gap-3 px-3 py-2.5 rounded-xl border group ${COLOR_BADGE[ev.color]}`}>
       <span className="text-lg shrink-0 mt-0.5">{ev.icon}</span>
       <div className="min-w-0 flex-1">
         <p className="font-medium text-sm leading-tight">{ev.label}</p>
         <p className="text-[11px] opacity-70 mt-0.5">{ev.time}</p>
         {ev.notes ? <p className="text-[10px] opacity-50 mt-1 leading-snug">{ev.notes}</p> : null}
       </div>
-      <div className="shrink-0 text-right">
+      <div className="shrink-0 flex flex-col items-end gap-1">
         <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${MEMBER_COLORS[ev.who] || 'bg-white/20'} text-white`}>{ev.who[0]}</span>
         {ev.recur ? <p className="text-[9px] opacity-40 mt-1 capitalize">{ev.recur}</p> : null}
+        {(onEdit || onDelete) ? (
+          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
+            {onEdit ? (
+              <button onClick={e => { e.stopPropagation(); onEdit(ev); }}
+                className="text-current opacity-50 hover:opacity-100 transition-opacity">
+                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3"><path d="M11.013 1.427a1.75 1.75 0 012.474 2.474L5.91 11.476l-2.765.316.316-2.765 7.552-7.6zm1.121.88a.25.25 0 00-.354 0L3.64 10.48l-.168 1.452 1.452-.168 8.14-8.14a.25.25 0 000-.354l-.93-.93z"/></svg>
+              </button>
+            ) : null}
+            {onDelete ? (
+              <button onClick={e => { e.stopPropagation(); onDelete(ev); }}
+                className="text-red-400 opacity-50 hover:opacity-100 transition-opacity">
+                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -395,11 +412,13 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
   const [viewMode, setViewMode] = useState('month');
   const [selectedDay, setSelectedDay] = useState(todayKey());
   const [showAdd, setShowAdd] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [localEventDB, setLocalEventDB] = useState(INITIAL_EVENT_DB);
   const eventDB = propEventDB ?? localEventDB;
   const setEventDB = propSetEventDB ?? setLocalEventDB;
+  const toast = useToast();
 
   // Load events from the API on mount (requires a logged-in user with a family)
   useEffect(() => {
@@ -448,6 +467,40 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
   }
   function goToday() {
     setYear(now.getFullYear()); setMonth(now.getMonth()); setSelectedDay(todayKey());
+  }
+
+  async function handleUpdateEvent({ id, dateKey, label, date, time, type, color, who, notes, recur }) {
+    const TYPE_ICONS = { birthday: '🎂', event: '🎉', milestone: '🏆', photo: '📸', reminder: '🔔' };
+    const updated = { id, type, icon: TYPE_ICONS[type] || '📅', label, time, color, who, notes, recur };
+    // Optimistic update in-place
+    setEventDB(prev => ({
+      ...prev,
+      [dateKey]: (prev[dateKey] || []).map(e => e.id === id ? updated : e),
+    }));
+    setEditingEvent(null);
+    try {
+      const { updateEvent } = await import('../api/events');
+      await updateEvent(id, { label, date: date || dateKey, time, type, color, who, notes, recur });
+      toast('Event updated', 'success');
+    } catch {
+      toast('Failed to update event', 'error');
+    }
+  }
+
+  async function handleDeleteEvent(ev) {
+    const dateKey = Object.entries(eventDB).find(([, evs]) => evs.some(e => e.id === ev.id))?.[0];
+    if (!dateKey) return;
+    setEventDB(prev => ({
+      ...prev,
+      [dateKey]: (prev[dateKey] || []).filter(e => e.id !== ev.id),
+    }));
+    try {
+      const { deleteEvent } = await import('../api/events');
+      await deleteEvent(ev.id);
+      toast('Event deleted', 'info');
+    } catch {
+      toast('Failed to delete event', 'error');
+    }
   }
 
   const selectedEvents = selectedDay
@@ -520,6 +573,7 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
       </div>
 
       {showAdd ? <AddEventModal defaultDay={selectedDay} onClose={function() { setShowAdd(false); }} onSave={handleSaveEvent} /> : null}
+      {editingEvent ? <AddEventModal existing={editingEvent} onClose={function() { setEditingEvent(null); }} onSave={handleUpdateEvent} /> : null}
 
       {/* Search results */}
       {filteredSearch ? (
@@ -598,7 +652,7 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
               <p className="text-gray-400 text-sm py-2">No events this day.</p>
               ) : (
                 <div className="space-y-2">
-                  {selectedEvents.map(function(ev) { return <EventPill key={ev.id} ev={ev} compact={false} />; })}
+                  {selectedEvents.map(function(ev) { return <EventPill key={ev.id} ev={ev} compact={false} onEdit={setEditingEvent} onDelete={handleDeleteEvent} />; })}
                   {selectedPhotos > 0 ? (
                     <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-300">
                       <span className="text-lg">📷</span>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useToast } from './Toast';
 
 const FAMILY = [
   { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500' },
@@ -57,6 +58,7 @@ export default function Lists() {
   const [newItem, setNewItem] = useState('');
   const [showNewList, setShowNewList] = useState(false);
   const [newListName, setNewListName] = useState('');
+  const toast = useToast();
 
   // Load lists from API on mount; fall back to static initialLists on error
   useEffect(() => {
@@ -139,6 +141,35 @@ export default function Lists() {
     } catch { /* not critical */ }
   }
 
+  async function deleteListItem(listId, itemId, label) {
+    setLists(prev => prev.map(l => l.id === listId
+      ? { ...l, items: l.items.filter(it => it.id !== itemId) }
+      : l
+    ));
+    try {
+      const { removeItem } = await import('../api/lists');
+      await removeItem(listId, itemId);
+      toast(`"${label}" removed`, 'info');
+    } catch {
+      toast('Could not remove item', 'error');
+    }
+  }
+
+  async function deleteCurrentList() {
+    if (lists.length <= 1) return;
+    const id = activeList;
+    const remaining = lists.filter(l => l.id !== id);
+    setLists(remaining);
+    setActiveList(remaining[0]?.id ?? null);
+    try {
+      const { deleteList } = await import('../api/lists');
+      await deleteList(id);
+      toast('List deleted', 'info');
+    } catch {
+      toast('Could not delete list', 'error');
+    }
+  }
+
   return (
     <div className="flex-1 flex overflow-hidden" style={{ background: 'transparent' }}>
 
@@ -154,15 +185,24 @@ export default function Lists() {
             const total = l.items.length;
             const active = activeList === l.id;
             return (
-              <button key={l.id} onClick={() => setActiveList(l.id)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all nav-tab-3d ${active ? 'nav-tab-3d-active' : 'hover:bg-gray-50'}`}
-                style={active ? { background: l.color + '18', border: `1px solid ${l.color}30` } : { border: '1px solid transparent' }}>
-                <span className="text-lg">{l.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium truncate ${active ? 'text-gray-800' : 'text-gray-500'}`}>{l.name}</p>
-                  <p className="text-gray-400 text-[10px]">{done}/{total} done</p>
-                </div>
-              </button>
+              <div key={l.id} className="relative group/list">
+                <button onClick={() => setActiveList(l.id)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all nav-tab-3d ${active ? 'nav-tab-3d-active' : 'hover:bg-gray-50'}`}
+                  style={active ? { background: l.color + '18', border: `1px solid ${l.color}30` } : { border: '1px solid transparent' }}>
+                  <span className="text-lg">{l.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium truncate ${active ? 'text-gray-800' : 'text-gray-500'}`}>{l.name}</p>
+                    <p className="text-gray-400 text-[10px]">{done}/{total} done</p>
+                  </div>
+                </button>
+                {lists.length > 1 && (
+                  <button
+                    onClick={e => { e.stopPropagation(); setActiveList(l.id); deleteCurrentList(); }}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover/list:opacity-100 transition-opacity text-gray-300 hover:text-red-400 p-1">
+                    <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
@@ -249,6 +289,10 @@ export default function Lists() {
                         <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <div className={`w-4 h-4 rounded-full bg-gradient-to-br ${m.bg} flex items-center justify-center text-white text-[8px] font-bold`}>{m.initial}</div>
                           <span className="text-gray-400 text-[10px]">{it.addedBy}</span>
+                          <button onClick={e => { e.stopPropagation(); deleteListItem(activeList, it.id, it.label); }}
+                            className="text-gray-300 hover:text-red-400 transition-colors ml-1">
+                            <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+                          </button>
                         </div>
                       </div>
                     );
@@ -274,6 +318,10 @@ export default function Lists() {
                             <p className="flex-1 text-gray-300 text-sm line-through">{it.label}</p>
                             <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                               <div className={`w-4 h-4 rounded-full bg-gradient-to-br ${m.bg} flex items-center justify-center text-white text-[8px] font-bold`}>{m.initial}</div>
+                              <button onClick={e => { e.stopPropagation(); deleteListItem(activeList, it.id, it.label); }}
+                                className="text-gray-300 hover:text-red-400 transition-colors ml-1">
+                                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+                              </button>
                             </div>
                           </div>
                         );

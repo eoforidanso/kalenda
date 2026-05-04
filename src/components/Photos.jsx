@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useToast } from './Toast';
 
 export const allPhotos = [
   // May 2026
@@ -56,8 +57,34 @@ export const allPhotos = [
   { id: 48, bg: 'from-pink-900 via-rose-700 to-amber-700',     emoji: '🌷', label: "Mom's 40th Birthday",         who: 'Dad',     date: 'Mar 3, 2025',  ai: true,  tags: ['birthday','milestone'] },
 ];
 
-function UploadModal({ onClose }) {
+function UploadModal({ onClose, onUploaded }) {
   const [dragging, setDragging] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [done, setDone] = useState(false);
+  const inputRef = useRef(null);
+
+  function handleFiles(fileList) {
+    const imgs = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    setFiles(imgs);
+  }
+
+  async function upload() {
+    if (!files.length) return;
+    setUploading(true);
+    try {
+      const { uploadPhoto } = await import('../api/photos.js');
+      for (const file of files) {
+        await uploadPhoto(file, null).catch(() => {});
+      }
+      setDone(true);
+      onUploaded?.(files.length);
+      setTimeout(onClose, 1200);
+    } catch {
+      setUploading(false);
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="border rounded-2xl w-full max-w-md p-6" style={{ background: '#ffffff', border: '1px solid #e2ecf0', boxShadow: '0 24px 80px rgba(0,0,0,0.12)' }}>
@@ -70,20 +97,35 @@ function UploadModal({ onClose }) {
           </button>
         </div>
 
+        {/* Hidden file input */}
+        <input ref={inputRef} type="file" accept="image/*" multiple className="hidden"
+          onChange={e => handleFiles(e.target.files)} />
+
         <div
-          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragOver={e => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          onDrop={(e) => { e.preventDefault(); setDragging(false); }}
-          className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors ${
-            dragging ? 'border-amber-500 bg-amber-500/5' : 'border-gray-200 hover:border-gray-300'
+          onDrop={e => { e.preventDefault(); setDragging(false); handleFiles(e.dataTransfer.files); }}
+          className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors cursor-pointer ${
+            dragging ? 'border-amber-500 bg-amber-500/5' : files.length ? 'border-teal-400 bg-teal-500/5' : 'border-gray-200 hover:border-gray-300'
           }`}
+          onClick={() => inputRef.current?.click()}
         >
-          <div className="text-4xl mb-3">📸</div>
-          <p className="text-gray-500 text-sm mb-1">Drag photos & videos here</p>
-          <p className="text-gray-400 text-xs mb-4">or</p>
-          <button className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold rounded-xl transition-colors">
-            Browse Files
-          </button>
+          {files.length ? (
+            <>
+              <div className="text-4xl mb-2">🖼️</div>
+              <p className="text-teal-600 font-semibold text-sm">{files.length} photo{files.length !== 1 ? 's' : ''} selected</p>
+              <p className="text-gray-400 text-xs mt-1">{files.map(f => f.name).join(', ').slice(0, 60)}{files.map(f => f.name).join(', ').length > 60 ? '…' : ''}</p>
+            </>
+          ) : (
+            <>
+              <div className="text-4xl mb-3">📸</div>
+              <p className="text-gray-500 text-sm mb-1">Drag photos & videos here</p>
+              <p className="text-gray-400 text-xs mb-4">or</p>
+              <span className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold rounded-xl transition-colors inline-block">
+                Browse Files
+              </span>
+            </>
+          )}
         </div>
 
         <div className="mt-4 flex items-center gap-2">
@@ -93,11 +135,13 @@ function UploadModal({ onClose }) {
           </span>
         </div>
 
-        <div className="mt-4 flex items-center gap-2">
-            <label className="flex items-center gap-2 text-sm text-gray-500 cursor-pointer">
-            <input type="checkbox" defaultChecked className="accent-amber-500" />
-            Send to all connected frames immediately
-          </label>
+        <div className="flex gap-2 mt-4">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl text-gray-500 text-sm" style={{ border: '1px solid #e2ecf0' }}>Cancel</button>
+          <button onClick={upload} disabled={!files.length || uploading}
+            className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold disabled:opacity-40"
+            style={{ background: done ? '#16a34a' : 'linear-gradient(135deg,#f59e0b,#d97706)' }}>
+            {done ? '✅ Uploaded!' : uploading ? 'Uploading…' : `Upload ${files.length || ''}`}
+          </button>
         </div>
       </div>
     </div>
@@ -114,6 +158,7 @@ export default function Photos({ photos: propPhotos, setPhotos: propSetPhotos })
   const [tagFilter, setTagFilter] = useState('all');
   const [showUpload, setShowUpload] = useState(false);
   const [selected, setSelected] = useState(null);
+  const toast = useToast();
 
   // Load photos from API; fall back to static allPhotos on error
   useEffect(() => {
@@ -165,7 +210,7 @@ export default function Photos({ photos: propPhotos, setPhotos: propSetPhotos })
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0">
-      {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
+      {showUpload && <UploadModal onClose={() => setShowUpload(false)} onUploaded={n => toast(`${n} photo${n !== 1 ? 's' : ''} uploaded successfully`, 'success')} />}
 
       {/* Topbar */}
       <div className="sticky top-0 z-10 px-4 md:px-6 py-4 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>

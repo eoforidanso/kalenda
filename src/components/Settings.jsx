@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useToast } from './Toast';
 
 function Toggle({ value, onChange, accent = '#5bbfbf' }) {
   return (
@@ -45,6 +46,7 @@ export default function Settings() {
   const [name, setName]           = useState('Harriet Appiah');
   const [email]                   = useState('harriet@example.com');
   const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved' | 'error'
+  const toast = useToast();
 
   // Load real user profile on mount
   useEffect(() => {
@@ -100,8 +102,10 @@ export default function Settings() {
       const { updateMe } = await import('../api/users.js');
       await updateMe({ name: name.trim(), phoneNumber: phoneNumber.trim() || undefined });
       setSaveStatus('saved');
+      toast('Profile saved', 'success');
     } catch {
       setSaveStatus('error');
+      toast('Failed to save profile', 'error');
     }
     setTimeout(() => setSaveStatus(null), 3000);
   }
