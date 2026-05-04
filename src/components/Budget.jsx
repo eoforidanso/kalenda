@@ -67,7 +67,7 @@ function AddExpenseModal({ onSave, onClose }) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 block">Amount (GHS)</label>
+              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 block">Amount (USD)</label>
               <input type="number" min="0" step="0.01" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="0.00" className="w-full px-3 py-2.5 text-sm text-gray-700 rounded-xl outline-none" style={{background:'#f8fafc',border:'1px solid #e2ecf0'}}/>
             </div>
             <div>
@@ -107,7 +107,7 @@ export default function Budget() {
   const totalBudget = CATEGORIES.reduce((s, c) => s + c.budget, 0);
   const totalSpent  = txns.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
   const totalSaved  = txns.filter(t => t.type === 'saving').reduce((s, t) => s + t.amount, 0);
-  const remaining   = INCOME_MONTHLY - totalSpent;
+  const remaining   = totalBudget - totalSpent;
   const spentPct    = Math.min((totalSpent / totalBudget) * 100, 100);
 
   const filteredTxns = catFilter === 'All' ? txns : txns.filter(t => t.cat === catFilter);
@@ -124,7 +124,7 @@ export default function Budget() {
       <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
           <h1 className="text-gray-800 font-semibold">💰 Family Budget</h1>
-          <p className="text-gray-500 text-xs">May 2026 · GHS {totalSpent.toFixed(2)} spent of {totalBudget.toLocaleString()}</p>
+          <p className="text-gray-500 text-xs">May 2026 · ${totalSpent.toFixed(2)} spent of {totalBudget.toLocaleString()}</p>
         </div>
         <button onClick={() => setShowAdd(true)} className="btn-glass">
           <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5"><path d="M8 2a.75.75 0 01.75.75V7.25h4.5a.75.75 0 010 1.5H8.75v4.5a.75.75 0 01-1.5 0V8.75H2.75a.75.75 0 010-1.5h4.5V2.75A.75.75 0 018 2z"/></svg>
@@ -137,10 +137,10 @@ export default function Budget() {
         {/* Summary cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: 'Monthly Income',  val: `GHS ${INCOME_MONTHLY.toLocaleString()}`, icon: '💵', color: '#16a34a', sub: 'Combined' },
-            { label: 'Total Spent',     val: `GHS ${totalSpent.toFixed(0)}`,           icon: '📤', color: '#dc2626', sub: `${spentPct.toFixed(0)}% of budget` },
-            { label: 'Remaining',       val: `GHS ${remaining.toFixed(0)}`,            icon: '💳', color: remaining >= 0 ? '#059669' : '#dc2626', sub: remaining >= 0 ? 'On track' : 'Over budget' },
-            { label: 'Savings',         val: `GHS ${totalSaved.toFixed(0)}`,           icon: '🏦', color: '#6366f1', sub: `${((totalSaved/INCOME_MONTHLY)*100).toFixed(0)}% of income` },
+            { label: 'Monthly Income',  val: `$${INCOME_MONTHLY.toLocaleString()}`, icon: '💵', color: '#16a34a', sub: 'Combined' },
+            { label: 'Total Spent',     val: `$${totalSpent.toFixed(0)}`,           icon: '📤', color: '#dc2626', sub: `${spentPct.toFixed(0)}% of budget` },
+            { label: 'Remaining',       val: `$${remaining.toFixed(0)}`,            icon: '💳', color: remaining >= 0 ? '#059669' : '#dc2626', sub: remaining >= 0 ? 'On track' : 'Over budget' },
+            { label: 'Savings',         val: `$${totalSaved.toFixed(0)}`,           icon: '🏦', color: '#6366f1', sub: `${((totalSaved/INCOME_MONTHLY)*100).toFixed(0)}% of income` },
           ].map((s, i) => (
             <div key={i} className="glass rounded-2xl p-4">
               <div className="flex items-center justify-between mb-2">
@@ -166,8 +166,8 @@ export default function Budget() {
             }} />
           </div>
           <div className="flex justify-between mt-1.5 text-[10px] text-gray-400">
-            <span>GHS 0</span>
-            <span>GHS {totalBudget.toLocaleString()}</span>
+            <span>$0</span>
+            <span>${totalBudget.toLocaleString()}</span>
           </div>
         </div>
 
@@ -190,7 +190,7 @@ export default function Budget() {
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm text-gray-700 font-medium">{cat.name}</span>
                       <span className="text-xs font-bold" style={{ color: over ? '#dc2626' : '#64748b' }}>
-                        GHS {spent.toFixed(0)} <span className="text-gray-300 font-normal">/ {cat.budget}</span>
+                        ${spent.toFixed(0)} <span className="text-gray-300 font-normal">/ {cat.budget}</span>
                         {over && <span className="ml-1 text-red-500">⚠️</span>}
                       </span>
                     </div>
@@ -233,7 +233,7 @@ export default function Budget() {
                     </div>
                   </div>
                   <span className="text-sm font-bold shrink-0" style={{ color: isIncome ? '#16a34a' : isSaving ? '#6366f1' : '#ef4444' }}>
-                    {isIncome ? '+' : isSaving ? '→' : '-'}GHS {t.amount.toFixed(2)}
+                    {isIncome ? '+' : isSaving ? '→' : '-'}${t.amount.toFixed(2)}
                   </span>
                 </div>
               );

@@ -1,5 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 import { Task, TaskCategory } from './task.entity';
+import { parsePagination } from '../../shared/pagination';
 
 export interface CreateTaskDto {
   title: string;
@@ -22,11 +23,18 @@ export class TaskService {
     this.repo = db.getRepository(Task);
   }
 
-  async list(familyId: string, assignedToName?: string, category?: TaskCategory) {
+  async list(familyId: string, assignedToName?: string, category?: TaskCategory, page = 1, limit = 50) {
+    const { skip } = parsePagination({ page, limit });
     const where: any = { familyId };
     if (assignedToName) where.assignedToName = assignedToName;
     if (category)       where.category       = category;
-    return this.repo.find({ where, order: { createdAt: 'DESC' } });
+    const [data, total] = await this.repo.findAndCount({
+      where,
+      order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
+    });
+    return { data, total, page, limit };
   }
 
   async create(familyId: string, dto: CreateTaskDto) {

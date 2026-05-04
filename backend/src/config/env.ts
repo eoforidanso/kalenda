@@ -11,6 +11,8 @@ const schema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
   BCRYPT_ROUNDS: z.coerce.number().default(12),
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
+  UPLOADS_DIR: z.string().default('uploads'),
+  PUBLIC_URL: z.string().default('http://localhost:3001'),
 });
 
 export const env = schema.parse(process.env);

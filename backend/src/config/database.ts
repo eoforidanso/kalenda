@@ -13,6 +13,8 @@ import { ListItem }       from '../modules/lists/list-item.entity';
 import { Photo }          from '../modules/photos/photo.entity';
 import { Album }          from '../modules/photos/album.entity';
 import { Notification }   from '../modules/notifications/notification.entity';
+import { Transaction }    from '../modules/budget/transaction.entity';
+import { MealPlan }       from '../modules/meals/meal-plan.entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -28,6 +30,8 @@ export const AppDataSource = new DataSource({
     List, ListItem,
     Photo, Album,
     Notification,
+    Transaction,
+    MealPlan,
   ],
   migrations: ['dist/migrations/*.js'],
   ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,

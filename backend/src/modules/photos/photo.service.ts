@@ -62,4 +62,8 @@ export class PhotoService {
   async createAlbum(familyId: string, createdById: string, name: string) {
     return this.albums.save(this.albums.create({ familyId, createdById, name }));
   }
+
+  async removeAlbum(id: string, familyId: string) {
+    await this.albums.delete({ id, familyId });
+  }
 }

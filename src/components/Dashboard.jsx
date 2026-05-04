@@ -20,10 +20,15 @@ function getCurrentActivity(memberName, schedule) {
     if (ampm === 'AM' && h === 12) h = 0;
     return h * 60 + m;
   }
+  function durationToMins(d) {
+    if (d.endsWith('h'))  return parseFloat(d) * 60;
+    if (d.endsWith('m'))  return parseFloat(d);
+    return parseFloat(d) * 60; // fallback: treat as hours
+  }
   for (const ev of schedule) {
     if (ev.who !== memberName && ev.who !== 'All') continue;
     const start = toMins(ev.time);
-    const end   = start + parseFloat(ev.duration) * 60;
+    const end   = start + durationToMins(ev.duration);
     if (nowMins >= start && nowMins < end) return ev.label;
   }
   return null;
@@ -83,7 +88,6 @@ const BUDGET_SNAPSHOT = [
   { name: 'Kids',      icon: '🎒', color: '#a78bfa', budget: 350, spent: 320 },
   { name: 'Health',    icon: '💊', color: '#f472b6', budget: 300, spent: 95  },
 ];
-const MONTHLY_INCOME = 3500;
 const MONTHLY_BUDGET = 2950;
 
 // Shopping list
@@ -105,10 +109,10 @@ const meals = {
 
 // Upcoming events
 const upcomingEvents = [
-  { date: 'May 3',  label: "Emma's Piano Recital", icon: '🎹', who: 'Emma', isBirthday: false },
   { date: 'May 8',  label: "Mother's Day",          icon: '💐', who: 'Mom',  isBirthday: false },
   { date: 'May 10', label: "Jake's Birthday 🎂",    icon: '🎂', who: 'Jake', isBirthday: true  },
   { date: 'May 15', label: 'Family BBQ',            icon: '🍖', who: 'All',  isBirthday: false },
+  { date: 'Jun 1',  label: "Emma's Piano Recital",  icon: '🎹', who: 'Emma', isBirthday: false },
 ];
 
 const MONTH_MAP = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
@@ -161,7 +165,7 @@ function WeatherWidget() {
       <span className="text-2xl">⛅</span>
       <div>
         <p className="text-gray-800 text-sm font-semibold">72°F · Partly Cloudy</p>
-        <p className="text-gray-400 text-xs">Accra, Ghana</p>
+        <p className="text-gray-400 text-xs">Lake in the Hills, IL</p>
       </div>
     </div>
   );
@@ -244,7 +248,7 @@ export default function Dashboard({ setView }) {
           {[
             { label: 'Tasks done',  val: `${choresDone}/${chores.length}`,  pct: (choresDone / chores.length) * 100,  color: '#34d399', icon: '✅', view: 'tasks',       sub: choresDone === chores.length ? 'All done! 🎉' : `${chores.length - choresDone} left`, cls: 'stat-pop stat-pop-1' },
             { label: 'Meals today', val: `${mealsPlanned}/3`,               pct: (mealsPlanned / 3) * 100,            color: '#fb923c', icon: '🍽️', view: 'mealplanner', sub: 'Planned today',    cls: 'stat-pop stat-pop-2' },
-            { label: 'Budget used', val: `${budgetPct}%`,                   pct: budgetPct, color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#5bbfbf', icon: '💰', view: 'budget',      sub: `GHS ${totalSpent.toFixed(0)} spent`,  cls: 'stat-pop stat-pop-3' },
+            { label: 'Budget used', val: `${budgetPct}%`,                   pct: budgetPct, color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#5bbfbf', icon: '💰', view: 'budget',      sub: `$${totalSpent.toFixed(0)} spent`,  cls: 'stat-pop stat-pop-3' },
             { label: 'Shopping',    val: `${shopDone}/${shopList.length}`,   pct: (shopDone / shopList.length) * 100, color: '#6366f1', icon: '🛒', view: 'lists',       sub: shopDone === shopList.length ? 'All checked!' : `${shopList.length - shopDone} to get`, cls: 'stat-pop stat-pop-4' },
           ].map((s, i) => (
             <button key={i} onClick={() => setView(s.view)}
@@ -400,7 +404,7 @@ export default function Dashboard({ setView }) {
               </div>
               <div className="mb-3">
                 <div className="flex justify-between text-[10px] text-gray-500 mb-1">
-                  <span>GHS {totalSpent.toFixed(0)} spent</span>
+                  <span>${totalSpent.toFixed(0)} spent</span>
                   <span className="font-bold" style={{ color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#6366f1' }}>{budgetPct}%</span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.06)' }}>

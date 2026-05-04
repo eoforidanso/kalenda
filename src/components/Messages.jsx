@@ -40,7 +40,7 @@ const THREADS = [
     unread: 0,
     messages: [
       { id: 1, from: 'dad',     text: "Hey H, can you check the electricity bill in my study? Top drawer.", time: '9:00 AM', reactions: [] },
-      { id: 2, from: 'harriet', text: "Found it! GHS 140 — I'll pay it online.",                           time: '9:04 AM', reactions: ['❤️'] },
+      { id: 2, from: 'harriet', text: "Found it! $140 — I'll pay it online.",                           time: '9:04 AM', reactions: ['❤️'] },
       { id: 3, from: 'dad',     text: "Thanks love 🙏",                                                    time: '9:05 AM', reactions: [] },
     ],
   },

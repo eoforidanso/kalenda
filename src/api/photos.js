@@ -1,4 +1,7 @@
 import { apiFetch } from './client';
+import { getToken } from './client';
+
+const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001/api/v1';
 
 function toFrontend(p) {
   return {
@@ -34,13 +37,37 @@ export async function deletePhoto(id) {
   return apiFetch(`/photos/${id}`, { method: 'DELETE' });
 }
 
-export async function listAlbums() {
-  return apiFetch('/albums');
+/**
+ * Upload a photo file via multipart/form-data.
+ * @param {File} file — browser File object
+ * @param {string} [albumId] — optional album UUID
+ */
+export async function uploadPhoto(file, albumId) {
+  const form = new FormData();
+  form.append('file', file);
+  if (albumId) form.append('albumId', albumId);
+  const token = getToken();
+  const res = await fetch(`${BASE}/photos/upload`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error ?? 'Upload failed');
+  return toFrontend(json.data);
 }
 
-export async function createAlbum(name, coverUrl) {
-  return apiFetch('/albums', {
+export async function listAlbums() {
+  return apiFetch('/photos/albums');
+}
+
+export async function createAlbum(name) {
+  return apiFetch('/photos/albums', {
     method: 'POST',
-    body:   JSON.stringify({ name, coverUrl }),
+    body:   JSON.stringify({ name }),
   });
+}
+
+export async function deleteAlbum(id) {
+  return apiFetch(`/photos/albums/${id}`, { method: 'DELETE' });
 }

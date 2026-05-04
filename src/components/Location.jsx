@@ -1,32 +1,32 @@
 import { useState, useEffect, useRef } from 'react';
 
 const FAMILY = [
-  { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500',   lat: 5.614,  lng: -0.185, place: 'Home',             status: 'online',  lastSeen: 'Now'         },
-  { name: 'Dad',     initial: 'D', color: '#38bdf8', bg: 'from-sky-400 to-blue-500',    lat: 5.603,  lng: -0.187, place: 'Work — Accra CBD',  status: 'online',  lastSeen: '2 min ago'   },
-  { name: 'Mom',     initial: 'M', color: '#fb7185', bg: 'from-rose-400 to-pink-500',   lat: 5.595,  lng: -0.196, place: 'Shoprite Mall',     status: 'online',  lastSeen: '5 min ago'   },
-  { name: 'Emma',    initial: 'E', color: '#34d399', bg: 'from-emerald-400 to-teal-500',lat: 5.620,  lng: -0.178, place: 'Achimota School',   status: 'offline', lastSeen: '1 hr ago'    },
-  { name: 'Jake',    initial: 'J', color: '#fbbf24', bg: 'from-amber-400 to-orange-500',lat: 5.631,  lng: -0.201, place: 'Legon Campus',      status: 'online',  lastSeen: '12 min ago'  },
-  { name: 'Grandma', initial: 'G', color: '#a78bfa', bg: 'from-violet-400 to-purple-500',lat:5.588, lng: -0.170, place: 'Home (Tema)',        status: 'offline', lastSeen: '3 hr ago'    },
+  { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500',    lat: 42.188, lng: -88.344, place: 'Home',                        status: 'online',  lastSeen: 'Now'        },
+  { name: 'Dad',     initial: 'D', color: '#38bdf8', bg: 'from-sky-400 to-blue-500',     lat: 42.195, lng: -88.330, place: 'Work — Algonquin',            status: 'online',  lastSeen: '2 min ago'  },
+  { name: 'Mom',     initial: 'M', color: '#fb7185', bg: 'from-rose-400 to-pink-500',    lat: 42.182, lng: -88.358, place: 'Randall Road Walmart',        status: 'online',  lastSeen: '5 min ago'  },
+  { name: 'Emma',    initial: 'E', color: '#34d399', bg: 'from-emerald-400 to-teal-500', lat: 42.200, lng: -88.340, place: 'Lake in the Hills Elem.',     status: 'offline', lastSeen: '1 hr ago'   },
+  { name: 'Jake',    initial: 'J', color: '#fbbf24', bg: 'from-amber-400 to-orange-500', lat: 42.175, lng: -88.350, place: 'Huntley High School',         status: 'online',  lastSeen: '12 min ago' },
+  { name: 'Grandma', initial: 'G', color: '#a78bfa', bg: 'from-violet-400 to-purple-500',lat: 42.165, lng: -88.320, place: 'Crystal Lake Senior Center',  status: 'offline', lastSeen: '3 hr ago'   },
 ];
 
 const SAFE_ZONES = [
-  { name: 'Home',            lat: 5.614,  lng: -0.185, radius: 0.3, color: '#34d399' },
-  { name: 'Achimota School', lat: 5.620,  lng: -0.178, radius: 0.2, color: '#38bdf8' },
-  { name: 'Legon Campus',    lat: 5.631,  lng: -0.201, radius: 0.4, color: '#a78bfa' },
+  { name: 'Home',                      lat: 42.188, lng: -88.344, radius: 0.3, color: '#34d399' },
+  { name: 'Lake in the Hills Elem.',   lat: 42.200, lng: -88.340, radius: 0.2, color: '#38bdf8' },
+  { name: 'Huntley High School',       lat: 42.175, lng: -88.350, radius: 0.4, color: '#a78bfa' },
 ];
 
 const CHECK_INS = [
-  { who: 'Dad',  place: 'Work — Accra CBD',  time: '8:04 AM',  icon: '🏢' },
-  { who: 'Mom',  place: 'Shoprite Mall',      time: '10:22 AM', icon: '🛒' },
-  { who: 'Jake', place: 'Legon Campus',       time: '7:51 AM',  icon: '🎓' },
-  { who: 'Emma', place: 'Achimota School',    time: '7:35 AM',  icon: '🏫' },
+  { who: 'Dad',  place: 'Work — Algonquin',         time: '8:04 AM',  icon: '🏢' },
+  { who: 'Mom',  place: 'Randall Road Walmart',     time: '10:22 AM', icon: '🛒' },
+  { who: 'Jake', place: 'Huntley High School',      time: '7:51 AM',  icon: '🎓' },
+  { who: 'Emma', place: 'Lake in the Hills Elem.',  time: '7:35 AM',  icon: '🏫' },
 ];
 
 function getMember(name) { return FAMILY.find(f => f.name === name) || FAMILY[0]; }
 
 // Normalise lat/lng into SVG canvas [0..1]
-const LAT = { min: 5.580, max: 5.640 };
-const LNG = { min: -0.210, max: -0.160 };
+const LAT = { min: 42.155, max: 42.215 };
+const LNG = { min: -88.375, max: -88.305 };
 function project(lat, lng, W, H) {
   const x = ((lng - LNG.min) / (LNG.max - LNG.min)) * W;
   const y = ((LAT.max - lat) / (LAT.max - LAT.min)) * H;
@@ -196,7 +196,7 @@ export default function Location() {
           <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #e2ecf0' }}>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-gray-600 text-xs font-semibold">Live Map · Accra, Ghana</span>
+              <span className="text-gray-600 text-xs font-semibold">Live Map · Lake in the Hills, IL</span>
             </div>
             <span className="text-gray-400 text-[10px]">Updated just now</span>
           </div>

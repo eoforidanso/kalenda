@@ -1,7 +1,23 @@
 import { FastifyPluginAsync } from 'fastify';
+import { z } from 'zod';
 import { ListService } from './list.service';
 import { authenticate } from '../../hooks/authenticate';
 import { ok } from '../../shared/api-response';
+
+const createListSchema = z.object({
+  name: z.string().min(1).max(100),
+  icon: z.string().max(10).optional(),
+});
+
+const addItemSchema = z.object({
+  text:         z.string().min(1).max(500),
+  addedByName:  z.string().max(100).optional(),
+});
+
+const updateItemSchema = z.object({
+  text: z.string().min(1).max(500).optional(),
+  done: z.boolean().optional(),
+});
 
 function requireFamily(req: any) {
   if (!req.user.familyId) throw Object.assign(new Error('No family associated'), { statusCode: 403 });
@@ -19,7 +35,7 @@ const listRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.post('/', { preHandler: [authenticate] }, async (req, reply) => {
     const familyId = requireFamily(req);
-    const { name, icon } = req.body as { name: string; icon?: string };
+    const { name, icon } = createListSchema.parse(req.body);
     return reply.status(201).send(ok(await service.createList(familyId, req.user.sub, name, icon)));
   });
 
@@ -39,13 +55,14 @@ const listRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.post('/:id/items', { preHandler: [authenticate] }, async (req, reply) => {
     const { id } = req.params as { id: string };
-    const { text, addedByName } = req.body as { text: string; addedByName?: string };
+    const { text, addedByName } = addItemSchema.parse(req.body);
     return reply.status(201).send(ok(await service.addItem(id, text, addedByName)));
   });
 
   fastify.patch('/:id/items/:itemId', { preHandler: [authenticate] }, async (req) => {
     const { id, itemId } = req.params as { id: string; itemId: string };
-    return ok(await service.updateItem(itemId, id, req.body as any));
+    const body = updateItemSchema.parse(req.body);
+    return ok(await service.updateItem(itemId, id, body));
   });
 
   fastify.delete('/:id/items/:itemId', { preHandler: [authenticate] }, async (req, reply) => {

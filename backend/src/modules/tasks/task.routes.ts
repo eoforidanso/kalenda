@@ -2,8 +2,10 @@ import { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { TaskService } from './task.service';
 import { authenticate } from '../../hooks/authenticate';
-import { ok } from '../../shared/api-response';
+import { ok, paginated } from '../../shared/api-response';
 import { TaskCategory } from './task.entity';
+import { notifyFamily } from '../../shared/notify-family';
+import { NotificationType } from '../notifications/notification.entity';
 
 const taskCategoryEnum = z.nativeEnum(TaskCategory);
 
@@ -31,10 +33,11 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.get('/', { preHandler: [authenticate] }, async (req) => {
     const familyId = requireFamily(req);
-    const { assignedToName, category } = req.query as {
-      assignedToName?: string; category?: TaskCategory;
+    const { assignedToName, category, page, limit } = req.query as {
+      assignedToName?: string; category?: TaskCategory; page?: number; limit?: number;
     };
-    return ok(await service.list(familyId, assignedToName, category));
+    const r = await service.list(familyId, assignedToName, category, page, limit);
+    return paginated(r.data, r.total, r.page, r.limit);
   });
 
   fastify.post('/', { preHandler: [authenticate] }, async (req, reply) => {
@@ -47,7 +50,13 @@ const taskRoutes: FastifyPluginAsync = async (fastify) => {
     const familyId = requireFamily(req);
     const { id }   = req.params as { id: string };
     const body = updateTaskSchema.parse(req.body);
-    return ok(await service.update(id, familyId, body));
+    const task = await service.update(id, familyId, body);
+    // Notify family when a task is completed
+    if (body.done === true) {
+      notifyFamily(fastify.db, familyId, req.user.sub, NotificationType.CHORES, '✅',
+        'Task completed!', `"${task.title}" was marked as done.`, { taskId: task.id }).catch(() => {});
+    }
+    return ok(task);
   });
 
   fastify.delete('/:id', { preHandler: [authenticate] }, async (req, reply) => {

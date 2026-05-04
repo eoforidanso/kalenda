@@ -1,12 +1,65 @@
 import { useState } from 'react';
 
+// Skin tone swatches: label, modifier, bg color
+const SKIN_TONES = [
+  { label: 'Light',        mod: '🏻', bg: '#fde8d0' },
+  { label: 'Medium-Light', mod: '🏼', bg: '#f5c99a' },
+  { label: 'Medium',       mod: '🏽', bg: '#d4956a' },
+  { label: 'Medium-Dark',  mod: '🏾', bg: '#a0622a' },
+  { label: 'Dark',         mod: '🏿', bg: '#5c3317' },
+];
+
+// Person emojis by gender
+const PERSON_EMOJIS = ['🧑', '👩', '👨', '🧒', '👧', '👦', '👴', '👵'];
+
+function EmojiPicker({ current, onSelect, onClose }) {
+  const [tone, setTone] = useState(SKIN_TONES[2]);
+  return (
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="w-80 p-5 rounded-2xl" style={{ background: '#fff', border: '1px solid #e2ecf0', boxShadow: '0 24px 80px rgba(0,0,0,0.14)' }} onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-gray-800 font-semibold text-sm">Choose Avatar</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">×</button>
+        </div>
+
+        {/* Skin tone row */}
+        <p className="text-gray-400 text-xs mb-2 font-semibold uppercase tracking-wider">Skin Tone</p>
+        <div className="flex gap-2 mb-4">
+          {SKIN_TONES.map(t => (
+            <button key={t.mod} onClick={() => setTone(t)}
+              title={t.label}
+              className="w-8 h-8 rounded-full transition-all"
+              style={{ background: t.bg, outline: tone.mod === t.mod ? '3px solid #5bbfbf' : '2px solid transparent', outlineOffset: 2 }} />
+          ))}
+        </div>
+
+        {/* Person emoji grid */}
+        <p className="text-gray-400 text-xs mb-2 font-semibold uppercase tracking-wider">Person</p>
+        <div className="grid grid-cols-4 gap-2">
+          {PERSON_EMOJIS.map(base => {
+            const full = base + tone.mod;
+            return (
+              <button key={base} onClick={() => { onSelect(full); onClose(); }}
+                className="text-3xl h-14 rounded-xl flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                style={{ background: current === full ? 'rgba(91,191,191,0.12)' : 'rgba(0,0,0,0.03)', border: current === full ? '1.5px solid #5bbfbf' : '1.5px solid transparent' }}>
+                {full}
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-gray-400 text-[10px] text-center mt-3">Tap a person to set as your avatar</p>
+      </div>
+    </div>
+  );
+}
+
 const initialMembers = [
-  { name: 'Harriet A.', role: 'Owner', avatar: 'bg-gradient-to-br from-rose-400 to-orange-400', joined: 'Jan 2026', photos: 312, status: 'active' },
-  { name: 'Dad', role: 'Member', avatar: 'bg-gradient-to-br from-sky-400 to-blue-500', joined: 'Jan 2026', photos: 487, status: 'active' },
-  { name: 'Mom', role: 'Member', avatar: 'bg-gradient-to-br from-rose-500 to-pink-500', joined: 'Jan 2026', photos: 621, status: 'active' },
-  { name: 'Emma', role: 'Member', avatar: 'bg-gradient-to-br from-emerald-400 to-teal-500', joined: 'Feb 2026', photos: 203, status: 'active' },
-  { name: 'Jake', role: 'Member', avatar: 'bg-gradient-to-br from-amber-400 to-orange-500', joined: 'Feb 2026', photos: 155, status: 'active' },
-  { name: 'Grandma', role: 'Member', avatar: 'bg-gradient-to-br from-violet-400 to-purple-500', joined: 'Mar 2026', photos: 88, status: 'active' },
+  { name: 'Harriet A.', role: 'Owner', avatar: 'bg-gradient-to-br from-rose-400 to-orange-400',    emoji: '👩🏾', joined: 'Jan 2026', photos: 312, status: 'active' },
+  { name: 'Dad',        role: 'Member', avatar: 'bg-gradient-to-br from-sky-400 to-blue-500',      emoji: '👨🏾', joined: 'Jan 2026', photos: 487, status: 'active' },
+  { name: 'Mom',        role: 'Member', avatar: 'bg-gradient-to-br from-rose-500 to-pink-500',     emoji: '👩🏾', joined: 'Jan 2026', photos: 621, status: 'active' },
+  { name: 'Emma',       role: 'Member', avatar: 'bg-gradient-to-br from-emerald-400 to-teal-500',  emoji: '👧🏾', joined: 'Feb 2026', photos: 203, status: 'active' },
+  { name: 'Jake',       role: 'Member', avatar: 'bg-gradient-to-br from-amber-400 to-orange-500',  emoji: '👦🏾', joined: 'Feb 2026', photos: 155, status: 'active' },
+  { name: 'Grandma',    role: 'Member', avatar: 'bg-gradient-to-br from-violet-400 to-purple-500', emoji: '👵🏾', joined: 'Mar 2026', photos: 88,  status: 'active' },
 ];
 
 const initialPending = [
@@ -71,9 +124,10 @@ function InviteModal({ onClose, onInvite }) {
 }
 
 export default function Family() {
-  const [showInvite, setShowInvite] = useState(false);
-  const [members, setMembers] = useState(initialMembers);
-  const [pending, setPending] = useState(initialPending);
+  const [showInvite, setShowInvite]   = useState(false);
+  const [members, setMembers]         = useState(initialMembers);
+  const [pending, setPending]         = useState(initialPending);
+  const [pickingFor, setPickingFor]   = useState(null); // member name
 
   function handleInvite(email, role) {
     const name = email.split('@')[0];
@@ -88,9 +142,14 @@ export default function Family() {
     setPending(prev => prev.filter(p => p.email !== email));
   }
 
+  function setEmoji(memberName, emoji) {
+    setMembers(prev => prev.map(m => m.name === memberName ? { ...m, emoji } : m));
+  }
+
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>
       {showInvite && <InviteModal onClose={() => setShowInvite(false)} onInvite={handleInvite} />}
+      {pickingFor && <EmojiPicker current={members.find(m=>m.name===pickingFor)?.emoji} onSelect={e => setEmoji(pickingFor, e)} onClose={() => setPickingFor(null)} />}
 
       {/* Topbar */}
       <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
@@ -115,9 +174,12 @@ export default function Family() {
           <div className="divide-y" style={{ borderColor: 'rgba(0,0,0,0.04)' }}>
             {members.map((m, i) => (
               <div key={i} className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors group">
-                <div className={`w-9 h-9 rounded-full ${m.avatar} flex items-center justify-center text-white text-sm font-bold shrink-0`}>
-                  {m.name[0]}
-                </div>
+                <button onClick={() => setPickingFor(m.name)} title="Change avatar"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-2xl shrink-0 transition-transform hover:scale-110 active:scale-95 relative"
+                  style={{ background: 'rgba(0,0,0,0.04)', border: '1.5px dashed #d1d5db' }}>
+                  {m.emoji || m.name[0]}
+                  <span className="absolute -bottom-0.5 -right-0.5 text-[10px] bg-white rounded-full leading-none px-0.5">✏️</span>
+                </button>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-gray-800 text-sm font-medium">{m.name}</p>

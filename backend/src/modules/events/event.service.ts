@@ -1,5 +1,6 @@
 import { DataSource, Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 import { CalendarEvent } from './event.entity';
+import { parsePagination } from '../../shared/pagination';
 
 export interface CreateEventDto {
   title: string;
@@ -24,12 +25,20 @@ export class EventService {
     this.repo = db.getRepository(CalendarEvent);
   }
 
-  async list(familyId: string, from?: Date, to?: Date) {
+  async list(familyId: string, from?: Date, to?: Date, page = 1, limit = 50) {
+    const { skip } = parsePagination({ page, limit: Math.min(limit, 200) });
     const where: any = { familyId };
     if (from && to)   where.startAt = Between(from, to);
     else if (from)    where.startAt = MoreThanOrEqual(from);
     else if (to)      where.startAt = LessThanOrEqual(to);
-    return this.repo.find({ where, order: { startAt: 'ASC' }, relations: ['creator'] });
+    const [data, total] = await this.repo.findAndCount({
+      where,
+      order: { startAt: 'ASC' },
+      relations: ['creator'],
+      skip,
+      take: Math.min(limit, 200),
+    });
+    return { data, total, page, limit };
   }
 
   async create(familyId: string, creatorId: string, dto: CreateEventDto) {

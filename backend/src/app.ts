@@ -2,6 +2,9 @@ import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
+import multipart from '@fastify/multipart';
+import staticFiles from '@fastify/static';
+import path from 'path';
 import { ZodError } from 'zod';
 import { env } from './config/env';
 import typeormPlugin from './plugins/typeorm.plugin';
@@ -15,6 +18,8 @@ import taskRoutes from './modules/tasks/task.routes';
 import listRoutes from './modules/lists/list.routes';
 import photoRoutes from './modules/photos/photo.routes';
 import notificationRoutes from './modules/notifications/notification.routes';
+import budgetRoutes from './modules/budget/budget.routes';
+import mealRoutes from './modules/meals/meal.routes';
 
 export async function buildApp() {
   const app = Fastify({
@@ -37,6 +42,14 @@ export async function buildApp() {
     errorResponseBuilder: () => ({ success: false, error: 'Too many requests — please slow down.' }),
   });
   await app.register(cors, { origin: env.CORS_ORIGIN, credentials: true });
+  await app.register(multipart, {
+    limits: { fileSize: 52_428_800 }, // 50 MB
+  });
+  await app.register(staticFiles, {
+    root: path.resolve(env.UPLOADS_DIR),
+    prefix: '/uploads/',
+    decorateReply: false,
+  });
   await app.register(typeormPlugin);
   await app.register(jwtPlugin);
   await app.register(swaggerPlugin);
@@ -61,6 +74,8 @@ export async function buildApp() {
   await app.register(listRoutes,         { prefix: `${V1}/lists` });
   await app.register(photoRoutes,        { prefix: `${V1}/photos` });
   await app.register(notificationRoutes, { prefix: `${V1}/notifications` });
+  await app.register(budgetRoutes,       { prefix: `${V1}/budget` });
+  await app.register(mealRoutes,         { prefix: `${V1}/meals` });
 
   app.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }));
 
