@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { usePlan } from '../context/PlanContext';
+import { UpgradeModal } from './UpgradeModal';
 
 // Bottom nav items for mobile (5 most important)
 const mobileNav = [
@@ -11,6 +13,8 @@ const mobileNav = [
 
 export default function Sidebar({ view, setView, notifUnread = 0, onSearchOpen }) {
   const [showMore, setShowMore] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const { isPro } = usePlan();
   const moreItems = [
     { id: 'tasks',       label: 'Tasks',       icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"/></svg> },
     { id: 'lists',        label: 'Lists',       icon: <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/></svg> },
@@ -149,19 +153,30 @@ export default function Sidebar({ view, setView, notifUnread = 0, onSearchOpen }
         </div>
       </div>
 
-      {/* Storage bar */}
+      {/* Storage / plan bar */}
       <div className="px-4 py-4" style={{ borderTop: '1px solid #e2ecf0' }}>
-        <div className="flex justify-between text-[10px] text-gray-400 mb-1.5">
-          <span>Storage</span><span>4.1 GB / 5 GB</span>
-        </div>
-        <div className="h-1 rounded-full overflow-hidden mb-3" style={{ background: 'rgba(0,0,0,0.06)' }}>
-          <div className="h-full rounded-full" style={{ width: '82%', background: 'linear-gradient(90deg, #5bbfbf, #4db6ac)' }} />
-        </div>
+        {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+        {!isPro && (
+          <>
+            <div className="flex justify-between text-[10px] text-gray-400 mb-1.5">
+              <span>Storage</span><span>4.1 GB / 5 GB</span>
+            </div>
+            <div className="h-1 rounded-full overflow-hidden mb-3" style={{ background: 'rgba(0,0,0,0.06)' }}>
+              <div className="h-full rounded-full" style={{ width: '82%', background: 'linear-gradient(90deg, #f59e0b, #ef4444)' }} />
+            </div>
+          </>
+        )}
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0" style={{ background: 'linear-gradient(135deg, #ec4899, #f97316)' }}>H</div>
           <div className="min-w-0 flex-1">
-            <p className="text-gray-800 text-xs font-medium truncate">Harriet A.</p>
-            <button onClick={() => setView('settings')} className="text-teal-500 text-[10px] hover:text-teal-600 transition-colors">Upgrade to Pro</button>
+            <div className="flex items-center gap-1.5">
+              <p className="text-gray-800 text-xs font-medium truncate">Harriet A.</p>
+              {isPro && <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg,#5bbfbf,#7c3aed)' }}>PRO</span>}
+            </div>
+            {!isPro
+              ? <button onClick={() => setShowUpgrade(true)} className="text-teal-500 text-[10px] hover:text-teal-600 transition-colors font-medium">✨ Upgrade to Pro</button>
+              : <p className="text-teal-500 text-[10px]">Kalenda Pro — active</p>
+            }
           </div>
         </div>
       </div>

@@ -20,6 +20,7 @@ import photoRoutes from './modules/photos/photo.routes';
 import notificationRoutes from './modules/notifications/notification.routes';
 import budgetRoutes from './modules/budget/budget.routes';
 import mealRoutes from './modules/meals/meal.routes';
+import paymentRoutes from './modules/payments/payment.routes';
 
 export async function buildApp() {
   const app = Fastify({
@@ -76,6 +77,7 @@ export async function buildApp() {
   await app.register(notificationRoutes, { prefix: `${V1}/notifications` });
   await app.register(budgetRoutes,       { prefix: `${V1}/budget` });
   await app.register(mealRoutes,         { prefix: `${V1}/meals` });
+  await app.register(paymentRoutes,      { prefix: `${V1}/payments` });
 
   app.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }));
 

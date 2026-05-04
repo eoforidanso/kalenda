@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from './Toast';
+import { usePlan } from '../context/PlanContext';
+import { UpgradeModal } from './UpgradeModal';
 
 function Toggle({ value, onChange, accent = '#5bbfbf' }) {
   return (
@@ -47,6 +49,8 @@ export default function Settings() {
   const [email]                   = useState('harriet@example.com');
   const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved' | 'error'
   const toast = useToast();
+  const { isPro, plan } = usePlan();
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   // Load real user profile on mount
   useEffect(() => {
@@ -141,6 +145,30 @@ export default function Settings() {
           <button onClick={saveProfile} disabled={saveStatus === 'saving'} className="mt-4 btn-glass disabled:opacity-50">
             {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? '✅ Saved!' : saveStatus === 'error' ? '❌ Error' : 'Save Changes'}
           </button>
+        </Section>
+
+        {/* ── SUBSCRIPTION ────────────────────────── */}
+        {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+        <Section title="Subscription" accent={isPro ? '#5bbfbf' : '#f59e0b'}>
+          <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: isPro ? 'rgba(91,191,191,0.06)' : 'rgba(245,158,11,0.06)', border: `1px solid ${isPro ? 'rgba(91,191,191,0.2)' : 'rgba(245,158,11,0.2)'}` }}>
+            <div className="text-3xl">{isPro ? '✨' : '🔓'}</div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <p className="text-gray-800 font-semibold text-sm">{isPro ? 'Kalenda Pro' : 'Free Plan'}</p>
+                {isPro && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg,#5bbfbf,#7c3aed)' }}>ACTIVE</span>}
+              </div>
+              <p className="text-gray-400 text-xs mt-0.5">
+                {isPro ? 'All features unlocked — thank you!' : 'Upgrade to unlock AI Studio, unlimited photos & more.'}
+              </p>
+            </div>
+            {!isPro && (
+              <button onClick={() => setShowUpgrade(true)}
+                className="shrink-0 text-sm font-semibold px-4 py-2 rounded-xl text-white"
+                style={{ background: 'linear-gradient(135deg,#5bbfbf,#4db6ac)', boxShadow: '0 4px 12px rgba(91,191,191,0.35)' }}>
+                Upgrade ✨
+              </button>
+            )}
+          </div>
         </Section>
 
         {/* ── CALENDAR SYNC ───────────────────────── */}

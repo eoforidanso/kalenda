@@ -13,6 +13,11 @@ const schema = z.object({
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   UPLOADS_DIR: z.string().default('uploads'),
   PUBLIC_URL: z.string().default('http://localhost:3001'),
+  STRIPE_SECRET_KEY: z.string().default(''),
+  STRIPE_WEBHOOK_SECRET: z.string().default(''),
+  STRIPE_PRO_PRICE_ID: z.string().default(''),
+  STRIPE_SUCCESS_URL: z.string().default('http://localhost:5173/?upgrade=success'),
+  STRIPE_CANCEL_URL: z.string().default('http://localhost:5173/?upgrade=cancelled'),
 });
 
 export const env = schema.parse(process.env);

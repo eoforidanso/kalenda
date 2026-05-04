@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ProGate } from './UpgradeModal';
 
 const tools = [
   { id: 'enhance', label: 'AI Enhance', icon: '✨', desc: 'Auto-boost exposure, clarity & color', badge: null },
@@ -37,6 +38,7 @@ export default function AIStudio({ setView }) {
   const tool = tools.find(t => t.id === activeTool);
 
   return (
+    <ProGate reason="AI Studio is a Kalenda Pro feature — enhance, restore and caption your family photos with AI.">
     <div className="flex-1 overflow-hidden flex flex-col">
       <div className="sticky top-0 z-10 px-4 md:px-6 py-3.5 flex items-center justify-between shrink-0" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
@@ -160,5 +162,6 @@ export default function AIStudio({ setView }) {
         </div>
       </div>
     </div>
+    </ProGate>
   );
 }

@@ -19,6 +19,7 @@ import Messages from './components/Messages';
 import Landing from './components/Landing';
 import GlobalSearch from './components/GlobalSearch';
 import { ToastProvider } from './components/Toast';
+import { PlanProvider } from './context/PlanContext';
 import FAB from './components/FAB';
 import { getToken, clearTokens } from './api/client';
 
@@ -71,6 +72,7 @@ export default function App() {
   }
 
   return (
+    <PlanProvider>
     <ToastProvider>
     <div className="flex h-screen overflow-hidden relative" style={{ background: '#f5f8fa' }}>
       {/* Ambient orbs — visible through glass panels */}
@@ -97,5 +99,6 @@ export default function App() {
       <FAB setView={setView} />
     </div>
     </ToastProvider>
+    </PlanProvider>
   );
 }

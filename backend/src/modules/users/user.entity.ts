@@ -28,6 +28,15 @@ export class User extends BaseEntity {
   @Column({ name: 'agenda_email_time', length: 10, default: '7:00 AM' })
   agendaEmailTime!: string;
 
+  @Column({ type: 'varchar', length: 10, default: 'free' })
+  plan!: 'free' | 'pro';
+
+  @Column({ name: 'stripe_customer_id', type: 'varchar', nullable: true, length: 255 })
+  stripeCustomerId!: string | null;
+
+  @Column({ name: 'plan_expires_at', type: 'timestamptz', nullable: true })
+  planExpiresAt!: Date | null;
+
   @OneToMany(() => FamilyMember, (fm) => fm.user)
   familyMemberships!: FamilyMember[];
 }
