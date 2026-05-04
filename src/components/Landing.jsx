@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { register, login } from '../api/auth';
 
 // ─────────────────────────────────────────────
 //  FRAME MOCKUP (hero visual)
@@ -105,13 +106,25 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     if (!email || !password) { setError('Please fill in all fields.'); return; }
-    if (mode === 'signup' && !name) { setError('Please enter your family name.'); return; }
+    if (mode === 'signup' && !name) { setError('Please enter your name.'); return; }
     setLoading(true);
-    setTimeout(() => { setLoading(false); onEnter(name || email.split('@')[0]); }, 900);
+    try {
+      let data;
+      if (mode === 'signup') {
+        data = await register({ name, email, password, familyName: name + "'s Family" });
+      } else {
+        data = await login({ email, password });
+      }
+      onEnter(data.user);
+    } catch (err) {
+      setError(err.message ?? 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -197,7 +210,7 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
           </svg>
           Continue with Google
         </button>
-        <button type="button" onClick={() => onEnter('Guest')}
+        <button type="button" onClick={() => onEnter({ id: 'guest', name: 'Guest', email: '', familyId: null })}
           className="w-full py-3 mt-3 rounded-2xl text-sm font-semibold transition-all hover:opacity-70"
           style={{ color:'#3ab5b5' }}>
           Explore as guest →

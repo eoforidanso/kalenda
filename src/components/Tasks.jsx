@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const FAMILY = [
   { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500' },
@@ -56,6 +56,13 @@ export default function Tasks() {
   const [showAdd, setShowAdd] = useState(false);
   const [newTask, setNewTask] = useState({ label: '', who: 'Jake', stars: 1, cat: 'Chores', icon: '✅', recurring: null });
 
+  // Load tasks from API on mount; fall back to static initialTasks on error
+  useEffect(() => {
+    import('../api/tasks').then(({ listTasks }) => {
+      listTasks().then(data => { if (data.length > 0) setTasks(data); }).catch(() => {});
+    });
+  }, []);
+
   const members = filter === 'All' ? FAMILY.map(f => f.name) : [filter];
   const cats = ['All', 'Chores', 'Homework', 'Personal'];
 
@@ -69,15 +76,35 @@ export default function Tasks() {
     return acc;
   }, {});
 
-  function toggle(id) {
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
+  async function toggle(id) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+    const newDone = !task.done;
+    // Optimistic update
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: newDone } : t));
+    try {
+      const { toggleTask } = await import('../api/tasks');
+      await toggleTask(id, newDone);
+    } catch {
+      // Roll back
+      setTasks(prev => prev.map(t => t.id === id ? { ...t, done: task.done } : t));
+    }
   }
 
-  function addTask() {
+  async function addTask() {
     if (!newTask.label.trim()) return;
-    setTasks(prev => [...prev, { ...newTask, id: Date.now(), done: false }]);
+    const tempId = Date.now();
+    const optimistic = { ...newTask, id: tempId, done: false };
+    setTasks(prev => [...prev, optimistic]);
     setNewTask({ label: '', who: 'Jake', stars: 1, cat: 'Chores', icon: '✅', recurring: null });
     setShowAdd(false);
+    try {
+      const { createTask } = await import('../api/tasks');
+      const saved = await createTask(newTask);
+      setTasks(prev => prev.map(t => t.id === tempId ? saved : t));
+    } catch {
+      setTasks(prev => prev.filter(t => t.id !== tempId));
+    }
   }
 
   // Stars earned per person today

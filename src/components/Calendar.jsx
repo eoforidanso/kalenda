@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -401,13 +401,41 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
   const eventDB = propEventDB ?? localEventDB;
   const setEventDB = propSetEventDB ?? setLocalEventDB;
 
-  function handleSaveEvent({ label, date, time, type, color, who, notes, recur }) {
+  // Load events from the API on mount (requires a logged-in user with a family)
+  useEffect(() => {
+    import('../api/events').then(({ listEvents, buildEventDB }) => {
+      listEvents().then(events => {
+        if (events.length > 0) {
+          const db = buildEventDB(events);
+          setEventDB(prev => ({ ...prev, ...db }));
+        }
+      }).catch(() => { /* network unavailable — keep INITIAL_EVENT_DB */ });
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function handleSaveEvent({ label, date, time, type, color, who, notes, recur }) {
     const TYPE_ICONS = { birthday: '🎂', event: '🎉', milestone: '🏆', photo: '📸', reminder: '🔔' };
-    const newEvent = {
-      id: Date.now(),
-      type, icon: TYPE_ICONS[type] || '📅', label, time, color, who, notes, recur,
-    };
-    setEventDB(prev => ({ ...prev, [date]: [...(prev[date] || []), newEvent] }));
+    const formValues = { label, time, type, color, who, notes, recur, icon: TYPE_ICONS[type] || '📅' };
+    // Optimistic update
+    const tempId = Date.now();
+    const optimistic = { id: tempId, type, icon: TYPE_ICONS[type] || '📅', label, time, color, who, notes, recur };
+    setEventDB(prev => ({ ...prev, [date]: [...(prev[date] || []), optimistic] }));
+    try {
+      const { createEvent } = await import('../api/events');
+      const saved = await createEvent(formValues, date);
+      // Replace optimistic entry with real one
+      setEventDB(prev => ({
+        ...prev,
+        [saved.dateKey]: (prev[saved.dateKey] || []).map(e => e.id === tempId ? saved : e),
+      }));
+    } catch {
+      // Roll back on failure
+      setEventDB(prev => ({
+        ...prev,
+        [date]: (prev[date] || []).filter(e => e.id !== tempId),
+      }));
+    }
   }
 
   function prevMonth() {

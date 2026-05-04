@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const FAMILY = [
   { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500' },
@@ -53,40 +53,90 @@ function getMember(name) { return FAMILY.find(f => f.name === name) || FAMILY[0]
 
 export default function Lists() {
   const [lists, setLists] = useState(initialLists);
-  const [activeList, setActiveList] = useState(1);
+  const [activeList, setActiveList] = useState(initialLists[0]?.id ?? null);
   const [newItem, setNewItem] = useState('');
   const [showNewList, setShowNewList] = useState(false);
   const [newListName, setNewListName] = useState('');
 
+  // Load lists from API on mount; fall back to static initialLists on error
+  useEffect(() => {
+    import('../api/lists').then(({ getLists }) => {
+      getLists().then(data => {
+        if (data.length > 0) { setLists(data); setActiveList(data[0].id); }
+      }).catch(() => {});
+    });
+  }, []);
+
   const current = lists.find(l => l.id === activeList);
 
-  function toggleItem(listId, itemId) {
+  async function toggleItem(listId, itemId) {
+    const list = lists.find(l => l.id === listId);
+    const item = list?.items.find(it => it.id === itemId);
+    if (!item) return;
+    const newDone = !item.done;
     setLists(prev => prev.map(l => l.id === listId
-      ? { ...l, items: l.items.map(it => it.id === itemId ? { ...it, done: !it.done } : it) }
+      ? { ...l, items: l.items.map(it => it.id === itemId ? { ...it, done: newDone } : it) }
       : l
     ));
+    try {
+      const { toggleItem: apiToggle } = await import('../api/lists');
+      await apiToggle(listId, itemId, newDone);
+    } catch {
+      setLists(prev => prev.map(l => l.id === listId
+        ? { ...l, items: l.items.map(it => it.id === itemId ? { ...it, done: item.done } : it) }
+        : l
+      ));
+    }
   }
 
-  function addItem() {
+  async function addItem() {
     if (!newItem.trim()) return;
+    const tempId = Date.now();
+    const text = newItem.trim();
     setLists(prev => prev.map(l => l.id === activeList
-      ? { ...l, items: [...l.items, { id: Date.now(), label: newItem.trim(), done: false, addedBy: 'Harriet' }] }
+      ? { ...l, items: [...l.items, { id: tempId, label: text, done: false, addedBy: '' }] }
       : l
     ));
     setNewItem('');
+    try {
+      const { addItem: apiAdd } = await import('../api/lists');
+      const saved = await apiAdd(activeList, text);
+      setLists(prev => prev.map(l => l.id === activeList
+        ? { ...l, items: l.items.map(it => it.id === tempId ? saved : it) }
+        : l
+      ));
+    } catch {
+      setLists(prev => prev.map(l => l.id === activeList
+        ? { ...l, items: l.items.filter(it => it.id !== tempId) }
+        : l
+      ));
+    }
   }
 
-  function addList() {
+  async function addList() {
     if (!newListName.trim()) return;
-    const id = Date.now();
-    setLists(prev => [...prev, { id, name: newListName.trim(), icon: '📝', color: '#a78bfa', items: [] }]);
-    setActiveList(id);
+    const name = newListName.trim();
     setNewListName('');
     setShowNewList(false);
+    try {
+      const { createList } = await import('../api/lists');
+      const saved = await createList(name, '📝');
+      setLists(prev => [...prev, { ...saved, items: [] }]);
+      setActiveList(saved.id);
+    } catch {
+      // Optimistic fallback
+      const id = Date.now();
+      setLists(prev => [...prev, { id, name, icon: '📝', color: '#a78bfa', items: [] }]);
+      setActiveList(id);
+    }
   }
 
-  function clearDone() {
+  async function clearDone() {
     setLists(prev => prev.map(l => l.id === activeList ? { ...l, items: l.items.filter(it => !it.done) } : l));
+    try {
+      const { clearCompleted } = await import('../api/lists');
+      await clearCompleted(activeList);
+    } catch { /* not critical */ }
   }
 
   return (

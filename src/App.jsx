@@ -12,37 +12,66 @@ import Notifications from './components/Notifications';
 import Settings from './components/Settings';
 import Tasks from './components/Tasks';
 import Lists from './components/Lists';
+import Location from './components/Location';
+import MealPlanner from './components/MealPlanner';
+import Budget from './components/Budget';
+import Messages from './components/Messages';
 import Landing from './components/Landing';
 import GlobalSearch from './components/GlobalSearch';
+import { ToastProvider } from './components/Toast';
+import FAB from './components/FAB';
+import { getToken, clearTokens } from './api/client';
 
-const views = { dashboard: Dashboard, photos: Photos, albums: Albums, calendar: Calendar, aistudio: AIStudio, memories: Memories, family: Family, frames: Frames, notifications: Notifications, settings: Settings, tasks: Tasks, lists: Lists };
+const views = { dashboard: Dashboard, photos: Photos, albums: Albums, calendar: Calendar, aistudio: AIStudio, memories: Memories, family: Family, frames: Frames, notifications: Notifications, settings: Settings, tasks: Tasks, lists: Lists, location: Location, mealplanner: MealPlanner, budget: Budget, messages: Messages };
+
+function loadUser() {
+  try { return JSON.parse(localStorage.getItem('kalenda_user')); } catch { return null; }
+}
 
 export default function App() {
   const [view, setView] = useState('dashboard');
-  const [user, setUser] = useState(() => localStorage.getItem('kalenda_user') || null);
+  const [user, setUser] = useState(() => getToken() ? loadUser() : null);
   const [notifUnread, setNotifUnread] = useState(4);
   const [showSearch, setShowSearch] = useState(false);
   const [photos, setPhotos] = useState(allPhotos);
   const [eventDB, setEventDB] = useState(INITIAL_EVENT_DB);
   const View = views[view] || Dashboard;
 
+  // Force logout when the API client dispatches 'kalenda:logout' (token expired)
   useEffect(() => {
+    function onLogout() { clearTokens(); setUser(null); }
+    window.addEventListener('kalenda:logout', onLogout);
+    return () => window.removeEventListener('kalenda:logout', onLogout);
+  }, []);
+
+  useEffect(() => {
+    const viewKeys = ['dashboard','calendar','photos','family','tasks','lists','messages','budget','mealplanner'];
     function onKey(e) {
       const inInput = ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName);
       if ((e.key === '/' && !inInput) || (e.key === 'k' && (e.metaKey || e.ctrlKey))) {
         e.preventDefault();
         setShowSearch(true);
       }
+      if (e.key >= '1' && e.key <= '9' && (e.metaKey || e.ctrlKey)) {
+        const target = viewKeys[parseInt(e.key, 10) - 1];
+        if (target) { e.preventDefault(); setView(target); }
+      }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [setView]);
+
+  function handleLogin(userData) {
+    localStorage.setItem('kalenda_user', JSON.stringify(userData));
+    setUser(userData);
+  }
 
   if (!user) {
-    return <Landing onEnter={(name) => { localStorage.setItem('kalenda_user', name); setUser(name); }} />;
+    return <Landing onEnter={handleLogin} />;
   }
 
   return (
+    <ToastProvider>
     <div className="flex h-screen overflow-hidden relative" style={{ background: '#f5f8fa' }}>
       {/* Ambient orbs — visible through glass panels */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -65,6 +94,8 @@ export default function App() {
         livePhotos={photos}
         liveEvents={Object.entries(eventDB).flatMap(([dateKey, evs]) => evs.map(e => ({ ...e, dateKey })))}
       />}
+      <FAB setView={setView} />
     </div>
+    </ToastProvider>
   );
 }

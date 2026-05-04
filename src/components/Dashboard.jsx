@@ -1,12 +1,58 @@
 import { useState, useEffect, useRef } from 'react';
 
-// Family member color system (like Cozi)
+// ── Smart time helpers ──────────────────────────────────────────────────────
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 5)  return { hi: 'Night owl 🌙',     sub: 'Still burning the midnight oil' };
+  if (h < 12) return { hi: 'Good morning',      sub: '☀️ Rise and shine, Harriet' };
+  if (h < 17) return { hi: 'Good afternoon',    sub: '⚡ Keep the momentum going' };
+  if (h < 21) return { hi: 'Good evening',      sub: '🌅 Time to check in with the family' };
+  return            { hi: 'Good night',          sub: '🌙 Rest up — adventures await' };
+}
+
+function getCurrentActivity(memberName, schedule) {
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  function toMins(t) {
+    const [time, ampm] = t.split(' ');
+    let [h, m] = time.split(':').map(Number);
+    if (ampm === 'PM' && h !== 12) h += 12;
+    if (ampm === 'AM' && h === 12) h = 0;
+    return h * 60 + m;
+  }
+  for (const ev of schedule) {
+    if (ev.who !== memberName && ev.who !== 'All') continue;
+    const start = toMins(ev.time);
+    const end   = start + parseFloat(ev.duration) * 60;
+    if (nowMins >= start && nowMins < end) return ev.label;
+  }
+  return null;
+}
+
+// ── SVG Progress Ring ───────────────────────────────────────────────────────
+function ProgressRing({ pct, size = 56, stroke = 5, color = '#5bbfbf', children }) {
+  const r    = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const dash = Math.min(pct / 100, 1) * circ;
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="absolute inset-0" style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+          strokeDasharray={`${dash} ${circ - dash}`} strokeLinecap="round"
+          style={{ transition: 'stroke-dasharray 1s cubic-bezier(0.22, 0.68, 0, 1.2)' }} />
+      </svg>
+      <div className="relative z-10 flex items-center justify-center">{children}</div>
+    </div>
+  );
+}
+
 const FAMILY = [
-  { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500' },
-  { name: 'Dad',     initial: 'D', color: '#38bdf8', bg: 'from-sky-400 to-blue-500' },
-  { name: 'Mom',     initial: 'M', color: '#fb7185', bg: 'from-rose-400 to-pink-500' },
-  { name: 'Emma',    initial: 'E', color: '#34d399', bg: 'from-emerald-400 to-teal-500' },
-  { name: 'Jake',    initial: 'J', color: '#fbbf24', bg: 'from-amber-400 to-orange-500' },
+  { name: 'Harriet', initial: 'H', color: '#f472b6', bg: 'from-pink-400 to-rose-500',     online: true  },
+  { name: 'Dad',     initial: 'D', color: '#38bdf8', bg: 'from-sky-400 to-blue-500',      online: true  },
+  { name: 'Mom',     initial: 'M', color: '#fb7185', bg: 'from-rose-400 to-pink-500',     online: true  },
+  { name: 'Emma',    initial: 'E', color: '#34d399', bg: 'from-emerald-400 to-teal-500',  online: false },
+  { name: 'Jake',    initial: 'J', color: '#fbbf24', bg: 'from-amber-400 to-orange-500',  online: true  },
   { name: 'Grandma', initial: 'G', color: '#a78bfa', bg: 'from-violet-400 to-purple-500' },
 ];
 
@@ -29,6 +75,16 @@ const initialChores = [
   { id: 4, label: 'Vacuum living room', who: 'Harriet', done: false, icon: '🧹' },
   { id: 5, label: 'Set dinner table',   who: 'Emma',    done: false, icon: '🍴' },
 ];
+
+// Budget snapshot (mirrors Budget.jsx data)
+const BUDGET_SNAPSHOT = [
+  { name: 'Food',      icon: '🛒', color: '#34d399', budget: 800, spent: 613 },
+  { name: 'Transport', icon: '🚗', color: '#38bdf8', budget: 400, spent: 287 },
+  { name: 'Kids',      icon: '🎒', color: '#a78bfa', budget: 350, spent: 320 },
+  { name: 'Health',    icon: '💊', color: '#f472b6', budget: 300, spent: 95  },
+];
+const MONTHLY_INCOME = 3500;
+const MONTHLY_BUDGET = 2950;
 
 // Shopping list
 const initialList = [
@@ -156,17 +212,24 @@ export default function Dashboard({ setView }) {
     ? todaySchedule
     : todaySchedule.filter(e => e.who === activeFilter || e.who === 'All');
 
-  const choresDone = chores.filter(c => c.done).length;
-  const shopDone = shopList.filter(s => s.done).length;
+  const choresDone   = chores.filter(c => c.done).length;
+  const shopDone     = shopList.filter(s => s.done).length;
+  const mealsPlanned = Object.values(meals).filter(Boolean).length;
+  const totalSpent   = BUDGET_SNAPSHOT.reduce((s, c) => s + c.spent, 0);
+  const budgetPct    = Math.round((totalSpent / MONTHLY_BUDGET) * 100);
+  const { hi, sub }  = getGreeting();
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>
 
-      {/* Header */}
-      <div className="sticky top-0 z-10 px-4 md:px-6 py-5 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
+      {/* ── Header ── */}
+      <div className="sticky top-0 z-10 px-4 md:px-6 py-4 flex items-center justify-between" style={{ background: 'rgba(245,248,250,0.92)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #e2ecf0' }}>
         <div>
-          <h1 className="text-gray-800 font-semibold">Today</h1>
-          <p className="text-gray-500 text-xs">Good morning, Harriet 👋 · Your family’s command center</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-gray-800 font-semibold">{hi}</h1>
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(251,191,36,0.15)', color: '#d97706' }}>🔥 7-day streak</span>
+          </div>
+          <p className="text-gray-500 text-xs mt-0.5">{sub}</p>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:block"><WeatherWidget /></div>
@@ -174,35 +237,70 @@ export default function Dashboard({ setView }) {
         </div>
       </div>
 
-      <div className="px-4 md:px-6 py-8 space-y-10">
+      <div className="px-4 md:px-6 py-6 space-y-8">
 
-        {/* Family member filter bar — like Cozi color coding */}
+        {/* ── Daily snapshot — 4 animated stat rings ── */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: 'Tasks done',  val: `${choresDone}/${chores.length}`,  pct: (choresDone / chores.length) * 100,  color: '#34d399', icon: '✅', view: 'tasks',       sub: choresDone === chores.length ? 'All done! 🎉' : `${chores.length - choresDone} left`, cls: 'stat-pop stat-pop-1' },
+            { label: 'Meals today', val: `${mealsPlanned}/3`,               pct: (mealsPlanned / 3) * 100,            color: '#fb923c', icon: '🍽️', view: 'mealplanner', sub: 'Planned today',    cls: 'stat-pop stat-pop-2' },
+            { label: 'Budget used', val: `${budgetPct}%`,                   pct: budgetPct, color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#5bbfbf', icon: '💰', view: 'budget',      sub: `GHS ${totalSpent.toFixed(0)} spent`,  cls: 'stat-pop stat-pop-3' },
+            { label: 'Shopping',    val: `${shopDone}/${shopList.length}`,   pct: (shopDone / shopList.length) * 100, color: '#6366f1', icon: '🛒', view: 'lists',       sub: shopDone === shopList.length ? 'All checked!' : `${shopList.length - shopDone} to get`, cls: 'stat-pop stat-pop-4' },
+          ].map((s, i) => (
+            <button key={i} onClick={() => setView(s.view)}
+              className={`glass rounded-2xl p-4 flex items-center gap-3 hover:shadow-md transition-all active:scale-[0.98] text-left ${s.cls}`}>
+              <ProgressRing pct={s.pct} size={52} stroke={4.5} color={s.color}>
+                <span style={{ fontSize: 16 }}>{s.icon}</span>
+              </ProgressRing>
+              <div className="min-w-0">
+                <p className="font-black leading-tight" style={{ fontSize: '1.05rem', color: s.color }}>{s.val}</p>
+                <p className="text-gray-700 text-xs font-semibold leading-tight">{s.label}</p>
+                <p className="text-gray-400 text-[10px] mt-0.5 leading-tight">{s.sub}</p>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* ── Family Pulse ── */}
         <div className="glass rounded-3xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Family Members</h2>
-            <button onClick={() => setView('family')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">Manage →</button>
+            <div className="flex items-center gap-2">
+              <h2 className="text-gray-700 font-semibold text-sm">Family Pulse</h2>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(52,211,153,0.12)', color: '#059669' }}>
+                {FAMILY.filter(m => m.online).length} online
+              </span>
+            </div>
+            <button onClick={() => setView('location')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">Location →</button>
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
-            <button
-              onClick={() => setActiveFilter('All')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${activeFilter === 'All' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
-              style={activeFilter === 'All' ? { background: 'linear-gradient(135deg, #5bbfbf, #4db6ac)', boxShadow: '0 2px 10px rgba(91,191,191,0.35)' } : { background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.06)' }}
-            >
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <button onClick={() => setActiveFilter('All')}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all"
+              style={activeFilter === 'All'
+                ? { background: 'linear-gradient(135deg,#5bbfbf,#4db6ac)', color: 'white', boxShadow: '0 2px 10px rgba(91,191,191,0.35)' }
+                : { background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.06)', color: '#6b7280' }}>
               <span>👨‍👩‍👧‍👦</span> All
             </button>
-            {FAMILY.map(m => (
-              <button
-                key={m.name}
-                onClick={() => setActiveFilter(m.name)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${activeFilter === m.name ? '' : 'text-gray-500 hover:text-gray-700'}`}
-                style={activeFilter === m.name
-                  ? { background: m.color + '22', border: `1px solid ${m.color}44`, boxShadow: `0 2px 12px ${m.color}30`, color: m.color }
-                  : { background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.06)' }}
-              >
-                <span className={`w-4 h-4 rounded-full bg-gradient-to-br ${m.bg} inline-block`} />
-                {m.name}
-              </button>
-            ))}
+            {FAMILY.map(m => {
+              const doing  = getCurrentActivity(m.name, todaySchedule);
+              const active = activeFilter === m.name;
+              return (
+                <button key={m.name} onClick={() => setActiveFilter(active ? 'All' : m.name)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all"
+                  style={active
+                    ? { background: m.color + '18', border: `1.5px solid ${m.color}40`, color: m.color, boxShadow: `0 2px 12px ${m.color}20` }
+                    : { background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.05)', color: '#6b7280' }}>
+                  <div className="relative shrink-0">
+                    <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${m.bg} flex items-center justify-center text-white font-bold`} style={{ fontSize: 9 }}>{m.initial}</div>
+                    <div className={m.online ? 'status-pulse' : ''}
+                      style={{ position:'absolute', bottom:-1, right:-1, width:8, height:8, borderRadius:'50%', background: m.online ? '#34d399' : '#d1d5db', border:'1.5px solid white', color: m.online ? '#34d399' : '#d1d5db' }} />
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <p className="font-semibold leading-tight">{m.name}</p>
+                    <p className="text-[9px] leading-tight opacity-70 truncate" style={{ maxWidth: 80 }}>{doing || (m.online ? 'Active' : 'Away')}</p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -292,6 +390,42 @@ export default function Dashboard({ setView }) {
                 })}
               </div>
               <button onClick={() => setView('calendar')} className="text-teal-500 text-[11px] hover:text-teal-600 mt-3 block transition-colors">Full calendar →</button>
+            </div>
+
+            {/* BUDGET SNAPSHOT */}
+            <div className="glass rounded-3xl p-5" style={{ border: '1px solid rgba(99,102,241,0.15)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-indigo-500 text-xs font-semibold uppercase tracking-wider">💰 Budget Snapshot</h3>
+                <button onClick={() => setView('budget')} className="text-indigo-400 text-[10px] hover:text-indigo-500 transition-colors">Details →</button>
+              </div>
+              <div className="mb-3">
+                <div className="flex justify-between text-[10px] text-gray-500 mb-1">
+                  <span>GHS {totalSpent.toFixed(0)} spent</span>
+                  <span className="font-bold" style={{ color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#6366f1' }}>{budgetPct}%</span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.06)' }}>
+                  <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(budgetPct, 100)}%`, background: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : 'linear-gradient(90deg,#6366f1,#818cf8)' }} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                {BUDGET_SNAPSHOT.map((c, i) => {
+                  const pct = Math.min((c.spent / c.budget) * 100, 100);
+                  return (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="text-sm shrink-0">{c.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between text-[10px] mb-0.5">
+                          <span className="text-gray-600 font-medium">{c.name}</span>
+                          <span className="text-gray-400">{pct.toFixed(0)}%</span>
+                        </div>
+                        <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.06)' }}>
+                          <div className="h-full rounded-full" style={{ width: `${pct}%`, background: c.color }} />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

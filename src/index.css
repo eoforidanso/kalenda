@@ -229,6 +229,52 @@
 .reveal-delay-2 { transition-delay: 0.2s; }
 .reveal-delay-3 { transition-delay: 0.32s; }
 
+/* ── View page fade-slide transition ── */
+@keyframes viewFadeIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.997); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.view-fade { animation: viewFadeIn 0.22s cubic-bezier(0.22, 0.68, 0, 1.1) both; }
+
+/* ── Toast slide in from left ── */
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(-20px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0)     scale(1); }
+}
+
+/* ── Online status pulse ring ── */
+@keyframes statusPulse {
+  0%   { transform: scale(1);   opacity: 0.85; }
+  70%  { transform: scale(2.6); opacity: 0; }
+  100% { transform: scale(1);   opacity: 0; }
+}
+.status-pulse { position: relative; }
+.status-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: statusPulse 2.4s ease-out infinite;
+}
+
+/* ── Stat card pop-in ── */
+@keyframes statPopIn {
+  from { opacity: 0; transform: scale(0.72) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.stat-pop   { animation: statPopIn 0.4s cubic-bezier(0.22, 0.68, 0, 1.4) both; }
+.stat-pop-1 { animation-delay: 0.04s; }
+.stat-pop-2 { animation-delay: 0.10s; }
+.stat-pop-3 { animation-delay: 0.16s; }
+.stat-pop-4 { animation-delay: 0.22s; }
+
+/* ── FAB action items ── */
+@keyframes fabItemIn {
+  from { opacity: 0; transform: translateX(12px) scale(0.85); }
+  to   { opacity: 1; transform: translateX(0)     scale(1); }
+}
+
 @keyframes viewFade {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }

@@ -115,14 +115,29 @@ export default function Photos({ photos: propPhotos, setPhotos: propSetPhotos })
   const [showUpload, setShowUpload] = useState(false);
   const [selected, setSelected] = useState(null);
 
+  // Load photos from API; fall back to static allPhotos on error
+  useEffect(() => {
+    import('../api/photos').then(({ listPhotos }) => {
+      listPhotos().then(data => { if (data.length > 0) setPhotos(data); }).catch(() => {});
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const members = ['all', 'Mom', 'Dad', 'Emma', 'Maya', 'Jake', 'Grandma'];
   const filtered = photos
     .filter((p) => filter === 'all' || p.who === filter)
     .filter((p) => tagFilter === 'all' || (p.tags && p.tags.includes(tagFilter)));
 
-  function deletePhoto(id) {
-    setPhotos(prev => prev.filter(p => p.id !== id));
+  async function deletePhoto(id) {
+    const prev = photos;
+    setPhotos(p => p.filter(ph => ph.id !== id));
     setSelected(null);
+    try {
+      const { deletePhoto: apiDelete } = await import('../api/photos');
+      await apiDelete(id);
+    } catch {
+      setPhotos(prev); // roll back
+    }
   }
 
   const selectedIdx = selected ? filtered.findIndex(p => p.id === selected.id) : -1;
