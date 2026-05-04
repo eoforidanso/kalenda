@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const CATEGORIES = [
   { name: 'Food & Groceries', icon: '🛒', color: '#34d399', budget: 800,  spent: 613 },
@@ -103,6 +103,28 @@ export default function Budget() {
   const [txns, setTxns] = useState(initialTxns);
   const [showAdd, setShowAdd] = useState(false);
   const [catFilter, setCatFilter] = useState('All');
+  const [liveLoaded, setLiveLoaded] = useState(false);
+
+  // Load real transactions from backend
+  useEffect(() => {
+    import('../api/budget.js').then(({ listTransactions }) =>
+      listTransactions(1, 50).then(data => {
+        if (data?.data?.length) {
+          const mapped = data.data.map(t => ({
+            id:     t.id,
+            cat:    t.category ?? 'Miscellaneous',
+            label:  t.label,
+            amount: t.amountCents / 100,
+            who:    t.who ?? '',
+            date:   new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            type:   t.type,
+          }));
+          setTxns(mapped);
+          setLiveLoaded(true);
+        }
+      }).catch(() => {})
+    );
+  }, []);
 
   const totalBudget = CATEGORIES.reduce((s, c) => s + c.budget, 0);
   const totalSpent  = txns.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
@@ -113,8 +135,41 @@ export default function Budget() {
   const filteredTxns = catFilter === 'All' ? txns : txns.filter(t => t.cat === catFilter);
 
   function addTxn(txn) {
-    setTxns(prev => [txn, ...prev]);
+    if (liveLoaded) {
+      import('../api/budget.js').then(({ createTransaction }) =>
+        createTransaction({
+          type:     txn.type,
+          label:    txn.label,
+          amount:   txn.amount,
+          category: txn.cat,
+          who:      txn.who,
+          date:     new Date().toISOString().slice(0, 10),
+        }).then(created => {
+          setTxns(prev => [{
+            id:     created.id,
+            cat:    created.category ?? txn.cat,
+            label:  created.label,
+            amount: created.amountCents / 100,
+            who:    created.who ?? txn.who,
+            date:   new Date(created.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            type:   created.type,
+          }, ...prev]);
+        }).catch(() => setTxns(prev => [txn, ...prev]))
+      );
+    } else {
+      setTxns(prev => [txn, ...prev]);
+    }
     setShowAdd(false);
+  }
+
+  async function deleteTxn(id) {
+    setTxns(prev => prev.filter(t => t.id !== id));
+    if (liveLoaded) {
+      try {
+        const { deleteTransaction } = await import('../api/budget.js');
+        await deleteTransaction(id);
+      } catch {}
+    }
   }
 
   return (
@@ -215,12 +270,12 @@ export default function Budget() {
             )}
           </div>
           <div className="divide-y" style={{ borderColor: 'rgba(0,0,0,0.04)' }}>
-            {filteredTxns.slice(0, 15).map(t => {
+            {filteredTxns.slice(0, 50).map(t => {
               const cat = CATEGORIES.find(c => c.name === t.cat) || CATEGORIES[7];
               const isIncome = t.type === 'income';
               const isSaving = t.type === 'saving';
               return (
-                <div key={t.id} className="flex items-center gap-3 px-5 py-3">
+                <div key={t.id} className="flex items-center gap-3 px-5 py-3 group hover:bg-gray-50 transition-colors">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-lg" style={{ background: cat.color + '18' }}>
                     {cat.icon}
                   </div>
@@ -235,6 +290,10 @@ export default function Budget() {
                   <span className="text-sm font-bold shrink-0" style={{ color: isIncome ? '#16a34a' : isSaving ? '#6366f1' : '#ef4444' }}>
                     {isIncome ? '+' : isSaving ? '→' : '-'}${t.amount.toFixed(2)}
                   </span>
+                  <button onClick={() => deleteTxn(t.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity ml-1 text-gray-300 hover:text-red-400 shrink-0">
+                    <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+                  </button>
                 </div>
               );
             })}

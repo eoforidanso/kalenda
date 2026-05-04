@@ -6,6 +6,7 @@ import { User }           from '../modules/users/user.entity';
 import { RefreshToken }   from '../modules/auth/refresh-token.entity';
 import { Family }         from '../modules/family/family.entity';
 import { FamilyMember }   from '../modules/family/family-member.entity';
+import { FamilyInvite }   from '../modules/family/family-invite.entity';
 import { CalendarEvent }  from '../modules/events/event.entity';
 import { Task }           from '../modules/tasks/task.entity';
 import { List }           from '../modules/lists/list.entity';
@@ -24,7 +25,7 @@ export const AppDataSource = new DataSource({
   logging: env.NODE_ENV === 'development',
   entities: [
     User, RefreshToken,
-    Family, FamilyMember,
+    Family, FamilyMember, FamilyInvite,
     CalendarEvent,
     Task,
     List, ListItem,

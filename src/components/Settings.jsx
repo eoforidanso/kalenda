@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Toggle({ value, onChange, accent = '#5bbfbf' }) {
   return (
@@ -44,6 +44,17 @@ const REMINDER_PRESETS = ['5 min', '15 min', '30 min', '1 hour', '1 day', '2 day
 export default function Settings() {
   const [name, setName]           = useState('Harriet Appiah');
   const [email]                   = useState('harriet@example.com');
+  const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved' | 'error'
+
+  // Load real user profile on mount
+  useEffect(() => {
+    import('../api/users.js').then(({ getMe }) =>
+      getMe().then(user => {
+        if (user?.name)  setName(user.name);
+        if (user?.phoneNumber) setPhoneNumber(user.phoneNumber);
+      }).catch(() => {})
+    );
+  }, []);
 
   // Notifications
   const [notifyPhoto, setNotifyPhoto]       = useState(true);
@@ -83,6 +94,18 @@ export default function Settings() {
     setSyncProviders(prev => prev.map(p => p.id === id ? { ...p, connected: false, email: '', lastSync: null } : p));
   }
 
+  async function saveProfile() {
+    setSaveStatus('saving');
+    try {
+      const { updateMe } = await import('../api/users.js');
+      await updateMe({ name: name.trim(), phoneNumber: phoneNumber.trim() || undefined });
+      setSaveStatus('saved');
+    } catch {
+      setSaveStatus('error');
+    }
+    setTimeout(() => setSaveStatus(null), 3000);
+  }
+
   function sendAppLink() {
     setSmsSent(true);
     setTimeout(() => setSmsSent(false), 3000);
@@ -111,7 +134,9 @@ export default function Settings() {
             <InputField label="Display name" value={name} onChange={e => setName(e.target.value)} />
             <InputField label="Email" value={email} disabled />
           </div>
-          <button className="mt-4 btn-glass">Save Changes</button>
+          <button onClick={saveProfile} disabled={saveStatus === 'saving'} className="mt-4 btn-glass disabled:opacity-50">
+            {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? '✅ Saved!' : saveStatus === 'error' ? '❌ Error' : 'Save Changes'}
+          </button>
         </Section>
 
         {/* ── CALENDAR SYNC ───────────────────────── */}

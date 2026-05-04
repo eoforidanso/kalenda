@@ -155,9 +155,37 @@ export default function MealPlanner() {
   const [showShopping, setShowShopping] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
   const [activeMeal, setActiveMeal] = useState('All');
+  const [syncStatus, setSyncStatus] = useState(null); // null | 'syncing' | 'done' | 'error'
 
   const mealCount = getMealCount(plan);
   const shoppingList = genShoppingList(plan);
+
+  async function sendToShoppingList() {
+    setSyncStatus('syncing');
+    try {
+      const { getLists, createList, addItem } = await import('../api/lists.js');
+      const lists = await getLists();
+      let grocery = lists.find(l => l.name?.toLowerCase().includes('grocery') || l.name?.toLowerCase().includes('shopping'));
+      if (!grocery) {
+        grocery = await createList('Grocery List', '🛒');
+      }
+      const unchecked = shoppingList.filter(item => !checkedItems[item]);
+      // add items not already in list
+      const { getItems } = await import('../api/lists.js');
+      const existing = await getItems(grocery.id);
+      const existingText = new Set(existing.map(i => (i.text ?? i.label ?? '').toLowerCase()));
+      for (const item of unchecked) {
+        if (!existingText.has(item.toLowerCase())) {
+          await addItem(grocery.id, item, 'Meal Planner');
+        }
+      }
+      setSyncStatus('done');
+      setTimeout(() => setSyncStatus(null), 3000);
+    } catch {
+      setSyncStatus('error');
+      setTimeout(() => setSyncStatus(null), 3000);
+    }
+  }
 
   function saveSlot(day, mealType, value) {
     setPlan(prev => ({
@@ -191,7 +219,16 @@ export default function MealPlanner() {
           <div className="glass rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-gray-700 font-semibold text-sm">🛒 Auto-generated Shopping List</h2>
-              <span className="text-gray-400 text-xs">{shoppingList.length} items</span>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 text-xs">{shoppingList.length} items</span>
+                <button
+                  onClick={sendToShoppingList}
+                  disabled={syncStatus === 'syncing' || shoppingList.length === 0}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all disabled:opacity-50"
+                  style={{ background: syncStatus === 'done' ? 'rgba(52,211,153,0.15)' : 'rgba(91,191,191,0.15)', color: syncStatus === 'done' ? '#059669' : '#3ab5b5', border: '1px solid rgba(91,191,191,0.3)' }}>
+                  {syncStatus === 'syncing' ? '⏳ Syncing…' : syncStatus === 'done' ? '✅ Synced!' : syncStatus === 'error' ? '❌ Error' : '→ Add to Lists'}
+                </button>
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {shoppingList.map(item => (

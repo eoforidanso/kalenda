@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Skin tone swatches: label, modifier, bg color
 const SKIN_TONES = [
@@ -66,14 +66,35 @@ const initialPending = [
   { name: 'Uncle Bob', email: 'bob@example.com', sent: '2 days ago' },
 ];
 
-function InviteModal({ onClose, onInvite }) {
+function InviteModal({ onClose, onInvite, familyId }) {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('member');
+  const [inviteLink, setInviteLink] = useState(null);
+  const [sending, setSending] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  function handleSend() {
+  async function handleSend() {
     if (!email.trim()) return;
-    onInvite(email.trim(), role);
-    onClose();
+    setSending(true);
+    let link = null;
+    if (familyId) {
+      try {
+        const { createInvite } = await import('../api/family.js');
+        const result = await createInvite(familyId, email.trim());
+        link = result.link;
+        setInviteLink(link);
+      } catch {}
+    }
+    onInvite(email.trim(), role, link);
+    setSending(false);
+    if (!link) onClose();
+  }
+
+  async function copyLink() {
+    if (!inviteLink) return;
+    try { await navigator.clipboard.writeText(inviteLink); } catch {}
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   return (
@@ -87,36 +108,50 @@ function InviteModal({ onClose, onInvite }) {
             </svg>
           </button>
         </div>
-        <div className="space-y-3">
-          <div>
-            <label className="text-gray-400 text-xs mb-1.5 block">Email address</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="grandpa@example.com"
-              autoFocus
-              className="w-full rounded-xl px-3 py-2.5 text-gray-700 text-sm placeholder-gray-300 focus:outline-none focus:border-teal-500/50 transition-colors"
-              style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}
-            />
+        {inviteLink ? (
+          <div className="space-y-3">
+            <p className="text-gray-600 text-sm">Invite link generated! Share it with <strong>{email}</strong>:</p>
+            <div className="flex items-center gap-2 p-3 rounded-xl text-xs text-gray-500 break-all" style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}>
+              <span className="flex-1 truncate">{inviteLink}</span>
+            </div>
+            <button onClick={copyLink} className="btn-glass w-full justify-center">
+              {copied ? '✅ Copied!' : '📋 Copy Link'}
+            </button>
+            <p className="text-gray-400 text-xs text-center">Link expires in 7 days</p>
           </div>
-          <div>
-            <label className="text-gray-400 text-xs mb-1.5 block">Role</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full rounded-xl px-3 py-2.5 text-gray-600 text-sm focus:outline-none appearance-none" style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}>
-              <option value="member">Member — can view &amp; share photos</option>
-              <option value="viewer">Viewer — can only view photos</option>
-            </select>
+        ) : (
+          <div className="space-y-3">
+            <div>
+              <label className="text-gray-400 text-xs mb-1.5 block">Email address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="grandpa@example.com"
+                autoFocus
+                className="w-full rounded-xl px-3 py-2.5 text-gray-700 text-sm placeholder-gray-300 focus:outline-none focus:border-teal-500/50 transition-colors"
+                style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}
+              />
+            </div>
+            <div>
+              <label className="text-gray-400 text-xs mb-1.5 block">Role</label>
+              <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full rounded-xl px-3 py-2.5 text-gray-600 text-sm focus:outline-none appearance-none" style={{ background: '#f8fafc', border: '1px solid #e2ecf0' }}>
+                <option value="member">Member — can view &amp; share photos</option>
+                <option value="viewer">Viewer — can only view photos</option>
+              </select>
+            </div>
+            <button
+              onClick={handleSend}
+              disabled={sending || !email.trim()}
+              className="btn-glass w-full justify-center mt-1 disabled:opacity-50"
+            >
+              {sending ? 'Sending…' : 'Generate Invite Link'}
+            </button>
           </div>
-          <button
-            onClick={handleSend}
-            className="btn-glass w-full justify-center mt-1"
-          >
-            Send Invite
-          </button>
-        </div>
+        )}
         <p className="text-gray-400 text-xs text-center mt-3">
-          They'll get a link to download Kalenda and join your family album.
+          They'll get a link to join your family on Kalenda.
         </p>
       </div>
     </div>
@@ -128,10 +163,31 @@ export default function Family() {
   const [members, setMembers]         = useState(initialMembers);
   const [pending, setPending]         = useState(initialPending);
   const [pickingFor, setPickingFor]   = useState(null); // member name
+  const [familyId, setFamilyId]       = useState(null);
 
-  function handleInvite(email, role) {
+  // Load real family data on mount
+  useEffect(() => {
+    import('../api/family.js').then(({ getMyFamily }) =>
+      getMyFamily().then(family => {
+        if (family?.id) setFamilyId(family.id);
+        if (family?.members?.length) {
+          setMembers(family.members.map(m => ({
+            name:   m.displayName ?? m.userId,
+            role:   m.role === 'owner' ? 'Owner' : 'Member',
+            avatar: 'bg-gradient-to-br from-teal-400 to-cyan-500',
+            emoji:  '',
+            joined: new Date(m.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+            photos: 0,
+            status: 'active',
+          })));
+        }
+      }).catch(() => {})
+    );
+  }, []);
+
+  function handleInvite(email, role, link) {
     const name = email.split('@')[0];
-    setPending(prev => [...prev, { name, email, role, sent: 'Just now' }]);
+    setPending(prev => [...prev, { name, email, role, sent: 'Just now', link }]);
   }
 
   function removeMember(name) {
@@ -148,7 +204,7 @@ export default function Family() {
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>
-      {showInvite && <InviteModal onClose={() => setShowInvite(false)} onInvite={handleInvite} />}
+      {showInvite && <InviteModal onClose={() => setShowInvite(false)} onInvite={handleInvite} familyId={familyId} />}
       {pickingFor && <EmojiPicker current={members.find(m=>m.name===pickingFor)?.emoji} onSelect={e => setEmoji(pickingFor, e)} onClose={() => setPickingFor(null)} />}
 
       {/* Topbar */}

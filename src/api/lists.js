@@ -41,6 +41,11 @@ export async function deleteList(id) {
 
 // ─── Items ─────────────────────────────────────────────────────────────────────
 
+export async function getItems(listId) {
+  const items = await apiFetch(`/lists/${listId}/items`);
+  return items.map(itemToFrontend);
+}
+
 export async function addItem(listId, text, addedByName) {
   const item = await apiFetch(`/lists/${listId}/items`, {
     method: 'POST',

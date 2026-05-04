@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
 // ── Smart time helpers ──────────────────────────────────────────────────────
-function getGreeting() {
+function getGreeting(name = 'there') {
   const h = new Date().getHours();
+  const first = name.split(' ')[0];
   if (h < 5)  return { hi: 'Night owl 🌙',     sub: 'Still burning the midnight oil' };
-  if (h < 12) return { hi: 'Good morning',      sub: '☀️ Rise and shine, Harriet' };
+  if (h < 12) return { hi: 'Good morning',      sub: `☀️ Rise and shine, ${first}` };
   if (h < 17) return { hi: 'Good afternoon',    sub: '⚡ Keep the momentum going' };
   if (h < 21) return { hi: 'Good evening',      sub: '🌅 Time to check in with the family' };
   return            { hi: 'Good night',          sub: '🌙 Rest up — adventures await' };
@@ -208,20 +209,144 @@ const recentPhotos = [
 ];
 
 export default function Dashboard({ setView }) {
-  const [chores, setChores] = useState(initialChores);
-  const [shopList, setShopList] = useState(initialList);
+  const [chores, setChores]           = useState(initialChores);
+  const [shopList, setShopList]       = useState(initialList);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [schedule, setSchedule]       = useState(todaySchedule);
+  const [upcoming, setUpcoming]       = useState(upcomingEvents);
+  const [liveMeals, setLiveMeals]     = useState(meals);
+  const [liveActivity, setLiveActivity] = useState(activity);
+  const [userName, setUserName]       = useState('');
+  const [budgetSpent, setBudgetSpent] = useState(totalSpent);
+  const [shopListId, setShopListId]   = useState(null);
+
+  useEffect(() => {
+    const today     = new Date();
+    const todayStr  = today.toISOString().slice(0, 10);
+    const tom       = new Date(today); tom.setDate(today.getDate() + 1);
+    const in30      = new Date(today); in30.setDate(today.getDate() + 30);
+    // Monday of current week for meal plan
+    const day       = today.getDay();
+    const diff      = day === 0 ? -6 : 1 - day;
+    const monday    = new Date(today); monday.setDate(today.getDate() + diff);
+    const weekStart = monday.toISOString().slice(0, 10);
+    const dayName   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][today.getDay()];
+
+    // load user
+    import('../api/users.js').then(({ getMe }) =>
+      getMe().then(u => setUserName(u.name)).catch(() => {})
+    );
+
+    // load today's events → schedule
+    import('../api/events.js').then(({ listEvents }) =>
+      listEvents(todayStr, tom.toISOString().slice(0, 10)).then(evts => {
+        if (!evts?.length) return;
+        const mapped = evts.map(e => {
+          const start   = new Date(e.startAt ?? e.dateKey);
+          const end     = e.endAt ? new Date(e.endAt) : null;
+          const durMins = end ? Math.round((end - start) / 60000) : 60;
+          const durStr  = durMins < 60 ? `${durMins}m` : `${(durMins/60).toFixed(durMins%60 ? 1 : 0)}h`;
+          const time    = e.allDay ? '12:00 AM' : start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          return { time, label: e.label ?? e.title, who: e.who ?? 'Family', duration: durStr };
+        });
+        setSchedule(mapped);
+      }).catch(() => {})
+    );
+
+    // load upcoming events → "Coming Up" section
+    import('../api/events.js').then(({ listEvents }) =>
+      listEvents(todayStr, in30.toISOString().slice(0, 10)).then(evts => {
+        if (!evts?.length) return;
+        const mapped = evts.slice(0, 4).map(e => {
+          const d   = new Date(e.startAt ?? e.dateKey);
+          const mon = d.toLocaleString('en-US', { month: 'short' });
+          const day = d.getDate();
+          return { date: `${mon} ${day}`, label: e.label ?? e.title, icon: '📅', who: e.who ?? 'Family', isBirthday: e.type === 'birthday' };
+        });
+        setUpcoming(mapped);
+      }).catch(() => {})
+    );
+
+    // load tasks → chores widget
+    import('../api/tasks.js').then(({ listTasks }) =>
+      listTasks().then(tasks => {
+        if (!tasks?.length) return;
+        const undone = tasks.filter(t => !t.done).slice(0, 5);
+        const all    = tasks.slice(0, 5);
+        const mapped = (undone.length ? undone : all).map(t => ({
+          id: t.id, label: t.label ?? t.title, who: t.who ?? 'Family',
+          done: t.done ?? false, icon: t.icon ?? '✅',
+        }));
+        setChores(mapped);
+      }).catch(() => {})
+    );
+
+    // load shopping list items → shopping widget
+    import('../api/lists.js').then(({ getLists, getItems }) =>
+      getLists().then(async lists => {
+        const shopL = lists.find(l => l.name?.toLowerCase().includes('shop') || l.name?.toLowerCase().includes('grocery'));
+        if (!shopL) return;
+        setShopListId(shopL.id);
+        const items = await getItems(shopL.id);
+        if (!items?.length) return;
+        const mapped = items.slice(0, 6).map(item => ({
+          id: item.id, label: item.text, done: item.done ?? false, cat: item.icon ?? '🛒',
+        }));
+        setShopList(mapped);
+      }).catch(() => {})
+    );
+
+    // load today's meals → meals widget
+    import('../api/meals.js').then(({ getMealPlan }) =>
+      getMealPlan(weekStart).then(plan => {
+        if (!plan?.length) return;
+        const todayMeals = plan.filter(m => m.day === dayName);
+        const newMeals = { ...meals };
+        todayMeals.forEach(m => {
+          const key = m.mealType?.toLowerCase();
+          if (key === 'breakfast') newMeals.breakfast = { label: m.meal, icon: '🍳' };
+          if (key === 'lunch')     newMeals.lunch     = { label: m.meal, icon: '🥗' };
+          if (key === 'dinner')    newMeals.dinner    = { label: m.meal, icon: '🍽️' };
+        });
+        setLiveMeals(newMeals);
+      }).catch(() => {})
+    );
+
+    // load notifications → activity feed
+    import('../api/notifications.js').then(({ listNotifications }) =>
+      listNotifications().then(notifs => {
+        if (!notifs?.length) return;
+        const mapped = notifs.slice(0, 4).map(n => ({
+          who: n.who ?? n.title?.split(' ')[0] ?? 'Family',
+          avatar: 'bg-teal-400',
+          action: n.body ?? n.action ?? '',
+          photo: n.icon ?? '',
+          time: n.time ?? new Date(n.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+          unread: !n.read,
+        }));
+        setLiveActivity(mapped);
+      }).catch(() => {})
+    );
+
+    // load recent transactions → budget snapshot
+    import('../api/budget.js').then(({ listTransactions }) =>
+      listTransactions(1, 100).then(result => {
+        const txns = result?.data ?? result ?? [];
+        const spent = txns.filter(t => t.type === 'expense').reduce((s, t) => s + (t.amountCents ?? 0) / 100, 0);
+        if (spent) setBudgetSpent(spent);
+      }).catch(() => {})
+    );
+  }, []);
 
   const filteredSchedule = activeFilter === 'All'
-    ? todaySchedule
-    : todaySchedule.filter(e => e.who === activeFilter || e.who === 'All');
+    ? schedule
+    : schedule.filter(e => e.who === activeFilter || e.who === 'All');
 
   const choresDone   = chores.filter(c => c.done).length;
   const shopDone     = shopList.filter(s => s.done).length;
-  const mealsPlanned = Object.values(meals).filter(Boolean).length;
-  const totalSpent   = BUDGET_SNAPSHOT.reduce((s, c) => s + c.spent, 0);
-  const budgetPct    = Math.round((totalSpent / MONTHLY_BUDGET) * 100);
-  const { hi, sub }  = getGreeting();
+  const mealsPlanned = Object.values(liveMeals).filter(Boolean).length;
+  const budgetPct    = Math.round((budgetSpent / MONTHLY_BUDGET) * 100);
+  const { hi, sub }  = getGreeting(userName);
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>
@@ -248,7 +373,7 @@ export default function Dashboard({ setView }) {
           {[
             { label: 'Tasks done',  val: `${choresDone}/${chores.length}`,  pct: (choresDone / chores.length) * 100,  color: '#34d399', icon: '✅', view: 'tasks',       sub: choresDone === chores.length ? 'All done! 🎉' : `${chores.length - choresDone} left`, cls: 'stat-pop stat-pop-1' },
             { label: 'Meals today', val: `${mealsPlanned}/3`,               pct: (mealsPlanned / 3) * 100,            color: '#fb923c', icon: '🍽️', view: 'mealplanner', sub: 'Planned today',    cls: 'stat-pop stat-pop-2' },
-            { label: 'Budget used', val: `${budgetPct}%`,                   pct: budgetPct, color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#5bbfbf', icon: '💰', view: 'budget',      sub: `$${totalSpent.toFixed(0)} spent`,  cls: 'stat-pop stat-pop-3' },
+            { label: 'Budget used', val: `${budgetPct}%`,                   pct: budgetPct, color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#5bbfbf', icon: '💰', view: 'budget',      sub: `$${budgetSpent.toFixed(0)} spent`,  cls: 'stat-pop stat-pop-3' },
             { label: 'Shopping',    val: `${shopDone}/${shopList.length}`,   pct: (shopDone / shopList.length) * 100, color: '#6366f1', icon: '🛒', view: 'lists',       sub: shopDone === shopList.length ? 'All checked!' : `${shopList.length - shopDone} to get`, cls: 'stat-pop stat-pop-4' },
           ].map((s, i) => (
             <button key={i} onClick={() => setView(s.view)}
@@ -321,7 +446,7 @@ export default function Dashboard({ setView }) {
               <p className="text-gray-400 text-sm py-4 text-center">No events for {activeFilter} today.</p>
             ) : (
               <div className="space-y-2.5">
-                {filteredSchedule.map((ev, i) => {
+                {filteredSchedule.map((ev, i) => {  // live from API
                   const color = ev.who === 'All' ? '#a78bfa' : getMemberColor(ev.who);
                   return (
                     <div key={i} className="flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-colors hover:bg-gray-50" style={{ borderLeft: `3px solid ${color}` }}>
@@ -361,7 +486,7 @@ export default function Dashboard({ setView }) {
                 <button onClick={() => setView('aistudio')} className="text-amber-400 text-[10px] hover:text-amber-500 transition-colors">AI Plan →</button>
               </div>
               <div className="space-y-2.5">
-                {[['Breakfast', meals.breakfast], ['Lunch', meals.lunch], ['Dinner', meals.dinner]].map(([label, m]) => (
+                {[['Breakfast', liveMeals.breakfast], ['Lunch', liveMeals.lunch], ['Dinner', liveMeals.dinner]].map(([label, m]) => (
                   <div key={label} className="flex items-center gap-3 px-3.5 py-3 rounded-2xl" style={{ background: 'rgba(251,191,36,0.06)' }}>
                     <span className="text-xl">{m.icon}</span>
                     <div>
@@ -377,7 +502,7 @@ export default function Dashboard({ setView }) {
             <div className="glass rounded-3xl p-5" style={{ border: '1px solid rgba(91,191,191,0.20)' }}>
               <h3 className="text-teal-500 text-xs font-semibold uppercase tracking-wider mb-4">🎂 Coming Up</h3>
               <div className="space-y-3">
-                {upcomingEvents.map((e, i) => {
+                {upcoming.map((e, i) => {
                   const color = e.who === 'All' ? '#a78bfa' : getMemberColor(e.who);
                   return (
                     <div key={i} className="flex items-center gap-2.5">
@@ -549,7 +674,7 @@ export default function Dashboard({ setView }) {
               <button onClick={() => setView('notifications')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">All →</button>
             </div>
             <div className="space-y-3">
-              {activity.map((a, i) => (
+              {liveActivity.map((a, i) => (
                 <div key={i} className={`flex items-start gap-3 p-3 rounded-2xl ${a.unread ? '' : 'hover:bg-gray-50'} transition-colors`}
                   style={a.unread ? { background: 'rgba(91,191,191,0.08)', border: '1px solid rgba(91,191,191,0.20)' } : {}}>
                   <div className={`w-7 h-7 rounded-full ${a.avatar} flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5`}>{a.who[0]}</div>
