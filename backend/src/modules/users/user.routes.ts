@@ -1,7 +1,16 @@
 import { FastifyPluginAsync } from 'fastify';
+import { z } from 'zod';
 import { UserService } from './user.service';
 import { authenticate } from '../../hooks/authenticate';
 import { ok } from '../../shared/api-response';
+
+const updateMeSchema = z.object({
+  name:               z.string().min(1).max(100).optional(),
+  avatarColor:        z.string().regex(/^#[0-9a-fA-F]{3,8}$/).optional(),
+  phoneNumber:        z.string().max(20).nullable().optional(),
+  agendaEmailEnabled: z.boolean().optional(),
+  agendaEmailTime:    z.string().max(20).optional(),
+});
 
 const userRoutes: FastifyPluginAsync = async (fastify) => {
   const service = new UserService(fastify.db);
@@ -14,7 +23,8 @@ const userRoutes: FastifyPluginAsync = async (fastify) => {
   });
 
   fastify.patch('/me', { preHandler: [authenticate] }, async (req) => {
-    const updated = await service.update(req.user.sub, req.body as any);
+    const body    = updateMeSchema.parse(req.body);
+    const updated = await service.update(req.user.sub, body);
     const { passwordHash: _, ...safe } = updated as any;
     return ok(safe);
   });

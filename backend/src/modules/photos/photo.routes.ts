@@ -11,6 +11,13 @@ import { notifyFamily } from '../../shared/notify-family';
 import { NotificationType } from '../notifications/notification.entity';
 
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/gif']);
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png':  'png',
+  'image/webp': 'webp',
+  'image/heic': 'heic',
+  'image/gif':  'gif',
+};
 
 const createPhotoSchema = z.object({
   url:              z.string().url(),
@@ -67,7 +74,8 @@ const photoRoutes: FastifyPluginAsync = async (fastify) => {
     }
     const uploadsDir = path.resolve(env.UPLOADS_DIR);
     fs.mkdirSync(uploadsDir, { recursive: true });
-    const ext      = data.filename.split('.').pop()?.toLowerCase() ?? 'jpg';
+    // Derive extension from validated MIME type — never trust client filename
+    const ext      = MIME_TO_EXT[data.mimetype] ?? 'jpg';
     const filename = `${crypto.randomUUID()}.${ext}`;
     const dest     = path.join(uploadsDir, filename);
     const chunks: Buffer[] = [];

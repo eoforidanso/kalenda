@@ -5,7 +5,7 @@ import { createCheckoutSession, handleWebhook } from './payment.service';
 export default async function paymentRoutes(app: FastifyInstance) {
   // Create a Stripe Checkout session — returns { url } to redirect the user
   app.post('/checkout', { preHandler: [authenticate] }, async (req, reply) => {
-    const userId = (req.user as any).id as string;
+    const userId = req.user.sub;
     const result = await createCheckoutSession(userId);
     return reply.send({ success: true, data: result });
   });
@@ -19,9 +19,10 @@ export default async function paymentRoutes(app: FastifyInstance) {
     },
     async (req, reply) => {
       const sig = req.headers['stripe-signature'] as string;
-      // Fastify multipart/raw body: access via req.rawBody if registered,
-      // otherwise fall back to the body buffer
-      const rawBody: Buffer = (req as any).rawBody ?? Buffer.from(JSON.stringify(req.body));
+      const rawBody: Buffer | undefined = (req as any).rawBody;
+      if (!rawBody) {
+        return reply.status(400).send({ success: false, error: 'Raw body unavailable' });
+      }
       await handleWebhook(rawBody, sig);
       return reply.send({ received: true });
     },
@@ -29,7 +30,7 @@ export default async function paymentRoutes(app: FastifyInstance) {
 
   // Get current plan for the logged-in user
   app.get('/plan', { preHandler: [authenticate] }, async (req, reply) => {
-    const userId = (req.user as any).id as string;
+    const userId = req.user.sub;
     const { AppDataSource } = await import('../../config/database');
     const { User } = await import('../users/user.entity');
     const user = await AppDataSource.getRepository(User).findOneByOrFail({ id: userId });

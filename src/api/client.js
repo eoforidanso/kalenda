@@ -36,7 +36,7 @@ async function doRefresh() {
   }
 }
 
-async function ensureRefresh() {
+export async function ensureRefresh() {
   if (!refreshPromise) refreshPromise = doRefresh().finally(() => { refreshPromise = null; });
   return refreshPromise;
 }

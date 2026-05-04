@@ -4,6 +4,7 @@ import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import multipart from '@fastify/multipart';
 import staticFiles from '@fastify/static';
+import rawBody from 'fastify-raw-body';
 import path from 'path';
 import { ZodError } from 'zod';
 import { env } from './config/env';
@@ -42,6 +43,7 @@ export async function buildApp() {
     timeWindow: '1 minute',
     errorResponseBuilder: () => ({ success: false, error: 'Too many requests — please slow down.' }),
   });
+  await app.register(rawBody, { field: 'rawBody', global: false, encoding: false, runFirst: true });
   await app.register(cors, { origin: env.CORS_ORIGIN, credentials: true });
   await app.register(multipart, {
     limits: { fileSize: 52_428_800 }, // 50 MB

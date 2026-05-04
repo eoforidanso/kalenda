@@ -1,5 +1,4 @@
-import { apiFetch } from './client';
-import { getToken } from './client';
+import { apiFetch, getToken, ensureRefresh, clearTokens } from './client';
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001/api/v1';
 
@@ -43,15 +42,29 @@ export async function deletePhoto(id) {
  * @param {string} [albumId] — optional album UUID
  */
 export async function uploadPhoto(file, albumId) {
-  const form = new FormData();
-  form.append('file', file);
-  if (albumId) form.append('albumId', albumId);
-  const token = getToken();
-  const res = await fetch(`${BASE}/photos/upload`, {
-    method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    body: form,
-  });
+  const makeRequest = async (token) => {
+    const form = new FormData();
+    form.append('file', file);
+    if (albumId) form.append('albumId', albumId);
+    return fetch(`${BASE}/photos/upload`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    });
+  };
+
+  let res = await makeRequest(getToken());
+
+  if (res.status === 401) {
+    const newToken = await ensureRefresh();
+    if (newToken) {
+      res = await makeRequest(newToken);
+    } else {
+      window.dispatchEvent(new CustomEvent('kalenda:logout'));
+      throw Object.assign(new Error('Session expired'), { status: 401 });
+    }
+  }
+
   const json = await res.json();
   if (!res.ok) throw new Error(json.error ?? 'Upload failed');
   return toFrontend(json.data);

@@ -30,6 +30,8 @@ export async function createCheckoutSession(userId: string): Promise<{ url: stri
     line_items: [{ price: env.STRIPE_PRO_PRICE_ID, quantity: 1 }],
     success_url: env.STRIPE_SUCCESS_URL,
     cancel_url: env.STRIPE_CANCEL_URL,
+    // Set metadata on both the session AND the subscription so the webhook can find userId
+    metadata: { userId },
     subscription_data: { metadata: { userId } },
   });
 
@@ -52,7 +54,8 @@ export async function handleWebhook(rawBody: Buffer, signature: string): Promise
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.subscription_data?.metadata?.userId ?? session.metadata?.userId;
+    // userId is on session.metadata (set at session creation level)
+    const userId = session.metadata?.userId;
     if (userId) {
       await repo.update(userId, { plan: 'pro', planExpiresAt: null });
     }

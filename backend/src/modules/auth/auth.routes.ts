@@ -41,7 +41,9 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
     return reply.send({ success: true, data: result });
   });
 
-  fastify.post('/refresh', async (req, reply) => {
+  fastify.post('/refresh', {
+    config: { rateLimit: { max: 20, timeWindow: '15 minutes' } },
+  }, async (req, reply) => {
     const { refreshToken } = refreshSchema.parse(req.body);
     const result = await service.refresh(refreshToken);
     return reply.send({ success: true, data: result });

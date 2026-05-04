@@ -49,32 +49,37 @@ const listRoutes: FastifyPluginAsync = async (fastify) => {
   // ── Items ──────────────────────────────────────────────────────
 
   fastify.get('/:id/items', { preHandler: [authenticate] }, async (req) => {
+    const familyId = requireFamily(req);
     const { id } = req.params as { id: string };
-    return ok(await service.getItems(id));
+    return ok(await service.getItems(id, familyId));
   });
 
   fastify.post('/:id/items', { preHandler: [authenticate] }, async (req, reply) => {
+    const familyId = requireFamily(req);
     const { id } = req.params as { id: string };
     const { text, addedByName } = addItemSchema.parse(req.body);
-    return reply.status(201).send(ok(await service.addItem(id, text, addedByName)));
+    return reply.status(201).send(ok(await service.addItem(id, familyId, text, addedByName)));
   });
 
   fastify.patch('/:id/items/:itemId', { preHandler: [authenticate] }, async (req) => {
+    const familyId = requireFamily(req);
     const { id, itemId } = req.params as { id: string; itemId: string };
     const body = updateItemSchema.parse(req.body);
-    return ok(await service.updateItem(itemId, id, body));
+    return ok(await service.updateItem(itemId, id, familyId, body));
   });
 
   fastify.delete('/:id/items/:itemId', { preHandler: [authenticate] }, async (req, reply) => {
+    const familyId = requireFamily(req);
     const { id, itemId } = req.params as { id: string; itemId: string };
-    await service.removeItem(itemId, id);
+    await service.removeItem(itemId, id, familyId);
     return reply.status(204).send();
   });
 
   // Clear all checked items from a list
   fastify.delete('/:id/items', { preHandler: [authenticate] }, async (req, reply) => {
+    const familyId = requireFamily(req);
     const { id } = req.params as { id: string };
-    await service.clearCompleted(id);
+    await service.clearCompleted(id, familyId);
     return reply.status(204).send();
   });
 };

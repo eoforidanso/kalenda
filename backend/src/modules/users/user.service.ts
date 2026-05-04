@@ -4,7 +4,7 @@ import { User } from './user.entity';
 export interface UpdateUserDto {
   name?: string;
   avatarColor?: string;
-  phoneNumber?: string;
+  phoneNumber?: string | null;
   agendaEmailEnabled?: boolean;
   agendaEmailTime?: string;
 }
