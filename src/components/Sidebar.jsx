@@ -191,7 +191,7 @@ export default function Sidebar({ view, setView, notifUnread = 0, onSearchOpen }
           return (
             <button
               key={item.id}
-              onClick={() => isMore ? setShowMore(true) : setView(item.id)}
+              onClick={() => isMore ? setShowMore(p => !p) : setView(item.id)}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all"
               style={active ? { color: '#3a9e9e' } : { color: '#94a3b8' }}
             >
