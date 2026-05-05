@@ -100,13 +100,13 @@ function FrameMockup({ scale = 1 }) {
 // ─────────────────────────────────────────────
 function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
   const [mode, setMode] = useState(initialMode);
-  const [email, setEmail] = useState('demo@kalenda.app');
-  const [password, setPassword] = useState('kalenda2026');
+  const [email, setEmail] = useState('1234@gmail.com');
+  const [password, setPassword] = useState('12345');
   const [name, setName] = useState('Demo Family');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const DEMO_USER = { id: 'demo', name: 'Demo Family', email: 'demo@kalenda.app', familyId: 'demo-family' };
+  const DEMO_USER = { id: 'demo', name: 'Demo Family', email: '1234@gmail.com', familyId: 'demo-family' };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -115,7 +115,7 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
     if (mode === 'signup' && !name) { setError('Please enter your name.'); return; }
 
     // Demo shortcut — no backend needed
-    if (email === 'demo@kalenda.app' && password === 'kalenda2026') {
+    if (email === '1234@gmail.com' && password === '12345') {
       onEnter(DEMO_USER);
       return;
     }
@@ -219,7 +219,7 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
           </svg>
           Continue with Google
         </button>
-        <button type="button" onClick={() => onEnter({ id: 'demo', name: 'Demo Family', email: 'demo@kalenda.app', familyId: 'demo-family' })}
+        <button type="button" onClick={() => onEnter({ id: 'demo', name: 'Demo Family', email: '1234@gmail.com', familyId: 'demo-family' })}
           className="w-full py-3 mt-3 rounded-2xl text-sm font-semibold transition-all hover:opacity-70"
           style={{ color:'#3ab5b5' }}>
           Try demo — no sign up needed →
@@ -322,7 +322,7 @@ export default function Landing({ onEnter }) {
 
   function openSignup() { setAuthMode('signup'); setAuthOpen(true); }
   function openSignin() { setAuthMode('signin'); setAuthOpen(true); }
-  function openDemo()  { onEnter({ id: 'demo', name: 'Demo Family', email: 'demo@kalenda.app', familyId: 'demo-family' }); }
+  function openDemo()  { onEnter({ id: 'demo', name: 'Demo Family', email: '1234@gmail.com', familyId: 'demo-family' }); }
 
   function handleHeroMouseMove(e) {
     if (!heroRef.current) return;
