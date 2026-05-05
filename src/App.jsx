@@ -93,9 +93,9 @@ export default function App() {
         <div className="absolute bottom-[-12%] left-[25%] w-[580px] h-[580px] rounded-full orb-3" style={{ background: 'radial-gradient(circle, rgba(245,184,184,0.09) 0%, transparent 65%)' }} />
         <div className="absolute top-[60%] left-[-5%] w-[400px] h-[400px] rounded-full orb-4" style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)' }} />
       </div>
-      <div className="relative z-10 flex h-full w-full overflow-hidden">
+      <div className="relative z-10 flex h-full w-full">
         <Sidebar view={view} setView={setView} notifUnread={notifUnread} onSearchOpen={() => setShowSearch(true)} />
-        <div key={view} className="flex-1 min-h-0 h-full flex flex-col view-fade overflow-hidden">
+        <div key={view} className="flex-1 min-h-0 flex flex-col view-fade" style={{ height: '100%', overflow: 'hidden' }}>
           {view === 'notifications'
             ? <Notifications setView={setView} onUnreadChange={setNotifUnread} />
             : <View setView={setView} photos={photos} setPhotos={setPhotos} eventDB={eventDB} setEventDB={setEventDB} />}
