@@ -90,7 +90,7 @@ export default function App() {
       </div>
       <div className="relative z-10 flex h-full w-full">
         <Sidebar view={view} setView={setView} notifUnread={notifUnread} onSearchOpen={() => setShowSearch(true)} />
-        <div key={view} className="flex-1 min-h-0 flex flex-col h-full overflow-hidden view-fade">
+        <div key={view} className="flex-1 min-h-0 flex flex-col view-fade">
           {view === 'notifications'
             ? <Notifications setView={setView} onUnreadChange={setNotifUnread} />
             : <View setView={setView} photos={photos} setPhotos={setPhotos} eventDB={eventDB} setEventDB={setEventDB} />}

@@ -231,10 +231,10 @@
 
 /* ── View page fade-slide transition ── */
 @keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(10px) scale(0.997); }
-  to   { opacity: 1; transform: translateY(0)    scale(1); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-.view-fade { animation: viewFadeIn 0.22s cubic-bezier(0.22, 0.68, 0, 1.1) both; }
+.view-fade { animation: viewFadeIn 0.18s ease both; }
 
 /* ── Toast slide in from left ── */
 @keyframes toastSlideIn {
