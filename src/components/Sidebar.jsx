@@ -205,21 +205,36 @@ export default function Sidebar({ view, setView, notifUnread = 0, onSearchOpen }
       </nav>
 
       {showMore && (
-        <div className="md:hidden fixed inset-0 z-40" onClick={() => setShowMore(false)}>
+        <>
+          {/* Backdrop — tap outside to close */}
           <div
-            className="absolute bottom-16 left-0 right-0 rounded-t-2xl p-5 shadow-2xl"
-            style={{ background: 'rgba(255,255,255,0.98)', backdropFilter: 'blur(20px)', borderTop: '1px solid #e2ecf0' }}
-            onClick={e => e.stopPropagation()}
+            className="md:hidden fixed inset-0 z-40"
+            style={{ background: 'rgba(0,0,0,0.25)' }}
+            onPointerDown={() => setShowMore(false)}
+          />
+          {/* Sheet */}
+          <div
+            className="md:hidden fixed left-0 right-0 z-50 rounded-t-2xl p-5 shadow-2xl"
+            style={{ bottom: 'calc(64px + env(safe-area-inset-bottom, 0px))', background: '#ffffff', borderTop: '1px solid #e2ecf0' }}
           >
-            <div className="w-8 h-1 bg-gray-200 rounded-full mx-auto mb-4" />
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">More</p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1">More</p>
+              <button
+                onPointerDown={() => setShowMore(false)}
+                className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors"
+              >
+                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5">
+                  <path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/>
+                </svg>
+              </button>
+            </div>
             <div className="grid grid-cols-4 gap-2">
               {moreItems.map(item => {
                 const active = view === item.id;
                 return (
                   <button
                     key={item.id}
-                    onClick={() => { setView(item.id); setShowMore(false); }}
+                    onPointerDown={() => { setView(item.id); setShowMore(false); }}
                     className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl transition-all"
                     style={active ? { background: 'rgba(91,191,191,0.1)', color: '#3a9e9e' } : { color: '#6b7280' }}
                   >
@@ -232,7 +247,7 @@ export default function Sidebar({ view, setView, notifUnread = 0, onSearchOpen }
               })}
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );
