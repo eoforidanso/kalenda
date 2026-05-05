@@ -437,8 +437,8 @@ export default function Dashboard({ setView }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* TODAY'S SCHEDULE — color-coded by member (Cozi style) */}
-          <div className="lg:col-span-2 glass rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-5">
+          <div className="lg:col-span-2 glass rounded-3xl p-4 md:p-6">
+            <div className="flex items-center justify-between mb-3 md:mb-5">
               <h2 className="text-gray-800 font-semibold text-sm">Today's Schedule</h2>
               <button onClick={() => setView('calendar')} className="text-teal-500 text-xs hover:text-teal-600 transition-colors">Full Calendar →</button>
             </div>
@@ -449,8 +449,8 @@ export default function Dashboard({ setView }) {
                 {filteredSchedule.map((ev, i) => {  // live from API
                   const color = ev.who === 'All' ? '#a78bfa' : getMemberColor(ev.who);
                   return (
-                    <div key={i} className="flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-colors hover:bg-gray-50" style={{ borderLeft: `3px solid ${color}` }}>
-                      <div className="w-20 shrink-0">
+                    <div key={i} className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3.5 rounded-2xl transition-colors hover:bg-gray-50" style={{ borderLeft: `3px solid ${color}` }}>
+                      <div className="w-14 md:w-20 shrink-0">
                         <p className="text-gray-400 text-xs font-mono">{ev.time}</p>
                       </div>
                       <div className="flex-1 min-w-0">
