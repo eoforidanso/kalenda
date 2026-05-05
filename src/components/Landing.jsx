@@ -336,7 +336,7 @@ export default function Landing({ onEnter }) {
   function handleHeroMouseLeave() { setTilt({ x: 0, y: 0 }); }
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: '#fffbf5', color: '#0f172a' }}>
+    <div className="min-h-screen" style={{ background: '#fffbf5', color: '#0f172a', overflowX: 'clip' }}>
 
       {/* ══════════ NAVBAR ══════════ */}
       <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"

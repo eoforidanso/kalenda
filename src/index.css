@@ -23,6 +23,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    /* Prevent iOS Safari from blocking momentum scroll */
+    -webkit-overflow-scrolling: touch;
   }
   * { box-sizing: border-box; }
 }
@@ -128,6 +130,11 @@
   .scrollbar-thin { scrollbar-width: thin; scrollbar-color: rgba(91,191,191,0.35) transparent; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
+  /* iOS Safari momentum scrolling for all overflow-y-auto containers */
+  .overflow-y-auto, .overflow-y-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
   .text-balance { text-wrap: balance; }
   /* Teal gradient text */
   .gradient-text-violet {
