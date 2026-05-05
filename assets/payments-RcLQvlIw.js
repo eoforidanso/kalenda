@@ -1,1 +1,0 @@
-import{t as e}from"./index-BjFF1Qbx.js";function t(){return e(`/payments/plan`).then(e=>e.data??{plan:`free`})}function n(){return e(`/payments/checkout`,{method:`POST`}).then(e=>e.data)}export{n as createCheckout,t as getPlan};
