@@ -174,7 +174,7 @@ export default function Lists() {
     <div className="flex-1 flex overflow-hidden" style={{ background: 'transparent' }}>
 
       {/* Sidebar — list switcher */}
-      <div className="w-20 sm:w-40 md:w-56 shrink-0 flex flex-col h-full scrollbar-thin overflow-y-auto" style={{ background: '#ffffff', borderRight: '1px solid #e2ecf0' }}>
+      <div className="w-20 sm:w-40 md:w-56 shrink-0 flex flex-col h-full scrollbar-thin overflow-y-auto pb-20 md:pb-0" style={{ background: '#ffffff', borderRight: '1px solid #e2ecf0' }}>
         <div className="px-4 py-4" style={{ borderBottom: '1px solid #e2ecf0' }}>
           <h2 className="text-gray-800 font-semibold text-sm">My Lists</h2>
           <p className="text-gray-400 text-xs mt-0.5">{lists.length} lists · shared family</p>

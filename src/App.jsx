@@ -80,7 +80,7 @@ export default function App() {
   return (
     <PlanProvider>
     <ToastProvider>
-    <div className="flex h-screen overflow-hidden relative" style={{ background: '#f5f8fa' }}>
+    <div className="flex h-[100dvh] overflow-hidden relative" style={{ background: '#f5f8fa' }}>
       {/* Ambient orbs — visible through glass panels */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-18%] left-[-10%] w-[800px] h-[800px] rounded-full orb-1" style={{ background: 'radial-gradient(circle, rgba(91,191,191,0.14) 0%, transparent 65%)' }} />

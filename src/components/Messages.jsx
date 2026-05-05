@@ -182,7 +182,7 @@ export default function Messages() {
           <p className="text-gray-400 text-xs mt-0.5">End-to-end encrypted</p>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-1">
+        <div className="flex-1 overflow-y-auto py-1 pb-20 md:pb-0">
           {threads.map(t => {
             const isActive = t.id === activeId;
             const lastMsg  = t.messages[t.messages.length - 1];
@@ -265,7 +265,7 @@ export default function Messages() {
         </div>
 
         {/* Input bar */}
-        <div className="shrink-0 px-4 py-3" style={{ background: 'rgba(245,248,250,0.95)', borderTop: '1px solid #e2ecf0', backdropFilter: 'blur(20px)' }}>
+        <div className="shrink-0 pt-3 pb-20 md:pb-3 px-4" style={{ background: 'rgba(245,248,250,0.95)', borderTop: '1px solid #e2ecf0', backdropFilter: 'blur(20px)' }}>
           <div className="flex items-end gap-2">
             <div className="flex-1 relative">
               <textarea
