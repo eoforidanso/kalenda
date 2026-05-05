@@ -217,7 +217,7 @@ export default function Dashboard({ setView }) {
   const [liveMeals, setLiveMeals]     = useState(meals);
   const [liveActivity, setLiveActivity] = useState(activity);
   const [userName, setUserName]       = useState('');
-  const [budgetSpent, setBudgetSpent] = useState(totalSpent);
+  const [budgetSpent, setBudgetSpent] = useState(0);
   const [shopListId, setShopListId]   = useState(null);
 
   useEffect(() => {
@@ -529,7 +529,7 @@ export default function Dashboard({ setView }) {
               </div>
               <div className="mb-3">
                 <div className="flex justify-between text-[10px] text-gray-500 mb-1">
-                  <span>${totalSpent.toFixed(0)} spent</span>
+                  <span>${budgetSpent.toFixed(0)} spent</span>
                   <span className="font-bold" style={{ color: budgetPct > 90 ? '#ef4444' : budgetPct > 70 ? '#f59e0b' : '#6366f1' }}>{budgetPct}%</span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.06)' }}>
