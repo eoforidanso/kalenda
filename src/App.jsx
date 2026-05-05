@@ -37,7 +37,12 @@ function getInitialView() {
 
 export default function App() {
   const [view, setView] = useState(getInitialView);
-  const [user, setUser] = useState(() => getToken() ? loadUser() : null);
+  const [user, setUser] = useState(() => {
+    const stored = loadUser();
+    if (!stored) return null;
+    if (stored.id === 'demo') return stored; // demo session — no token needed
+    return getToken() ? stored : null;       // real session — requires token
+  });
   const [notifUnread, setNotifUnread] = useState(4);
   const [showSearch, setShowSearch] = useState(false);
   const [photos, setPhotos] = useState(allPhotos);

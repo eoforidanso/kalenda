@@ -3,9 +3,12 @@ import { AppDataSource } from '../../config/database';
 import { User } from '../users/user.entity';
 import { env } from '../../config/env';
 
-function getStripe(): Stripe | null {
+// Stripe v22 exports the constructor as default; use ReturnType for the instance type
+type StripeInstance = ReturnType<typeof Stripe>;
+
+function getStripe(): StripeInstance | null {
   if (!env.STRIPE_SECRET_KEY) return null;
-  return new Stripe(env.STRIPE_SECRET_KEY, { apiVersion: '2025-04-30.basil' });
+  return new Stripe(env.STRIPE_SECRET_KEY, { apiVersion: '2026-04-22.dahlia' });
 }
 
 export async function createCheckoutSession(userId: string): Promise<{ url: string }> {
@@ -30,7 +33,6 @@ export async function createCheckoutSession(userId: string): Promise<{ url: stri
     line_items: [{ price: env.STRIPE_PRO_PRICE_ID, quantity: 1 }],
     success_url: env.STRIPE_SUCCESS_URL,
     cancel_url: env.STRIPE_CANCEL_URL,
-    // Set metadata on both the session AND the subscription so the webhook can find userId
     metadata: { userId },
     subscription_data: { metadata: { userId } },
   });
@@ -43,7 +45,8 @@ export async function handleWebhook(rawBody: Buffer, signature: string): Promise
   const stripe = getStripe();
   if (!stripe || !env.STRIPE_WEBHOOK_SECRET) return;
 
-  let event: Stripe.Event;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let event: any;
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, env.STRIPE_WEBHOOK_SECRET);
   } catch {
@@ -53,8 +56,7 @@ export async function handleWebhook(rawBody: Buffer, signature: string): Promise
   const repo = AppDataSource.getRepository(User);
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
-    // userId is on session.metadata (set at session creation level)
+    const session = event.data.object as { metadata?: { userId?: string } };
     const userId = session.metadata?.userId;
     if (userId) {
       await repo.update(userId, { plan: 'pro', planExpiresAt: null });
@@ -62,7 +64,7 @@ export async function handleWebhook(rawBody: Buffer, signature: string): Promise
   }
 
   if (event.type === 'customer.subscription.deleted') {
-    const sub = event.data.object as Stripe.Subscription;
+    const sub = event.data.object as { metadata?: { userId?: string } };
     const userId = sub.metadata?.userId;
     if (userId) {
       await repo.update(userId, { plan: 'free', planExpiresAt: null });
@@ -70,7 +72,7 @@ export async function handleWebhook(rawBody: Buffer, signature: string): Promise
   }
 
   if (event.type === 'customer.subscription.updated') {
-    const sub = event.data.object as Stripe.Subscription;
+    const sub = event.data.object as { metadata?: { userId?: string }; status: string };
     const userId = sub.metadata?.userId;
     if (!userId) return;
     if (sub.status === 'active' || sub.status === 'trialing') {
@@ -80,3 +82,4 @@ export async function handleWebhook(rawBody: Buffer, signature: string): Promise
     }
   }
 }
+

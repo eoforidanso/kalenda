@@ -106,11 +106,20 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const DEMO_USER = { id: 'demo', name: 'Demo Family', email: 'demo@kalenda.app', familyId: 'demo-family' };
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     if (!email || !password) { setError('Please fill in all fields.'); return; }
     if (mode === 'signup' && !name) { setError('Please enter your name.'); return; }
+
+    // Demo shortcut — no backend needed
+    if (email === 'demo@kalenda.app' && password === 'kalenda2026') {
+      onEnter(DEMO_USER);
+      return;
+    }
+
     setLoading(true);
     try {
       let data;
@@ -210,10 +219,10 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
           </svg>
           Continue with Google
         </button>
-        <button type="button" onClick={() => onEnter({ id: 'guest', name: 'Guest', email: '', familyId: null })}
+        <button type="button" onClick={() => onEnter({ id: 'demo', name: 'Demo Family', email: 'demo@kalenda.app', familyId: 'demo-family' })}
           className="w-full py-3 mt-3 rounded-2xl text-sm font-semibold transition-all hover:opacity-70"
           style={{ color:'#3ab5b5' }}>
-          Explore as guest →
+          Try demo — no sign up needed →
         </button>
       </div>
     </div>
@@ -313,6 +322,7 @@ export default function Landing({ onEnter }) {
 
   function openSignup() { setAuthMode('signup'); setAuthOpen(true); }
   function openSignin() { setAuthMode('signin'); setAuthOpen(true); }
+  function openDemo()  { onEnter({ id: 'demo', name: 'Demo Family', email: 'demo@kalenda.app', familyId: 'demo-family' }); }
 
   function handleHeroMouseMove(e) {
     if (!heroRef.current) return;
@@ -413,10 +423,10 @@ export default function Landing({ onEnter }) {
               Start your family's story
               <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
-            <button onClick={() => onEnter('Guest')}
+            <button onClick={openDemo}
               className="flex items-center gap-2 px-7 py-4 rounded-2xl text-base font-semibold transition-all duration-200 active:scale-95"
               style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)' }}>
-              See it in 60 seconds
+              Try Demo — no sign up
             </button>
           </div>
 
