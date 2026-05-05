@@ -86,8 +86,8 @@ export default function App() {
     <PlanProvider>
     <ToastProvider>
     <div className="flex h-[100dvh] overflow-hidden relative" style={{ background: '#f5f8fa' }}>
-      {/* Ambient orbs — visible through glass panels */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {/* Ambient orbs — desktop only, too expensive on mobile */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 hidden md:block">
         <div className="absolute top-[-18%] left-[-10%] w-[800px] h-[800px] rounded-full orb-1" style={{ background: 'radial-gradient(circle, rgba(91,191,191,0.14) 0%, transparent 65%)' }} />
         <div className="absolute top-[30%] right-[-15%] w-[650px] h-[650px] rounded-full orb-2" style={{ background: 'radial-gradient(circle, rgba(52,211,153,0.10) 0%, transparent 65%)' }} />
         <div className="absolute bottom-[-12%] left-[25%] w-[580px] h-[580px] rounded-full orb-3" style={{ background: 'radial-gradient(circle, rgba(245,184,184,0.09) 0%, transparent 65%)' }} />

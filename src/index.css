@@ -137,6 +137,16 @@
   }
   /* Ensure flex children respect parent height on iOS */
   .min-h-0 { min-height: 0; }
+
+  /* Disable expensive backdrop-filter blur on mobile — kills scroll performance */
+  @media (max-width: 768px) {
+    [style*="backdropFilter"], [style*="backdrop-filter"],
+    .backdrop-blur-xl, .backdrop-blur-lg, .backdrop-blur-md, .backdrop-blur-sm {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      background: rgba(245, 248, 250, 0.98) !important;
+    }
+  }
   .text-balance { text-wrap: balance; }
   /* Teal gradient text */
   .gradient-text-violet {
