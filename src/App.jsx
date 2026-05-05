@@ -29,8 +29,14 @@ function loadUser() {
   try { return JSON.parse(localStorage.getItem('kalenda_user')); } catch { return null; }
 }
 
+function getInitialView() {
+  const param = new URLSearchParams(window.location.search).get('view');
+  const valid = ['dashboard','calendar','photos','family','tasks','lists','messages','budget','mealplanner','settings','notifications'];
+  return (param && valid.includes(param)) ? param : 'dashboard';
+}
+
 export default function App() {
-  const [view, setView] = useState('dashboard');
+  const [view, setView] = useState(getInitialView);
   const [user, setUser] = useState(() => getToken() ? loadUser() : null);
   const [notifUnread, setNotifUnread] = useState(4);
   const [showSearch, setShowSearch] = useState(false);
