@@ -22,6 +22,10 @@ const refreshSchema = z.object({
   refreshToken: z.string().min(1),
 });
 
+const googleSchema = z.object({
+  accessToken: z.string().min(1),
+});
+
 const authRoutes: FastifyPluginAsync = async (fastify) => {
   const service = new AuthService(fastify.db);
 
@@ -46,6 +50,14 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
   }, async (req, reply) => {
     const { refreshToken } = refreshSchema.parse(req.body);
     const result = await service.refresh(refreshToken);
+    return reply.send({ success: true, data: result });
+  });
+
+  fastify.post('/google', {
+    config: { rateLimit: { max: 20, timeWindow: '15 minutes' } },
+  }, async (req, reply) => {
+    const { idToken } = googleSchema.parse(req.body);
+    const result = await service.googleLogin(idToken);
     return reply.send({ success: true, data: result });
   });
 

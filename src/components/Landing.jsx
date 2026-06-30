@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { register, login } from '../api/auth';
+import { useGoogleLogin } from '@react-oauth/google';
+import { register, login, googleAuth } from '../api/auth';
 
 // ─────────────────────────────────────────────
 //  FRAME MOCKUP (hero visual)
@@ -105,6 +106,29 @@ function AuthModal({ onEnter, onClose, initialMode = 'signin' }) {
   const [name, setName] = useState('Demo Family');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleGoogleSuccess = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setError('');
+      setLoading(true);
+      try {
+        // Exchange access token for user info, then send id_token to backend
+        const res = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        });
+        const profile = await res.json();
+        // Use the access token flow: backend verifies via tokeninfo
+        const data = await googleAuth(tokenResponse.access_token);
+        onEnter(data.user);
+      } catch (err) {
+        setError(err.message ?? 'Google sign-in failed. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => setError('Google sign-in was cancelled or failed.'),
+    flow: 'implicit',
+  });
 
   const DEMO_USER = { id: 'demo', name: 'Demo Family', email: '1234@gmail.com', familyId: 'demo-family' };
 

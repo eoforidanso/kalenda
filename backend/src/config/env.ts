@@ -18,6 +18,7 @@ const schema = z.object({
   STRIPE_PRO_PRICE_ID: z.string().default(''),
   STRIPE_SUCCESS_URL: z.string().default('http://localhost:5173/?upgrade=success'),
   STRIPE_CANCEL_URL: z.string().default('http://localhost:5173/?upgrade=cancelled'),
+  GOOGLE_CLIENT_ID: z.string().default(''),
 });
 
 export const env = schema.parse(process.env);

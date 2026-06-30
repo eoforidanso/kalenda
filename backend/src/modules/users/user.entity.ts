@@ -7,8 +7,11 @@ export class User extends BaseEntity {
   @Column({ unique: true, length: 255 })
   email!: string;
 
-  @Column({ name: 'password_hash', length: 255 })
-  passwordHash!: string;
+  @Column({ name: 'password_hash', type: 'varchar', nullable: true, length: 255 })
+  passwordHash!: string | null;
+
+  @Column({ name: 'google_id', type: 'varchar', nullable: true, unique: true, length: 255 })
+  googleId!: string | null;
 
   @Column({ length: 100 })
   name!: string;

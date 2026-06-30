@@ -2,6 +2,7 @@ import { DataSource, Repository, IsNull } from 'typeorm';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { OAuth2Client } from 'google-auth-library';
 import { User } from '../users/user.entity';
 import { RefreshToken } from './refresh-token.entity';
 import { Family } from '../family/family.entity';
@@ -105,6 +106,51 @@ export class AuthService {
 
     const user = await this.users.findOneOrFail({ where: { id: payload.sub } });
     return this.issueTokens(user, payload.familyId);
+  }
+
+  async googleLogin(accessToken: string) {
+    if (!env.GOOGLE_CLIENT_ID) throw err('Google login not configured', 501);
+    const client = new OAuth2Client(env.GOOGLE_CLIENT_ID);
+
+    // Verify the token belongs to our app and get the sub
+    const tokenInfo = await client.getTokenInfo(accessToken).catch(() => {
+      throw err('Invalid Google token', 401);
+    });
+    if (tokenInfo.aud !== env.GOOGLE_CLIENT_ID) throw err('Google token audience mismatch', 401);
+
+    // Fetch user profile (name, picture, email)
+    const profileRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!profileRes.ok) throw err('Failed to fetch Google profile', 401);
+    const payload = await profileRes.json() as { sub: string; email: string; name?: string; picture?: string };
+    if (!payload.sub || !payload.email) throw err('Invalid Google token payload', 401);
+
+    // Find by googleId first, then by email (link existing account)
+    let user = await this.users.findOne({ where: { googleId: payload.sub } });
+    if (!user) {
+      user = await this.users.findOne({ where: { email: payload.email.toLowerCase() } });
+      if (user) {
+        user.googleId = payload.sub;
+        if (!user.avatarUrl && payload.picture) user.avatarUrl = payload.picture;
+        user = await this.users.save(user);
+      } else {
+        user = await this.users.save(
+          this.users.create({
+            email: payload.email.toLowerCase(),
+            name: payload.name ?? payload.email.split('@')[0],
+            passwordHash: null,
+            googleId: payload.sub,
+            avatarUrl: payload.picture ?? null,
+          }),
+        );
+      }
+    }
+
+    const member = await this.members.findOne({ where: { userId: user.id }, order: { joinedAt: 'ASC' } });
+    const tokens = await this.issueTokens(user, member?.familyId ?? null);
+    const { passwordHash: _, ...safeUser } = user;
+    return { ...tokens, user: { ...safeUser, familyId: member?.familyId ?? null } };
   }
 
   async logout(userId: string) {

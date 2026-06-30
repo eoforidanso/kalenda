@@ -18,6 +18,15 @@ export async function login({ email, password }) {
   return data; // { accessToken, refreshToken, expiresIn, user }
 }
 
+export async function googleAuth(idToken) {
+  const data = await apiFetch('/auth/google', {
+    method: 'POST',
+    body:   JSON.stringify({ idToken }),
+  });
+  setTokens(data);
+  return data;
+}
+
 export async function logout() {
   try { await apiFetch('/auth/logout', { method: 'POST' }); } catch { /* ignore */ }
   clearTokens();
