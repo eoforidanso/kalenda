@@ -22,7 +22,7 @@ export const AppDataSource = new DataSource({
   type: 'postgres',
   url: env.DATABASE_URL,
   // Use synchronize only in development — run migrations in production
-  synchronize: env.NODE_ENV === 'development',
+  synchronize: env.NODE_ENV === 'development' || process.env.DB_SYNC === 'true',
   logging: env.NODE_ENV === 'development',
   entities: [
     User, RefreshToken,
