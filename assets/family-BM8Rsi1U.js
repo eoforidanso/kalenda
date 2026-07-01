@@ -1,0 +1,1 @@
+import{t as e}from"./index-Bo7rcdZI.js";async function t(){return e(`/families/mine`)}async function n(t,n){return e(`/families/${t}/invites`,{method:`POST`,body:JSON.stringify({email:n})})}export{n as createInvite,t as getMyFamily};

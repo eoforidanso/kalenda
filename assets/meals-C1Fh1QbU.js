@@ -1,0 +1,1 @@
+import{t as e}from"./index-Bo7rcdZI.js";async function t(t){return e(`/meals?weekStart=${t}`)}export{t as getMealPlan};

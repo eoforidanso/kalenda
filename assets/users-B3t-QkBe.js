@@ -1,0 +1,1 @@
+import{t as e}from"./index-Bo7rcdZI.js";async function t(){return e(`/users/me`)}async function n(t){return e(`/users/me`,{method:`PATCH`,body:JSON.stringify(t)})}export{t as getMe,n as updateMe};
