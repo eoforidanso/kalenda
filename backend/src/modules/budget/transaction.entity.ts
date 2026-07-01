@@ -26,7 +26,7 @@ export class Transaction extends BaseEntity {
   @Column({ length: 100 })
   category!: string;
 
-  @Column({ name: 'who', length: 100, nullable: true })
+  @Column({ type: 'varchar', name: 'who', length: 100, nullable: true })
   who!: string | null;
 
   /** ISO date string e.g. 2026-05-04 */

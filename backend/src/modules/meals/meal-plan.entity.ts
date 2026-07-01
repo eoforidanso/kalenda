@@ -24,7 +24,7 @@ export class MealPlan extends BaseEntity {
   @Column({ length: 255 })
   meal!: string;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   cook!: string | null;
 
   @Column({ type: 'text', nullable: true })

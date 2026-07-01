@@ -10,30 +10,6 @@ const FAMILY = [
   { name: 'Grandma', initial: 'G', color: '#a78bfa', bg: 'from-violet-400 to-purple-500' },
 ];
 
-const REWARD_TARGETS = { Jake: 10, Emma: 8, Harriet: 5, Dad: 0, Mom: 0, Grandma: 0 };
-
-const initialTasks = [
-  // Daily chores
-  { id: 1,  label: 'Take out trash',       who: 'Jake',    done: false, stars: 2, cat: 'Chores',   icon: '🗑️',  recurring: 'Daily'   },
-  { id: 2,  label: 'Wash dishes',          who: 'Emma',    done: true,  stars: 1, cat: 'Chores',   icon: '🍽️',  recurring: 'Daily'   },
-  { id: 3,  label: 'Walk the dog',         who: 'Jake',    done: false, stars: 3, cat: 'Chores',   icon: '🐕',  recurring: 'Daily'   },
-  { id: 4,  label: 'Vacuum living room',   who: 'Harriet', done: false, stars: 2, cat: 'Chores',   icon: '🧹',  recurring: 'Weekly'  },
-  { id: 5,  label: 'Set dinner table',     who: 'Emma',    done: false, stars: 1, cat: 'Chores',   icon: '🍴',  recurring: 'Daily'   },
-  { id: 6,  label: 'Clean bathroom',       who: 'Harriet', done: true,  stars: 3, cat: 'Chores',   icon: '🚿',  recurring: 'Weekly'  },
-  // Homework
-  { id: 7,  label: 'Math homework',        who: 'Emma',    done: false, stars: 2, cat: 'Homework', icon: '📐',  recurring: null      },
-  { id: 8,  label: 'Read 20 minutes',      who: 'Jake',    done: true,  stars: 1, cat: 'Homework', icon: '📚',  recurring: 'Daily'   },
-  { id: 9,  label: 'Science project',      who: 'Emma',    done: false, stars: 4, cat: 'Homework', icon: '🔬',  recurring: null      },
-  // Personal
-  { id: 10, label: 'Practice piano',       who: 'Emma',    done: false, stars: 2, cat: 'Personal', icon: '🎹',  recurring: 'Daily'   },
-  { id: 11, label: 'Morning workout',      who: 'Dad',     done: true,  stars: 0, cat: 'Personal', icon: '💪',  recurring: 'Daily'   },
-  { id: 12, label: 'Call Grandma',         who: 'Harriet', done: false, stars: 0, cat: 'Personal', icon: '📞',  recurring: 'Weekly'  },
-];
-
-const REWARDS = [
-  { who: 'Jake',  reward: '🎮 Extra 1hr screen time', target: 10, earned: 7 },
-  { who: 'Emma',  reward: '🍦 Ice cream trip',         target: 8,  earned: 5 },
-];
 
 function getMember(name) { return FAMILY.find(f => f.name === name) || FAMILY[0]; }
 
@@ -51,14 +27,15 @@ function StarBadge({ count }) {
 }
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState([]);
+  const [rewards, setRewards] = useState([]);
   const [filter, setFilter] = useState('All');
   const [catFilter, setCatFilter] = useState('All');
   const [showAdd, setShowAdd] = useState(false);
   const [newTask, setNewTask] = useState({ label: '', who: 'Jake', stars: 1, cat: 'Chores', icon: '✅', recurring: null });
   const toast = useToast();
 
-  // Load tasks from API on mount; fall back to static initialTasks on error
+  // Load tasks from API on mount
   useEffect(() => {
     import('../api/tasks').then(({ listTasks }) => {
       listTasks().then(data => { if (data.length > 0) setTasks(data); }).catch(() => {});
@@ -149,7 +126,7 @@ export default function Tasks() {
         <div className="glass rounded-2xl p-5">
           <h2 className="text-gray-800 font-semibold text-sm mb-4">⭐ Star Rewards</h2>
           <div className="grid sm:grid-cols-2 gap-3">
-            {REWARDS.map((r, i) => {
+            {rewards.map((r, i) => {
               const m = getMember(r.who);
               const earned = starsToday[r.who] || 0;
               const total = r.earned + earned;

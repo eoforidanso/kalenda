@@ -6,12 +6,6 @@ const TYPE_COLOR = {
   family: 'bg-amber-400', events: 'bg-teal-400', chores: 'bg-emerald-400', birthday: 'bg-pink-400',
 };
 
-const fallbackNotifications = [
-  { id: 'f1', type: 'photos',    icon: '🌊', who: 'Dad',    whoColor: 'bg-sky-400',    action: 'shared 3 new photos',         sub: 'Beach Day album',         time: '2m ago',    unread: true  },
-  { id: 'f2', type: 'reactions', icon: '❤️', who: 'Mom',   whoColor: 'bg-rose-400',   action: 'reacted to your photo',       sub: "Maya's Birthday",         time: '18m ago',   unread: true  },
-  { id: 'f3', type: 'family',    icon: '👋', who: 'System', whoColor: 'bg-amber-400',  action: 'Grandma joined your family',  sub: 'Welcome Grandma!',        time: '3h ago',    unread: false },
-  { id: 'f4', type: 'system',    icon: '📊', who: 'Kalenda',whoColor: 'bg-violet-400', action: 'Your weekly digest is ready', sub: '42 photos · 6 reactions', time: '1 day ago', unread: false },
-];
 
 function timeAgo(isoDate) {
   const diff = Date.now() - new Date(isoDate).getTime();
@@ -43,7 +37,7 @@ const filters = ['All', 'Unread', 'Photos', 'Reactions', 'Events', 'Chores', 'Fa
 
 export default function Notifications({ setView, onUnreadChange }) {
   const [filter, setFilter]             = useState('All');
-  const [notifications, setNotifications] = useState(fallbackNotifications);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading]           = useState(true);
 
   // Load real notifications

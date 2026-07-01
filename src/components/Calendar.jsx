@@ -4,46 +4,6 @@ import { useToast } from './Toast';
 const DAYS_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-export const INITIAL_EVENT_DB = {
-  '2026-05-01': [
-    { id: 1, type: 'photo', icon: '📸', label: 'Weekly photo dump', time: 'All day', color: 'sky', who: 'Family', notes: 'Recurring every Friday', recur: 'weekly' },
-  ],
-  '2026-05-03': [
-    { id: 2, type: 'event', icon: '🎹', label: "Emma's Piano Recital", time: '3:00 PM', color: 'rose', who: 'Emma', notes: 'Riverside Community Hall, Room 4', recur: null },
-  ],
-  '2026-05-08': [
-    { id: 3, type: 'birthday', icon: '💐', label: "Mother's Day", time: 'All day', color: 'pink', who: 'Family', notes: 'Brunch at 11am', recur: 'yearly' },
-  ],
-  '2026-05-10': [
-    { id: 4, type: 'birthday', icon: '🎂', label: "Maya's 8th Birthday", time: 'All day', color: 'violet', who: 'Maya', notes: 'Party at 2pm, invite 10 kids', recur: 'yearly' },
-    { id: 5, type: 'event', icon: '🎉', label: "Maya's Birthday Party", time: '2:00 PM', color: 'violet', who: 'Family', notes: 'Book the backyard gazebo', recur: null },
-  ],
-  '2026-05-15': [
-    { id: 6, type: 'event', icon: '🍖', label: "Family BBQ at Grandma's", time: '12:00 PM', color: 'amber', who: 'Family', notes: 'Bring potato salad and drinks', recur: null },
-  ],
-  '2026-05-19': [
-    { id: 7, type: 'birthday', icon: '🎂', label: "Grandma's Birthday", time: 'All day', color: 'emerald', who: 'Grandma', notes: "She'll be 72!", recur: 'yearly' },
-  ],
-  '2026-05-22': [
-    { id: 8, type: 'milestone', icon: '🎓', label: "Jake's Graduation Ceremony", time: '10:00 AM', color: 'emerald', who: 'Jake', notes: 'Main auditorium, bring camera', recur: null },
-    { id: 9, type: 'event', icon: '🥂', label: 'Graduation Dinner', time: '6:00 PM', color: 'amber', who: 'Family', notes: 'Reservation at Osteria', recur: null },
-  ],
-  '2026-05-25': [
-    { id: 10, type: 'reminder', icon: '🔔', label: 'Frame firmware update', time: '9:00 AM', color: 'slate', who: 'System', notes: 'v2.4.1 available', recur: null },
-  ],
-  '2026-05-29': [
-    { id: 11, type: 'event', icon: '🌿', label: 'Hiking Trip — Mt. Legon', time: '7:00 AM', color: 'teal', who: 'Dad', notes: 'Pack lunch, 6km trail', recur: null },
-  ],
-  '2026-06-01': [
-    { id: 12, type: 'birthday', icon: '🎂', label: "Dad's Birthday", time: 'All day', color: 'sky', who: 'Dad', notes: '', recur: 'yearly' },
-  ],
-};
-
-const PHOTO_COUNTS = {
-  '2026-05-01': 8, '2026-05-03': 14, '2026-05-08': 3,
-  '2026-05-10': 22, '2026-05-15': 31, '2026-05-19': 7,
-  '2026-05-22': 19, '2026-05-25': 2, '2026-05-29': 11,
-};
 
 const TYPE_FILTERS = ['All', 'Birthday', 'Event', 'Milestone', 'Photo', 'Reminder'];
 
@@ -272,7 +232,7 @@ function MonthView({ year, month, selectedDay, onSelectDay, filter, eventDB }) {
           const dayEvents = (eventDB[key] || []).filter(function(e) {
             return filter === 'All' || e.type === filter.toLowerCase();
           });
-          const photos = PHOTO_COUNTS[key] || 0;
+          const photos = 0;
           const isToday = key === today;
           const isSelected = selectedDay === key;
 
@@ -343,7 +303,7 @@ function WeekView({ year, month, day, onSelectDay, filter, eventDB }) {
           const dayEvents = (eventDB[key] || []).filter(function(e) {
             return filter === 'All' || e.type === filter.toLowerCase();
           });
-          const photos = PHOTO_COUNTS[key] || 0;
+          const photos = 0;
           return (
             <div key={i} className="p-1.5 space-y-1" style={{ borderRight: '1px solid #e8ecf0' }}>
               {dayEvents.map(function(ev) { return <EventPill key={ev.id} ev={ev} compact={true} />; })}
@@ -415,7 +375,7 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
   const [editingEvent, setEditingEvent] = useState(null);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
-  const [localEventDB, setLocalEventDB] = useState(INITIAL_EVENT_DB);
+  const [localEventDB, setLocalEventDB] = useState({});
   const eventDB = propEventDB ?? localEventDB;
   const setEventDB = propSetEventDB ?? setLocalEventDB;
   const toast = useToast();
@@ -428,7 +388,7 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
           const db = buildEventDB(events);
           setEventDB(prev => ({ ...prev, ...db }));
         }
-      }).catch(() => { /* network unavailable — keep INITIAL_EVENT_DB */ });
+      }).catch(() => {});
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -506,7 +466,7 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
   const selectedEvents = selectedDay
     ? (eventDB[selectedDay] || []).filter(function(e) { return filter === 'All' || e.type === filter.toLowerCase(); })
     : [];
-  const selectedPhotos = selectedDay ? (PHOTO_COUNTS[selectedDay] || 0) : 0;
+  const selectedPhotos = 0;
 
   const upcoming = getUpcoming(eventDB, todayKey(), 6);
 
@@ -535,12 +495,7 @@ export default function Calendar({ setView, eventDB: propEventDB, setEventDB: pr
       }).slice(0, 8)
     : null;
 
-  const photoActivity = Object.entries(PHOTO_COUNTS)
-    .filter(function(entry) {
-      return entry[0] >= toKey(year, month, 1) && entry[0] <= toKey(year, month, 31);
-    })
-    .sort(function(a, b) { return b[1] - a[1]; })
-    .slice(0, 5);
+  const photoActivity = [];
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-thin pb-24 md:pb-0" style={{ background: 'transparent' }}>

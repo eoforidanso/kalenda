@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { setupPushNotifications, logEvent } from './lib/firebase';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
-import Photos, { allPhotos } from './components/Photos';
+import Photos from './components/Photos';
 import Albums from './components/Albums';
-import Calendar, { INITIAL_EVENT_DB } from './components/Calendar';
+import Calendar from './components/Calendar';
 import AIStudio from './components/AIStudio';
 import Memories from './components/Memories';
 import Family from './components/Family';
@@ -45,8 +46,8 @@ export default function App() {
   });
   const [notifUnread, setNotifUnread] = useState(4);
   const [showSearch, setShowSearch] = useState(false);
-  const [photos, setPhotos] = useState(allPhotos);
-  const [eventDB, setEventDB] = useState(INITIAL_EVENT_DB);
+  const [photos, setPhotos] = useState([]);
+  const [eventDB, setEventDB] = useState({});
   const View = views[view] || Dashboard;
 
   // Force logout when the API client dispatches 'kalenda:logout' (token expired)
@@ -76,6 +77,8 @@ export default function App() {
   function handleLogin(userData) {
     localStorage.setItem('kalenda_user', JSON.stringify(userData));
     setUser(userData);
+    logEvent('login', { method: userData.provider ?? 'email' });
+    setupPushNotifications();
   }
 
   if (!user) {

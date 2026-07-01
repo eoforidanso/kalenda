@@ -9,58 +9,18 @@ const FAMILY = [
   { name: 'Jake',    initial: 'J', color: '#fbbf24', bg: 'from-amber-400 to-orange-500' },
 ];
 
-const initialLists = [
-  {
-    id: 1, name: 'Grocery', icon: '🛒', color: '#34d399', items: [
-      { id: 1, label: 'Milk',             done: false, addedBy: 'Mom' },
-      { id: 2, label: 'Bread',            done: true,  addedBy: 'Mom' },
-      { id: 3, label: 'Eggs (12)',         done: false, addedBy: 'Harriet' },
-      { id: 4, label: 'Chicken breast',   done: false, addedBy: 'Mom' },
-      { id: 5, label: 'Broccoli',         done: true,  addedBy: 'Harriet' },
-      { id: 6, label: 'Orange juice',     done: false, addedBy: 'Jake' },
-      { id: 7, label: 'Greek yogurt',     done: false, addedBy: 'Emma' },
-      { id: 8, label: 'Pasta sauce',      done: false, addedBy: 'Mom' },
-    ],
-  },
-  {
-    id: 2, name: 'To-Do', icon: '📋', color: '#7c3aed', items: [
-      { id: 1, label: 'Book dentist appointment',  done: false, addedBy: 'Harriet' },
-      { id: 2, label: 'Pay electricity bill',       done: true,  addedBy: 'Dad' },
-      { id: 3, label: 'Oil change for car',         done: false, addedBy: 'Dad' },
-      { id: 4, label: 'Emma school trip permission',done: false, addedBy: 'Mom' },
-      { id: 5, label: 'Return library books',       done: false, addedBy: 'Jake' },
-    ],
-  },
-  {
-    id: 3, name: 'School Supplies', icon: '🎒', color: '#38bdf8', items: [
-      { id: 1, label: '#2 Pencils (box)',  done: true,  addedBy: 'Emma' },
-      { id: 2, label: 'Composition notebook', done: false, addedBy: 'Emma' },
-      { id: 3, label: 'Scientific calculator', done: false, addedBy: 'Jake' },
-      { id: 4, label: 'Colored markers',   done: false, addedBy: 'Mom' },
-    ],
-  },
-  {
-    id: 4, name: 'Vacation Packing', icon: '✈️', color: '#f472b6', items: [
-      { id: 1, label: 'Passports',         done: true,  addedBy: 'Dad' },
-      { id: 2, label: 'Sunscreen SPF 50',  done: false, addedBy: 'Mom' },
-      { id: 3, label: 'Swimsuits',         done: false, addedBy: 'Harriet' },
-      { id: 4, label: 'Phone chargers',    done: false, addedBy: 'Dad' },
-      { id: 5, label: 'First aid kit',     done: true,  addedBy: 'Mom' },
-    ],
-  },
-];
 
 function getMember(name) { return FAMILY.find(f => f.name === name) || FAMILY[0]; }
 
 export default function Lists() {
-  const [lists, setLists] = useState(initialLists);
-  const [activeList, setActiveList] = useState(initialLists[0]?.id ?? null);
+  const [lists, setLists] = useState([]);
+  const [activeList, setActiveList] = useState(null);
   const [newItem, setNewItem] = useState('');
   const [showNewList, setShowNewList] = useState(false);
   const [newListName, setNewListName] = useState('');
   const toast = useToast();
 
-  // Load lists from API on mount; fall back to static initialLists on error
+  // Load lists from API on mount
   useEffect(() => {
     import('../api/lists').then(({ getLists }) => {
       getLists().then(data => {

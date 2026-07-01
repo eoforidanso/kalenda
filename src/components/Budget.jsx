@@ -2,29 +2,14 @@ import { useState, useEffect } from 'react';
 import { useToast } from './Toast';
 
 const CATEGORIES = [
-  { name: 'Food & Groceries', icon: '🛒', color: '#34d399', budget: 800,  spent: 613 },
-  { name: 'Transport',        icon: '🚗', color: '#38bdf8', budget: 400,  spent: 287 },
-  { name: 'Kids & School',    icon: '🎒', color: '#a78bfa', budget: 350,  spent: 320 },
-  { name: 'Entertainment',    icon: '🎬', color: '#fb923c', budget: 200,  spent: 178 },
-  { name: 'Healthcare',       icon: '💊', color: '#f472b6', budget: 300,  spent: 95  },
-  { name: 'Utilities',        icon: '💡', color: '#fbbf24', budget: 250,  spent: 240 },
-  { name: 'Savings',          icon: '🏦', color: '#6366f1', budget: 500,  spent: 500 },
-  { name: 'Miscellaneous',    icon: '📦', color: '#94a3b8', budget: 150,  spent: 72  },
-];
-
-const initialTxns = [
-  { id: 1,  cat: 'Food & Groceries', label: 'Shoprite Weekly Shop',     amount: 148.50, who: 'Mom',     date: 'May 3',  type: 'expense' },
-  { id: 2,  cat: 'Transport',        label: 'Uber — Accra CBD',          amount: 35.00,  who: 'Dad',     date: 'May 3',  type: 'expense' },
-  { id: 3,  cat: 'Kids & School',    label: 'Emma — Art Supplies',       amount: 62.00,  who: 'Harriet', date: 'May 2',  type: 'expense' },
-  { id: 4,  cat: 'Entertainment',    label: 'Netflix + Spotify',         amount: 45.00,  who: 'Harriet', date: 'May 1',  type: 'expense' },
-  { id: 5,  cat: 'Food & Groceries', label: 'Tuesday Market Run',        amount: 87.00,  who: 'Mom',     date: 'Apr 29', type: 'expense' },
-  { id: 6,  cat: 'Healthcare',       label: 'GP Visit — Emma',           amount: 95.00,  who: 'Mom',     date: 'Apr 28', type: 'expense' },
-  { id: 7,  cat: 'Transport',        label: 'Fuel — Toyota',             amount: 120.00, who: 'Dad',     date: 'Apr 27', type: 'expense' },
-  { id: 8,  cat: 'Utilities',        label: 'ECG Electricity Bill',      amount: 140.00, who: 'Dad',     date: 'Apr 26', type: 'expense' },
-  { id: 9,  cat: 'Kids & School',    label: "Jake's Textbooks",          amount: 258.00, who: 'Dad',     date: 'Apr 25', type: 'expense' },
-  { id: 10, cat: 'Food & Groceries', label: 'Farmers Market',            amount: 55.00,  who: 'Harriet', date: 'Apr 24', type: 'expense' },
-  { id: 11, cat: 'Savings',          label: 'Monthly Savings Transfer',  amount: 500.00, who: 'Dad',     date: 'Apr 30', type: 'saving'  },
-  { id: 12, cat: 'Miscellaneous',    label: 'Household items',           amount: 72.00,  who: 'Mom',     date: 'Apr 23', type: 'expense' },
+  { name: 'Food & Groceries', icon: '🛒', color: '#34d399', budget: 800  },
+  { name: 'Transport',        icon: '🚗', color: '#38bdf8', budget: 400  },
+  { name: 'Kids & School',    icon: '🎒', color: '#a78bfa', budget: 350  },
+  { name: 'Entertainment',    icon: '🎬', color: '#fb923c', budget: 200  },
+  { name: 'Healthcare',       icon: '💊', color: '#f472b6', budget: 300  },
+  { name: 'Utilities',        icon: '💡', color: '#fbbf24', budget: 250  },
+  { name: 'Savings',          icon: '🏦', color: '#6366f1', budget: 500  },
+  { name: 'Miscellaneous',    icon: '📦', color: '#94a3b8', budget: 150  },
 ];
 
 const INCOME_MONTHLY = 3500;
@@ -101,7 +86,7 @@ function AddExpenseModal({ onSave, onClose }) {
 }
 
 export default function Budget() {
-  const [txns, setTxns] = useState(initialTxns);
+  const [txns, setTxns] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [catFilter, setCatFilter] = useState('All');
   const [liveLoaded, setLiveLoaded] = useState(false);

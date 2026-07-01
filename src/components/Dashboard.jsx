@@ -62,59 +62,7 @@ const FAMILY = [
   { name: 'Grandma', initial: 'G', color: '#a78bfa', bg: 'from-violet-400 to-purple-500' },
 ];
 
-// Today's schedule per member (color-coded like Cozi)
-const todaySchedule = [
-  { time: '8:00 AM',  label: 'School Drop-off',     who: 'Dad',     duration: '30m' },
-  { time: '9:30 AM',  label: 'Yoga Class',           who: 'Mom',     duration: '1h' },
-  { time: '10:00 AM', label: 'Dentist Appt.',        who: 'Emma',    duration: '45m' },
-  { time: '12:00 PM', label: 'Lunch w/ Grandma',     who: 'Harriet', duration: '1h' },
-  { time: '3:30 PM',  label: 'Soccer Practice',      who: 'Jake',    duration: '1.5h' },
-  { time: '5:00 PM',  label: 'Piano Lesson',         who: 'Emma',    duration: '45m' },
-  { time: '7:00 PM',  label: 'Family Dinner',        who: 'All',     duration: '1h' },
-];
-
-// Chores
-const initialChores = [
-  { id: 1, label: 'Take out trash',     who: 'Jake',    done: false, icon: '🗑️' },
-  { id: 2, label: 'Wash dishes',        who: 'Emma',    done: true,  icon: '🍽️' },
-  { id: 3, label: 'Walk the dog',       who: 'Jake',    done: false, icon: '🐕' },
-  { id: 4, label: 'Vacuum living room', who: 'Harriet', done: false, icon: '🧹' },
-  { id: 5, label: 'Set dinner table',   who: 'Emma',    done: false, icon: '🍴' },
-];
-
-// Budget snapshot (mirrors Budget.jsx data)
-const BUDGET_SNAPSHOT = [
-  { name: 'Food',      icon: '🛒', color: '#34d399', budget: 800, spent: 613 },
-  { name: 'Transport', icon: '🚗', color: '#38bdf8', budget: 400, spent: 287 },
-  { name: 'Kids',      icon: '🎒', color: '#a78bfa', budget: 350, spent: 320 },
-  { name: 'Health',    icon: '💊', color: '#f472b6', budget: 300, spent: 95  },
-];
 const MONTHLY_BUDGET = 2950;
-
-// Shopping list
-const initialList = [
-  { id: 1, label: 'Milk',           done: false, cat: '🥛' },
-  { id: 2, label: 'Bread',          done: true,  cat: '🍞' },
-  { id: 3, label: 'Eggs (12)',       done: false, cat: '🥚' },
-  { id: 4, label: 'Chicken breast',  done: false, cat: '🍗' },
-  { id: 5, label: 'Broccoli',        done: true,  cat: '🥦' },
-  { id: 6, label: 'Orange juice',    done: false, cat: '🍊' },
-];
-
-// Meals
-const meals = {
-  breakfast: { label: 'Avocado Toast & Eggs',  icon: '🥑' },
-  lunch:     { label: 'Caesar Salad Wraps',    icon: '🌯' },
-  dinner:    { label: 'Grilled Salmon + Rice', icon: '🐟' },
-};
-
-// Upcoming events
-const upcomingEvents = [
-  { date: 'May 8',  label: "Mother's Day",          icon: '💐', who: 'Mom',  isBirthday: false },
-  { date: 'May 10', label: "Jake's Birthday 🎂",    icon: '🎂', who: 'Jake', isBirthday: true  },
-  { date: 'May 15', label: 'Family BBQ',            icon: '🍖', who: 'All',  isBirthday: false },
-  { date: 'Jun 1',  label: "Emma's Piano Recital",  icon: '🎹', who: 'Emma', isBirthday: false },
-];
 
 const MONTH_MAP = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
 function daysFromToday(dateStr) {
@@ -125,19 +73,6 @@ function daysFromToday(dateStr) {
   return Math.round((target - today) / 86400000);
 }
 
-// On This Day memories
-const onThisDay = [
-  { year: 2024, emoji: '🎂', label: "Maya's 6th birthday", photos: 14 },
-  { year: 2023, emoji: '🌸', label: 'Cherry blossom walk',  photos: 8  },
-  { year: 2022, emoji: '🐣', label: 'Easter egg hunt',      photos: 22 },
-];
-
-const activity = [
-  { who: 'Dad',     avatar: 'bg-sky-400',     action: 'shared a photo', photo: '🌊', time: '2m ago',  unread: true  },
-  { who: 'Mom',     avatar: 'bg-rose-400',    action: 'shared a photo', photo: '🌸', time: '18m ago', unread: true  },
-  { who: 'Emma',    avatar: 'bg-emerald-400', action: 'shared 3 photos', photo: '🎂', time: '1h ago',  unread: false },
-  { who: 'Grandma', avatar: 'bg-violet-400',  action: 'reacted ❤️',     photo: '',   time: '2h ago',  unread: false },
-];
 
 function getMemberColor(name) {
   return FAMILY.find(f => f.name === name)?.color || '#a78bfa';
@@ -199,23 +134,18 @@ function Photo3D({ p }) {
   );
 }
 
-const recentPhotos = [
-  { bg: 'from-rose-800 via-pink-700 to-orange-700',     emoji: '🌸', label: "Maya's Birthday", who: 'Mom' },
-  { bg: 'from-sky-800 via-blue-700 to-indigo-800',      emoji: '🌊', label: 'Beach Day',        who: 'Dad' },
-  { bg: 'from-emerald-800 via-teal-700 to-green-800',   emoji: '🌿', label: 'Forest Hike',      who: 'Emma' },
-  { bg: 'from-violet-800 via-purple-700 to-fuchsia-800',emoji: '🎉', label: 'Anniversary',      who: 'Dad' },
-  { bg: 'from-amber-800 via-orange-700 to-red-800',     emoji: '🍂', label: 'Fall Trip',         who: 'Jake' },
-  { bg: 'from-cyan-800 via-sky-700 to-blue-800',        emoji: '❄️', label: 'Winter Walk',      who: 'Grandma' },
-];
 
 export default function Dashboard({ setView }) {
-  const [chores, setChores]           = useState(initialChores);
-  const [shopList, setShopList]       = useState(initialList);
+  const [chores, setChores]           = useState([]);
+  const [shopList, setShopList]       = useState([]);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [schedule, setSchedule]       = useState(todaySchedule);
-  const [upcoming, setUpcoming]       = useState(upcomingEvents);
-  const [liveMeals, setLiveMeals]     = useState(meals);
-  const [liveActivity, setLiveActivity] = useState(activity);
+  const [schedule, setSchedule]       = useState([]);
+  const [upcoming, setUpcoming]       = useState([]);
+  const [liveMeals, setLiveMeals]     = useState({ breakfast: null, lunch: null, dinner: null });
+  const [liveActivity, setLiveActivity] = useState([]);
+  const [onThisDay, setOnThisDay]     = useState([]);
+  const [recentPhotos, setRecentPhotos] = useState([]);
+  const [budgetSnapshot, setBudgetSnapshot] = useState([]);
   const [userName, setUserName]       = useState('');
   const [budgetSpent, setBudgetSpent] = useState(0);
   const [shopListId, setShopListId]   = useState(null);
@@ -301,7 +231,7 @@ export default function Dashboard({ setView }) {
       getMealPlan(weekStart).then(plan => {
         if (!plan?.length) return;
         const todayMeals = plan.filter(m => m.day === dayName);
-        const newMeals = { ...meals };
+        const newMeals = { breakfast: null, lunch: null, dinner: null };
         todayMeals.forEach(m => {
           const key = m.mealType?.toLowerCase();
           if (key === 'breakfast') newMeals.breakfast = { label: m.meal, icon: '🍳' };
@@ -410,7 +340,7 @@ export default function Dashboard({ setView }) {
               <span>👨‍👩‍👧‍👦</span> All
             </button>
             {FAMILY.map(m => {
-              const doing  = getCurrentActivity(m.name, todaySchedule);
+              const doing  = getCurrentActivity(m.name, schedule);
               const active = activeFilter === m.name;
               return (
                 <button key={m.name} onClick={() => setActiveFilter(active ? 'All' : m.name)}
@@ -488,10 +418,10 @@ export default function Dashboard({ setView }) {
               <div className="space-y-2.5">
                 {[['Breakfast', liveMeals.breakfast], ['Lunch', liveMeals.lunch], ['Dinner', liveMeals.dinner]].map(([label, m]) => (
                   <div key={label} className="flex items-center gap-3 px-3.5 py-3 rounded-2xl" style={{ background: 'rgba(251,191,36,0.06)' }}>
-                    <span className="text-xl">{m.icon}</span>
+                    <span className="text-xl">{m?.icon ?? '—'}</span>
                     <div>
                       <p className="text-gray-400 text-[10px] uppercase tracking-wider">{label}</p>
-                      <p className="text-gray-700 text-xs font-medium">{m.label}</p>
+                      <p className="text-gray-700 text-xs font-medium">{m?.label ?? 'Not planned'}</p>
                     </div>
                   </div>
                 ))}
@@ -537,7 +467,7 @@ export default function Dashboard({ setView }) {
                 </div>
               </div>
               <div className="space-y-2">
-                {BUDGET_SNAPSHOT.map((c, i) => {
+                {budgetSnapshot.map((c, i) => {
                   const pct = Math.min((c.spent / c.budget) * 100, 100);
                   return (
                     <div key={i} className="flex items-center gap-2">

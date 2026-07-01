@@ -53,18 +53,6 @@ function EmojiPicker({ current, onSelect, onClose }) {
   );
 }
 
-const initialMembers = [
-  { name: 'Harriet A.', role: 'Owner', avatar: 'bg-gradient-to-br from-rose-400 to-orange-400',    emoji: '👩🏾', joined: 'Jan 2026', photos: 312, status: 'active' },
-  { name: 'Dad',        role: 'Member', avatar: 'bg-gradient-to-br from-sky-400 to-blue-500',      emoji: '👨🏾', joined: 'Jan 2026', photos: 487, status: 'active' },
-  { name: 'Mom',        role: 'Member', avatar: 'bg-gradient-to-br from-rose-500 to-pink-500',     emoji: '👩🏾', joined: 'Jan 2026', photos: 621, status: 'active' },
-  { name: 'Emma',       role: 'Member', avatar: 'bg-gradient-to-br from-emerald-400 to-teal-500',  emoji: '👧🏾', joined: 'Feb 2026', photos: 203, status: 'active' },
-  { name: 'Jake',       role: 'Member', avatar: 'bg-gradient-to-br from-amber-400 to-orange-500',  emoji: '👦🏾', joined: 'Feb 2026', photos: 155, status: 'active' },
-  { name: 'Grandma',    role: 'Member', avatar: 'bg-gradient-to-br from-violet-400 to-purple-500', emoji: '👵🏾', joined: 'Mar 2026', photos: 88,  status: 'active' },
-];
-
-const initialPending = [
-  { name: 'Uncle Bob', email: 'bob@example.com', sent: '2 days ago' },
-];
 
 function InviteModal({ onClose, onInvite, familyId }) {
   const [email, setEmail] = useState('');
@@ -160,8 +148,8 @@ function InviteModal({ onClose, onInvite, familyId }) {
 
 export default function Family() {
   const [showInvite, setShowInvite]   = useState(false);
-  const [members, setMembers]         = useState(initialMembers);
-  const [pending, setPending]         = useState(initialPending);
+  const [members, setMembers]         = useState([]);
+  const [pending, setPending]         = useState([]);
   const [pickingFor, setPickingFor]   = useState(null); // member name
   const [familyId, setFamilyId]       = useState(null);
 

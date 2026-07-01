@@ -8,7 +8,7 @@ export class FamilyInvite extends BaseEntity {
   familyId!: string;
 
   /** email address the invite was sent to */
-  @Column({ length: 254, nullable: true })
+  @Column({ type: 'varchar', length: 254, nullable: true })
   email!: string | null;
 
   /** secure random token used in the invite URL */
@@ -22,6 +22,6 @@ export class FamilyInvite extends BaseEntity {
   @Column({ name: 'used_at', type: 'timestamptz', nullable: true })
   usedAt!: Date | null;
 
-  @Column({ name: 'used_by_id', nullable: true })
+  @Column({ type: 'varchar', name: 'used_by_id', nullable: true })
   usedById!: string | null;
 }
